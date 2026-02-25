@@ -1,191 +1,175 @@
-import React, { useRef, useCallback, useEffect } from 'react';
-import { LocalPokemon } from '../data/pokemonData';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+
+interface SpriteMonster {
+  name: string;
+  element?: string;
+  sprite?: string;
+  color?: string;
+}
 
 interface PokemonBattleSpriteProps {
-  pokemon: LocalPokemon;
-  side: 'player' | 'opponent';
-  animState: 'idle' | 'attack' | 'hit' | 'faint' | 'dodge';
-  position?: { x: number; y: number };
-  isDraggable?: boolean;
-  onPositionChange?: (pos: { x: number; y: number }) => void;
-  dragBounds?: { minX: number; maxX: number; minY: number; maxY: number };
+  pokemon?: SpriteMonster;
+  isPlayer: boolean;
+  isAttacking?: boolean;
+  isDodging?: boolean;
 }
+
+const elementEmoji: Record<string, string> = {
+  fire: '🔥',
+  water: '💧',
+  earth: '🪨',
+  wind: '💨',
+  lightning: '⚡',
+  dark: '🌑',
+};
 
 export default function PokemonBattleSprite({
   pokemon,
-  side,
-  animState,
-  position,
-  isDraggable = false,
-  onPositionChange,
-  dragBounds = { minX: -120, maxX: 120, minY: -100, maxY: 60 },
+  isPlayer,
+  isAttacking = false,
+  isDodging = false,
 }: PokemonBattleSpriteProps) {
-  const isPlayer = side === 'player';
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isDraggingRef = useRef(false);
-  const startPointerRef = useRef({ x: 0, y: 0 });
-  const startPosRef = useRef({ x: 0, y: 0 });
-  const currentPosRef = useRef(position ?? { x: 0, y: 0 });
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStart = useRef<{ x: number; y: number } | null>(null);
+  const spriteRef = useRef<HTMLDivElement>(null);
 
-  // Keep currentPosRef in sync with controlled position prop
+  const sprite = pokemon?.sprite || '';
+  const color = pokemon?.color || '#eab308';
+  const name = pokemon?.name || 'Unknown';
+  const element = pokemon?.element || 'lightning';
+
+  // Reset drag when dodging ends
   useEffect(() => {
-    if (position) {
-      currentPosRef.current = position;
+    if (!isDodging && !isDragging) {
+      setDragOffset({ x: 0, y: 0 });
     }
-  }, [position]);
+  }, [isDodging, isDragging]);
 
-  const clamp = (val: number, min: number, max: number) => Math.max(min, Math.min(max, val));
-
-  const handlePointerDown = useCallback((clientX: number, clientY: number) => {
-    if (!isDraggable || animState === 'faint') return;
-    isDraggingRef.current = true;
-    startPointerRef.current = { x: clientX, y: clientY };
-    startPosRef.current = { ...currentPosRef.current };
-  }, [isDraggable, animState]);
-
-  const handlePointerMove = useCallback((clientX: number, clientY: number) => {
-    if (!isDraggingRef.current || !isDraggable) return;
-    const dx = clientX - startPointerRef.current.x;
-    const dy = clientY - startPointerRef.current.y;
-    const newX = clamp(startPosRef.current.x + dx, dragBounds.minX, dragBounds.maxX);
-    const newY = clamp(startPosRef.current.y + dy, dragBounds.minY, dragBounds.maxY);
-    const newPos = { x: newX, y: newY };
-    currentPosRef.current = newPos;
-    onPositionChange?.(newPos);
-  }, [isDraggable, dragBounds, onPositionChange]);
-
-  const handlePointerUp = useCallback(() => {
-    isDraggingRef.current = false;
-  }, []);
-
-  // Mouse events
-  const onMouseDown = useCallback((e: React.MouseEvent) => {
-    if (!isDraggable) return;
+  // Mouse drag handlers
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (!isPlayer) return;
     e.preventDefault();
-    handlePointerDown(e.clientX, e.clientY);
-  }, [isDraggable, handlePointerDown]);
+    setIsDragging(true);
+    dragStart.current = { x: e.clientX - dragOffset.x, y: e.clientY - dragOffset.y };
+  }, [isPlayer, dragOffset]);
 
-  // Touch events
-  const onTouchStart = useCallback((e: React.TouchEvent) => {
-    if (!isDraggable) return;
-    e.preventDefault();
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging || !dragStart.current) return;
+    const newX = Math.max(-60, Math.min(60, e.clientX - dragStart.current.x));
+    const newY = Math.max(-60, Math.min(60, e.clientY - dragStart.current.y));
+    setDragOffset({ x: newX, y: newY });
+  }, [isDragging]);
+
+  const handleMouseUp = useCallback(() => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    dragStart.current = null;
+    setDragOffset({ x: 0, y: 0 });
+  }, [isDragging]);
+
+  // Touch drag handlers
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (!isPlayer) return;
+    e.preventDefault(); // prevent scroll
     const touch = e.touches[0];
-    handlePointerDown(touch.clientX, touch.clientY);
-  }, [isDraggable, handlePointerDown]);
+    setIsDragging(true);
+    dragStart.current = { x: touch.clientX - dragOffset.x, y: touch.clientY - dragOffset.y };
+  }, [isPlayer, dragOffset]);
 
-  // Global move/up listeners attached when dragging starts
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    if (!isDragging || !dragStart.current) return;
+    e.preventDefault(); // prevent scroll during drag
+    const touch = e.touches[0];
+    const newX = Math.max(-60, Math.min(60, touch.clientX - dragStart.current.x));
+    const newY = Math.max(-60, Math.min(60, touch.clientY - dragStart.current.y));
+    setDragOffset({ x: newX, y: newY });
+  }, [isDragging]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    dragStart.current = null;
+    setDragOffset({ x: 0, y: 0 });
+  }, [isDragging]);
+
+  // Attach global mouse/touch listeners
   useEffect(() => {
-    if (!isDraggable) return;
-
-    const onMouseMove = (e: MouseEvent) => handlePointerMove(e.clientX, e.clientY);
-    const onMouseUp = () => handlePointerUp();
-    const onTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      handlePointerMove(touch.clientX, touch.clientY);
-    };
-    const onTouchEnd = () => handlePointerUp();
-
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseup', onMouseUp);
-    window.addEventListener('touchmove', onTouchMove, { passive: false });
-    window.addEventListener('touchend', onTouchEnd);
-
-    return () => {
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseup', onMouseUp);
-      window.removeEventListener('touchmove', onTouchMove);
-      window.removeEventListener('touchend', onTouchEnd);
-    };
-  }, [isDraggable, handlePointerMove, handlePointerUp]);
-
-  const getAnimClass = () => {
-    switch (animState) {
-      case 'idle': return isDraggable ? '' : 'pokemon-idle';
-      case 'attack': return 'shake';
-      case 'hit': return 'shake';
-      case 'faint': return 'opacity-30 grayscale transition-all duration-500';
-      case 'dodge': return 'transition-transform duration-200';
-      default: return isDraggable ? '' : 'pokemon-idle';
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('touchmove', handleTouchMove, { passive: false });
+      window.addEventListener('touchend', handleTouchEnd);
     }
-  };
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
 
-  const isImageSprite = pokemon.sprite.startsWith('/');
+  if (!pokemon) return null;
 
-  const currentPos = position ?? { x: 0, y: 0 };
+  const translateX = dragOffset.x + (isAttacking ? (isPlayer ? 20 : -20) : 0) + (isDodging ? (isPlayer ? -25 : 25) : 0);
+  const translateY = dragOffset.y + (isDodging ? -10 : 0);
 
   return (
     <div
-      ref={containerRef}
-      className={`relative flex flex-col items-center ${getAnimClass()} ${isDraggable ? 'select-none' : ''}`}
+      ref={spriteRef}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+      className={`relative flex items-center justify-center select-none ${isPlayer ? 'cursor-grab active:cursor-grabbing' : ''}`}
       style={{
-        transform: `translate(${currentPos.x}px, ${currentPos.y}px)`,
-        cursor: isDraggable ? (isDraggingRef.current ? 'grabbing' : 'grab') : 'default',
-        transition: isDraggingRef.current ? 'none' : 'transform 0.15s ease-out',
-        touchAction: isDraggable ? 'none' : 'auto',
-        zIndex: isDraggable ? 10 : 1,
+        width: '72px',
+        height: '72px',
+        minWidth: '64px',
+        minHeight: '64px',
+        transform: `translate(${translateX}px, ${translateY}px)`,
+        transition: isDragging ? 'none' : 'transform 0.3s ease',
+        willChange: 'transform',
+        touchAction: 'none',
+        userSelect: 'none',
       }}
-      onMouseDown={onMouseDown}
-      onTouchStart={onTouchStart}
     >
-      {/* Drag hint ring for player */}
-      {isDraggable && animState !== 'faint' && (
-        <div
-          className="absolute inset-0 rounded-full pointer-events-none"
-          style={{
-            border: '2px dashed rgba(255,215,0,0.4)',
-            borderRadius: '50%',
-            width: '140px',
-            height: '140px',
-            top: '-4px',
-            left: '-4px',
-            animation: 'pulseElectric 2s ease-in-out infinite',
-          }}
-        />
-      )}
-
-      {/* Shadow */}
+      {/* Glow aura */}
       <div
-        className="absolute bottom-0 w-16 h-3 rounded-full opacity-30 blur-sm"
-        style={{ background: '#000' }}
+        className="absolute inset-0 rounded-full opacity-30 blur-md"
+        style={{ background: color, willChange: 'opacity' }}
       />
 
-      {/* Pokemon sprite */}
+      {/* Sprite or emoji fallback */}
+      {sprite ? (
+        <img
+          src={sprite}
+          alt={name}
+          className="relative z-10 w-14 h-14 object-contain"
+          style={{ filter: `drop-shadow(0 0 6px ${color})`, imageRendering: 'pixelated' }}
+          draggable={false}
+        />
+      ) : (
+        <div
+          className="relative z-10 w-14 h-14 rounded-full flex items-center justify-center text-3xl"
+          style={{ background: `${color}33`, border: `2px solid ${color}66` }}
+        >
+          {elementEmoji[element] || '🥷'}
+        </div>
+      )}
+
+      {/* Element badge */}
       <div
-        className="relative"
-        style={{
-          transform: isPlayer ? 'scaleX(-1)' : 'scaleX(1)',
-          filter: animState === 'hit' ? 'brightness(2) saturate(0)' : 'none',
-        }}
+        className="absolute -bottom-1 -right-1 z-20 w-5 h-5 rounded-full flex items-center justify-center text-[10px] border"
+        style={{ background: `${color}22`, borderColor: `${color}88` }}
       >
-        {isImageSprite ? (
-          <img
-            src={pokemon.sprite}
-            alt={pokemon.name}
-            className="w-32 h-32 object-contain drop-shadow-2xl"
-            style={{ imageRendering: 'pixelated', pointerEvents: 'none' }}
-            draggable={false}
-          />
-        ) : (
-          <div
-            className="w-32 h-32 flex items-center justify-center text-7xl drop-shadow-2xl"
-            style={{
-              filter: `drop-shadow(0 0 8px ${pokemon.color})`,
-              pointerEvents: 'none',
-            }}
-          >
-            {pokemon.sprite}
-          </div>
-        )}
+        {elementEmoji[element] || '🥷'}
       </div>
 
-      {/* Name tag */}
-      <div
-        className="mt-1 px-2 py-0.5 rounded text-xs font-bold text-white"
-        style={{ background: pokemon.color + 'CC', pointerEvents: 'none' }}
-      >
-        {pokemon.name}
-      </div>
+      {/* Drag hint for player */}
+      {isPlayer && !isDragging && (
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] text-muted-foreground whitespace-nowrap opacity-60">
+          drag to dodge
+        </div>
+      )}
     </div>
   );
 }

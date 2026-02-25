@@ -1,176 +1,141 @@
 import React from 'react';
-import { useNavigate } from '@tanstack/react-router';
-import { useGetCallerUserProfile, useGetBadges, useGetBattleLog } from '../hooks/useQueries';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import BadgeDisplay from '../components/BadgeDisplay';
-import { PIKACHU, GYM_LEADERS } from '../data/pokemonData';
-import { ArrowLeft, Trophy, Zap, Star } from 'lucide-react';
+import { useGetCallerUserProfile } from '../hooks/useQueries';
+import { useQueryClient } from '@tanstack/react-query';
+
+const achievements = [
+  { id: 'first-battle', label: 'First Battle', emoji: '⚔️', desc: 'Complete your first battle' },
+  { id: 'first-seal', label: 'First Seal', emoji: '🏯', desc: 'Earn your first dojo seal' },
+  { id: 'all-seals', label: 'Grand Master', emoji: '🏆', desc: 'Earn all 6 dojo seals' },
+  { id: 'lore-reader', label: 'Lore Keeper', emoji: '📜', desc: 'Read all lore chapters' },
+];
 
 export default function TrainerProfile() {
-  const navigate = useNavigate();
-  const { identity } = useInternetIdentity();
-  const { data: profile } = useGetCallerUserProfile();
-  const { data: badges = [] } = useGetBadges();
-  const { data: battleLog = [] } = useGetBattleLog();
+  const { identity, clear } = useInternetIdentity();
+  const { data: userProfile, isLoading } = useGetCallerUserProfile();
+  const queryClient = useQueryClient();
 
-  const trainerName = profile?.trainerName || 'Ash';
-  const starterPokemon = (() => {
-    try {
-      const s = sessionStorage.getItem('starterPokemon');
-      return s ? JSON.parse(s) : PIKACHU;
-    } catch {
-      return PIKACHU;
-    }
-  })();
+  const handleLogout = async () => {
+    await clear();
+    queryClient.clear();
+  };
 
-  const wins = battleLog.filter((_, i) => i % 2 === 0).length;
-  const totalBattles = battleLog.length;
+  if (!identity) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] px-4">
+        <p className="text-muted-foreground text-center">Please log in to view your profile</p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  const victories = Number(userProfile?.victories || 0);
+  const dojoSeals = Number(userProfile?.dojoSeals || 0);
 
   return (
-    <div
-      className="min-h-screen"
-      style={{ background: 'linear-gradient(180deg, #0D1B2A 0%, #1A1A2E 100%)' }}
-    >
-      <div className="max-w-2xl mx-auto px-4 py-6">
-        <div className="flex items-center gap-3 mb-6">
-          <button
-            onClick={() => navigate({ to: '/game' })}
-            className="text-white/60 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="font-anime text-3xl text-electric-yellow tracking-wide">TRAINER CARD</h1>
-        </div>
-
-        {/* Trainer card */}
-        <div
-          className="rounded-2xl overflow-hidden border-2 border-electric-yellow/30 mb-6"
-          style={{
-            background: 'linear-gradient(135deg, #1a2744 0%, #0d1b2a 100%)',
-            boxShadow: '0 0 30px rgba(255,215,0,0.15)',
-          }}
-        >
-          {/* Card header */}
-          <div className="bg-gradient-to-r from-electric-yellow/20 to-transparent px-6 py-4 flex items-center gap-4">
-            <img
-              src="/assets/generated/ash-trainer.dim_300x400.png"
-              alt="Ash"
-              className="w-20 h-28 object-contain drop-shadow-xl"
-            />
-            <div>
-              <p className="text-white/50 text-xs font-bold uppercase tracking-wider">Pokémon Trainer</p>
-              <h2 className="font-anime text-4xl text-electric-yellow tracking-wide">{trainerName}</h2>
-              {identity && (
-                <p className="text-white/30 text-xs mt-1 font-mono">
-                  {identity.getPrincipal().toString().slice(0, 20)}...
-                </p>
-              )}
+    <div className="min-h-screen bg-background px-3 py-4 md:px-6 md:py-8 overflow-x-hidden">
+      <div className="max-w-2xl mx-auto">
+        {/* Profile Card */}
+        <div className="bg-card border border-border rounded-2xl p-4 md:p-6 mb-4 md:mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-primary/20 flex items-center justify-center text-3xl md:text-4xl shrink-0">
+              🥷
             </div>
-          </div>
-
-          {/* Stats row */}
-          <div className="grid grid-cols-3 divide-x divide-white/10 border-t border-white/10">
-            <div className="p-4 text-center">
-              <div className="text-electric-yellow font-anime text-2xl">{badges.length}</div>
-              <div className="text-white/50 text-xs font-bold">BADGES</div>
-            </div>
-            <div className="p-4 text-center">
-              <div className="text-green-400 font-anime text-2xl">{wins}</div>
-              <div className="text-white/50 text-xs font-bold">WINS</div>
-            </div>
-            <div className="p-4 text-center">
-              <div className="text-white font-anime text-2xl">{totalBattles}</div>
-              <div className="text-white/50 text-xs font-bold">BATTLES</div>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-xl md:text-2xl font-black text-foreground truncate">
+                {userProfile?.ninjaName || 'Ninja Warrior'}
+              </h1>
+              <p className="text-sm text-muted-foreground truncate">
+                {userProfile?.clanName || 'Unknown Clan'}
+              </p>
+              <p className="text-xs text-muted-foreground/60 truncate mt-0.5">
+                {identity.getPrincipal().toString().slice(0, 20)}...
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Partner Pokemon */}
-        <div className="anime-card p-4 mb-4 flex items-center gap-4">
-          <div className="pokemon-idle">
-            {starterPokemon.sprite?.startsWith('/') ? (
-              <img
-                src={starterPokemon.sprite}
-                alt={starterPokemon.name}
-                className="w-20 h-20 object-contain"
-                style={{ filter: `drop-shadow(0 0 10px ${starterPokemon.color || '#FFD700'})` }}
-              />
-            ) : (
-              <div className="text-5xl w-20 h-20 flex items-center justify-center">
-                {starterPokemon.sprite}
-              </div>
-            )}
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 gap-3 mb-4 md:mb-6">
+          <div className="bg-card border border-border rounded-2xl p-3 md:p-4 text-center">
+            <p className="text-3xl md:text-4xl font-black text-primary">{victories}</p>
+            <p className="text-xs text-muted-foreground mt-1">Victories</p>
           </div>
-          <div>
-            <p className="text-white/50 text-xs font-bold">PARTNER POKÉMON</p>
-            <h3 className="font-anime text-2xl text-white">{starterPokemon.name}</h3>
-            <div className="flex gap-3 mt-1">
-              <span className="text-xs text-white/60">ATK <strong className="text-red-400">{starterPokemon.attack}</strong></span>
-              <span className="text-xs text-white/60">DEF <strong className="text-blue-400">{starterPokemon.defense}</strong></span>
-              <span className="text-xs text-white/60">SPD <strong className="text-green-400">{starterPokemon.speed}</strong></span>
-            </div>
+          <div className="bg-card border border-border rounded-2xl p-3 md:p-4 text-center">
+            <p className="text-3xl md:text-4xl font-black text-primary">{dojoSeals}</p>
+            <p className="text-xs text-muted-foreground mt-1">Dojo Seals</p>
           </div>
         </div>
 
-        {/* Badges */}
-        <div className="mb-4">
-          <BadgeDisplay />
-        </div>
-
-        {/* Badge panel image */}
-        <div className="anime-card p-3 mb-4">
-          <img
-            src="/assets/generated/badges-panel.dim_512x128.png"
-            alt="Badges"
-            className="w-full h-16 object-contain"
-          />
-        </div>
-
-        {/* Battle history */}
-        {battleLog.length > 0 && (
-          <div className="anime-card p-4">
-            <h3 className="text-electric-yellow font-anime text-xl mb-3">⚔️ BATTLE HISTORY</h3>
-            <div className="space-y-2 max-h-48 overflow-y-auto">
-              {battleLog.slice(0, 20).map((log, i) => (
+        {/* Dojo Seals Display */}
+        <div className="bg-card border border-border rounded-2xl p-3 md:p-4 mb-4 md:mb-6">
+          <h2 className="text-sm font-bold text-foreground mb-3">🏯 Dojo Seals</h2>
+          <div className="grid grid-cols-3 gap-2">
+            {(['fire', 'water', 'earth', 'wind', 'lightning', 'dark'] as const).map((element, i) => {
+              const earned = i < dojoSeals;
+              const emojiMap: Record<string, string> = {
+                fire: '🔥',
+                water: '💧',
+                earth: '🪨',
+                wind: '💨',
+                lightning: '⚡',
+                dark: '🌑',
+              };
+              return (
                 <div
-                  key={i}
-                  className="flex items-center gap-3 bg-white/5 rounded-lg px-3 py-2"
+                  key={element}
+                  className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all ${
+                    earned
+                      ? 'border-primary/40 bg-primary/10'
+                      : 'border-border bg-background opacity-40'
+                  }`}
                 >
-                  <span className="text-white/40 text-xs font-mono">#{i + 1}</span>
-                  <span className="text-white/70 text-sm flex-1">{log}</span>
-                  <span className={`text-xs font-bold ${i % 2 === 0 ? 'text-green-400' : 'text-red-400'}`}>
-                    {i % 2 === 0 ? 'WIN' : 'LOSS'}
+                  <span className="text-xl">{emojiMap[element]}</span>
+                  <span className="text-[10px] font-medium capitalize text-muted-foreground">
+                    {element}
                   </span>
+                  {earned && <span className="text-[8px] text-primary font-bold">EARNED</span>}
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
-        )}
+        </div>
 
         {/* Achievements */}
-        <div className="anime-card p-4 mt-4">
-          <h3 className="text-electric-yellow font-anime text-xl mb-3">🏆 ACHIEVEMENTS</h3>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { icon: <Zap className="w-5 h-5" />, label: 'First Battle', earned: totalBattles > 0, color: '#FFD700' },
-              { icon: <Trophy className="w-5 h-5" />, label: 'First Win', earned: wins > 0, color: '#FFD700' },
-              { icon: <Star className="w-5 h-5" />, label: 'Badge Collector', earned: badges.length >= 4, color: '#FFD700' },
-              { icon: <Trophy className="w-5 h-5" />, label: 'Gym Champion', earned: badges.length >= 8, color: '#FFD700' },
-            ].map((ach) => (
+        <div className="bg-card border border-border rounded-2xl p-3 md:p-4 mb-4 md:mb-6">
+          <h2 className="text-sm font-bold text-foreground mb-3">🏆 Achievements</h2>
+          <div className="grid grid-cols-2 gap-2">
+            {achievements.map((ach) => (
               <div
-                key={ach.label}
-                className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${
-                  ach.earned
-                    ? 'border-yellow-400/50 bg-yellow-400/10'
-                    : 'border-white/10 bg-white/5 opacity-40 grayscale'
-                }`}
+                key={ach.id}
+                className="flex items-center gap-2 p-2 bg-background border border-border rounded-xl opacity-50"
               >
-                <div style={{ color: ach.earned ? ach.color : '#666' }}>{ach.icon}</div>
-                <span className="text-white text-sm font-bold">{ach.label}</span>
+                <span className="text-xl shrink-0">{ach.emoji}</span>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-foreground truncate">{ach.label}</p>
+                  <p className="text-[9px] text-muted-foreground leading-tight line-clamp-2">
+                    {ach.desc}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Logout */}
+        <button
+          onClick={handleLogout}
+          className="w-full py-3 border border-border rounded-2xl text-sm font-bold text-muted-foreground hover:text-destructive hover:border-destructive/40 transition-colors min-h-[48px] touch-manipulation"
+        >
+          🚪 Logout
+        </button>
       </div>
     </div>
   );

@@ -1,41 +1,87 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-25T01:14:41.475Z",
+  "generatedAt": "2026-02-25T19:36:14.971Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 1,
-    "implemented": 1,
+    "total": 4,
+    "implemented": 0,
     "items": [
       {
-        "id": "REQ-17",
-        "summary": "Replace the dodge button/input control in the battle screen with a drag-to-reposition mechanic. The player must physically drag or move their Pokemon sprite to a new position on the battle field to dodge incoming opponent attacks. There should be no dedicated 'Dodge' button — dodging is achieved purely by repositioning the Pokemon away from the path of the incoming move.",
-        "status": "implemented",
+        "id": "REQ-49",
+        "summary": "Redesign all game visuals to blend three distinct art styles into a unified mixed aesthetic: (1) Dark/edgy anime style inspired by Naruto, Demon Slayer, and Bleach — high-contrast shadowing, dramatic speed lines, bold ink outlines, and intense elemental auras on monster sprites and battle backgrounds; (2) Pixel art animation — retro sprite-based idle and attack animations for all 6 elemental ninja monsters (Emberfang, Tidalstrike, Stonefist, Galestep, Voltclaw, Voidshade) rendered as CSS pixel-art keyframe animations using crisp, blocky movement frames; (3) Painted/ink brush style — traditional Japanese sumi-e brushstroke textures applied to UI panel borders, section dividers, background overlays, and chapter title headers. Apply this blended aesthetic consistently across all game screens: LoginPage, ProfessorOakIntro (Sensei Ryoku intro), StarterSelection, Battle, GameHome, StoryCampaign, GymBattles, PokemonRoster, GameLore, and TrainerProfile.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/index.css",
+          "frontend/src/pages/StarterSelection.tsx",
+          "frontend/src/pages/Battle.tsx",
+          "frontend/src/components/AttackAnimation.tsx",
+          "frontend/src/components/NinjaBattleSprite.tsx",
+          "frontend/src/components/AnimatedPokemon.tsx",
+          "frontend/src/pages/GameLore.tsx",
+          "frontend/src/pages/StoryCampaign.tsx",
+          "frontend/src/pages/GymBattles.tsx",
+          "frontend/src/pages/GameHome.tsx",
+          "frontend/src/pages/LoginPage.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-50",
+        "summary": "Update NinjaBattleSprite.tsx and AnimatedPokemon.tsx to apply pixel-art rendering and anime-style motion to all 6 elemental ninja monsters. Each monster's sprite container must use CSS `image-rendering: pixelated` and `image-rendering: crisp-edges`. Idle animations must use multi-frame pixel-art style CSS @keyframes (e.g., 2–4 discrete transform steps with step-timing functions to simulate sprite sheet frames). Attack animations must add anime-style motion blur via CSS filter or translate offset trails. Each monster must have element-specific aura glow using the elemental color palette defined in tailwind.config.js.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/components/NinjaBattleSprite.tsx",
+          "frontend/src/components/AnimatedPokemon.tsx",
+          "frontend/src/index.css"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-51",
+        "summary": "Add brushstroke/ink-style decorative borders and dividers to the UI panels across GameLore.tsx, StoryCampaign.tsx, GymBattles.tsx, and GameHome.tsx. Implement these using SVG inline brushstroke shapes or CSS clip-path/border-image techniques that evoke traditional Japanese sumi-e painting. Arc title headers and chapter section titles must use the Bangers font with a subtle ink-texture text-shadow effect. Section separators between content blocks should use a horizontal brushstroke SVG line rather than a plain hr element.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/pages/GameLore.tsx",
+          "frontend/src/pages/StoryCampaign.tsx",
+          "frontend/src/pages/GymBattles.tsx",
+          "frontend/src/pages/GameHome.tsx",
+          "frontend/src/index.css"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-52",
+        "summary": "Update battle screen backgrounds in Battle.tsx to use anime-style illustrated environment art rendered via CSS gradients, layered pseudo-elements, and SVG overlays. Each of the 6 dojo environments (fire dojo, water temple, bamboo forest, storm peak, shadow realm, earth canyon) must include: a multi-layer parallax-style background with at least 2 depth layers (foreground silhouette + background sky/terrain), anime-style atmospheric effects (e.g., falling embers for fire, mist particles for water, falling leaves for bamboo, lightning flashes for storm, floating shadows for shadow realm, dust motes for earth), and speed-line overlay elements that activate during attack animations. Background visuals must match the opponent's element type dynamically.",
+        "status": "missing",
         "plannedFiles": [
           "frontend/src/pages/Battle.tsx",
-          "frontend/src/components/PokemonBattleSprite.tsx",
-          "frontend/src/components/AttackAnimation.tsx"
+          "frontend/src/index.css"
         ],
-        "matchedFiles": [
-          "frontend/src/pages/Battle.tsx",
-          "frontend/src/components/PokemonBattleSprite.tsx",
-          "frontend/src/components/AttackAnimation.tsx"
-        ]
+        "matchedFiles": []
       }
     ]
   },
   "changedFiles": [
     "build-request.json",
-    "build-template/README.md",
     "feature_evidence.json",
-    "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/AttackAnimation.tsx",
-    "frontend/src/components/PokemonBattleSprite.tsx",
-    "frontend/src/pages/Battle.tsx",
+    "frontend/public/assets/generated/battle-bg-earth.dim_1280x720.png",
+    "frontend/public/assets/generated/battle-bg-fire.dim_1280x720.png",
+    "frontend/public/assets/generated/battle-bg-shadow.dim_1280x720.png",
+    "frontend/public/assets/generated/battle-bg-storm.dim_1280x720.png",
+    "frontend/public/assets/generated/battle-bg-water.dim_1280x720.png",
+    "frontend/public/assets/generated/battle-bg-wind.dim_1280x720.png",
+    "frontend/public/assets/generated/brush-divider.dim_800x32.png",
+    "frontend/public/assets/generated/emberfang-sprite.dim_256x64.png",
+    "frontend/public/assets/generated/galestep-sprite.dim_256x64.png",
+    "frontend/public/assets/generated/stonefist-sprite.dim_256x64.png",
+    "frontend/public/assets/generated/tidalstrike-sprite.dim_256x64.png",
+    "frontend/public/assets/generated/voidshade-sprite.dim_256x64.png",
+    "frontend/public/assets/generated/voltclaw-sprite.dim_256x64.png",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

@@ -1,168 +1,96 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import { useGetCallerUserProfile } from '../hooks/useQueries';
-import { Zap, Star } from 'lucide-react';
+
+// Detect mobile once
+const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
+
+// Reduced particle count on mobile
+const PARTICLE_COUNT = isMobile ? 8 : 20;
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login, clear, loginStatus, identity, isLoggingIn } = useInternetIdentity();
-  const { data: profile, isLoading: profileLoading, isFetched } = useGetCallerUserProfile();
+  const { login, loginStatus, identity, isInitializing } = useInternetIdentity();
 
-  const isAuthenticated = !!identity;
-
-  // Redirect authenticated users
   useEffect(() => {
-    if (!isAuthenticated || profileLoading || !isFetched) return;
-    if (profile === null) {
-      navigate({ to: '/intro' });
-    } else {
+    if (identity) {
       navigate({ to: '/game' });
     }
-  }, [isAuthenticated, profile, profileLoading, isFetched, navigate]);
+  }, [identity, navigate]);
 
-  const handleLogin = async () => {
-    try {
-      await login();
-    } catch (error: unknown) {
-      const err = error as Error;
-      if (err?.message === 'User is already authenticated') {
-        await clear();
-        setTimeout(() => login(), 300);
-      }
-    }
-  };
+  const isLoggingIn = loginStatus === 'logging-in';
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
-      style={{
-        background: 'linear-gradient(135deg, #0D1B2A 0%, #1A1A2E 50%, #16213E 100%)',
-      }}
-    >
-      {/* Animated background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 25 }).map((_, i) => (
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center relative overflow-hidden px-4">
+      {/* Animated background particles — reduced on mobile */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
           <div
             key={i}
-            className="absolute star-twinkle"
+            className="absolute rounded-full opacity-20 animate-float-spark"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              fontSize: `${Math.random() * 14 + 6}px`,
-              animationDelay: `${Math.random() * 3}s`,
-              color: i % 3 === 0 ? '#FFD700' : i % 3 === 1 ? '#00A1E4' : '#ffffff',
-              opacity: Math.random() * 0.6 + 0.2,
+              width: `${4 + (i % 4) * 3}px`,
+              height: `${4 + (i % 4) * 3}px`,
+              background: ['#ef4444', '#3b82f6', '#eab308', '#7c3aed', '#06b6d4'][i % 5],
+              left: `${(i * 37 + 10) % 90}%`,
+              top: `${(i * 53 + 5) % 85}%`,
+              animationDelay: `${(i * 0.4) % 3}s`,
+              animationDuration: `${3 + (i % 3)}s`,
+              // Simpler animation on mobile
+              willChange: isMobile ? 'auto' : 'transform',
             }}
-          >
-            ✦
-          </div>
+          />
         ))}
       </div>
 
-      {/* Electric border decoration */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-electric-yellow to-transparent opacity-60" />
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-electric-yellow to-transparent opacity-60" />
-
-      <div className="relative z-10 flex flex-col items-center max-w-md w-full px-6">
+      {/* Main content */}
+      <div className="relative z-10 flex flex-col items-center gap-6 w-full max-w-sm">
         {/* Logo */}
-        <div className="mb-8 fade-in-up">
+        <div className="relative">
           <img
             src="/assets/generated/app-logo.dim_600x200.png"
-            alt="Ash's Pokemon Journey"
-            className="w-72 object-contain drop-shadow-2xl"
+            alt="Ninja Quest"
+            className="w-64 md:w-80 object-contain"
           />
         </div>
 
-        {/* Pikachu */}
-        <div className="mb-6 pokemon-bounce">
-          <img
-            src="/assets/generated/pikachu-starter.dim_256x256.png"
-            alt="Pikachu"
-            className="w-40 h-40 object-contain drop-shadow-2xl"
-            style={{ filter: 'drop-shadow(0 0 20px #FFD700)' }}
-          />
+        {/* Subtitle */}
+        <div className="text-center">
+          <p className="text-sm text-muted-foreground mt-1">Master the elemental arts</p>
         </div>
 
-        {/* Title */}
-        <div className="text-center mb-8 fade-in-up">
-          <h1 className="font-anime text-4xl text-electric-yellow tracking-widest mb-2 text-shadow-glow">
-            ASH'S JOURNEY
-          </h1>
-          <p className="text-white/70 text-lg">
-            Become a Pokémon Master!
-          </p>
-          <div className="flex items-center justify-center gap-2 mt-2">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-4 h-4 text-electric-yellow fill-electric-yellow" />
-            ))}
-          </div>
-        </div>
+        {/* Login Button */}
+        <button
+          onClick={() => login()}
+          disabled={isLoggingIn || isInitializing}
+          className="w-full py-4 bg-primary text-primary-foreground rounded-2xl font-black text-lg tracking-wider shadow-lg hover:bg-primary/90 active:scale-95 transition-all disabled:opacity-60 min-h-[56px] touch-manipulation"
+        >
+          {isLoggingIn ? (
+            <span className="flex items-center justify-center gap-2">
+              <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+              Connecting...
+            </span>
+          ) : (
+            '⚡ BEGIN YOUR JOURNEY'
+          )}
+        </button>
 
-        {/* Login card */}
-        <div className="w-full bg-black/60 border-2 border-electric-yellow/30 rounded-2xl p-8 backdrop-blur-sm fade-in-up">
-          <div className="text-center mb-6">
-            <p className="text-white/80 text-base leading-relaxed">
-              Begin your Pokémon adventure as{' '}
-              <span className="text-electric-yellow font-bold">Ash Ketchum</span>!
-              Battle gym leaders, collect badges, and become the World Champion!
-            </p>
-          </div>
-
-          <button
-            onClick={handleLogin}
-            disabled={isLoggingIn || (isAuthenticated && profileLoading)}
-            className="w-full bg-electric-yellow text-dark-navy font-anime text-2xl py-4 rounded-xl hover:bg-yellow-400 transition-all hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed shadow-electric anime-btn flex items-center justify-center gap-3"
-          >
-            {isLoggingIn || (isAuthenticated && profileLoading) ? (
-              <>
-                <div className="w-5 h-5 border-2 border-dark-navy border-t-transparent rounded-full animate-spin" />
-                <span>Loading...</span>
-              </>
-            ) : (
-              <>
-                <Zap className="w-6 h-6" />
-                <span>START ADVENTURE!</span>
-              </>
-            )}
-          </button>
-
-          <p className="text-white/30 text-xs text-center mt-4">
-            Secure login powered by Internet Identity
-          </p>
-        </div>
-
-        {/* Features */}
-        <div className="grid grid-cols-3 gap-3 mt-6 w-full fade-in-up">
-          {[
-            { emoji: '⚡', label: 'Real-time Battles' },
-            { emoji: '🏅', label: 'Gym Badges' },
-            { emoji: '✨', label: 'Evolution' },
-          ].map((f) => (
-            <div
-              key={f.label}
-              className="bg-white/5 border border-white/10 rounded-xl p-3 text-center"
-            >
-              <div className="text-2xl mb-1">{f.emoji}</div>
-              <div className="text-white/60 text-xs font-bold">{f.label}</div>
-            </div>
-          ))}
-        </div>
+        <p className="text-xs text-muted-foreground text-center">
+          Secure login via Internet Identity
+        </p>
       </div>
 
       {/* Footer */}
-      <footer className="absolute bottom-4 text-center">
-        <p className="text-white/20 text-xs">
-          Built with <span className="text-red-400">❤️</span> using{' '}
-          <a
-            href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname || 'ashs-pokemon-journey')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-electric-yellow/60 hover:text-electric-yellow transition-colors"
-          >
-            caffeine.ai
-          </a>
-        </p>
+      <footer className="absolute bottom-4 text-center text-xs text-muted-foreground/60">
+        Built with <span className="text-red-400">♥</span> using{' '}
+        <a
+          href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(typeof window !== 'undefined' ? window.location.hostname : 'ninja-quest')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary/70 hover:underline"
+        >
+          caffeine.ai
+        </a>
       </footer>
     </div>
   );

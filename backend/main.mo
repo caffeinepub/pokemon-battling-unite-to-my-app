@@ -1,11 +1,8 @@
-import Array "mo:core/Array";
-import Text "mo:core/Text";
 import Map "mo:core/Map";
-import Iter "mo:core/Iter";
-import Runtime "mo:core/Runtime";
-import Blob "mo:core/Blob";
 import Nat "mo:core/Nat";
-import List "mo:core/List";
+import Blob "mo:core/Blob";
+import Runtime "mo:core/Runtime";
+import Array "mo:core/Array";
 import Principal "mo:core/Principal";
 
 import Storage "blob-storage/Storage";
@@ -19,62 +16,39 @@ actor {
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
 
-  // ── User Profile ──────────────────────────────────────────────────────────
-
-  public type UserProfile = {
-    trainerName : Text;
-    avatarUrl : ?Text;
-  };
-
-  let userProfiles = Map.empty<Principal, UserProfile>();
-
-  public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can get their profile");
-    };
-    userProfiles.get(caller);
-  };
-
-  public query ({ caller }) func getUserProfile(user : Principal) : async ?UserProfile {
-    if (caller != user and not AccessControl.isAdmin(accessControlState, caller)) {
-      Runtime.trap("Unauthorized: Can only view your own profile");
-    };
-    userProfiles.get(user);
-  };
-
-  public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can save profiles");
-    };
-    userProfiles.add(caller, profile);
-  };
-
   // ── Types ─────────────────────────────────────────────────────────────────
 
-  type Pokemon = {
-    name : Text;
+  public type UserProfile = {
+    ninjaName : Text;
+    clanName : Text;
+    avatarUrl : ?Text;
+    victories : Nat;
+    dojoSeals : Nat;
+  };
+
+  public type Monster = {
+    monsterName : Text;
     level : Nat;
-    evolutionStone : ?PokemonEvolutionStone;
-    moves : [PokemonMove];
+    masteryElement : ?ElementalMastery;
+    battleTechniques : [NinjaTechnique];
     baseAttack : Nat;
     baseDefense : Nat;
     baseSpeed : Nat;
-    images : [PokemonImage];
+    images : [MonsterImage];
   };
 
-  type PokemonEvolutionStone = {
-    #waterStone : Text;
-    #fireStone : Text;
-    #electricStone : Text;
-    #grassStone : Text;
-    #iceStone : Text;
-    #darkStone : Text;
-    #dawnStone : Text;
-    #duskStone : Text;
-    #fireSTONE : Text;
-    #hydrationStone : Text;
+  public type ElementalMastery = {
+    #water : Text;
+    #fire : Text;
+    #lightning : Text;
+    #wind : Text;
+    #earth : Text;
+    #ice : Text;
+    #dark : Text;
+    #dawn : Text;
+    #dusk : Text;
+    #hydration : Text;
     #kingRock : Text;
-    #leafStone : Text;
     #magmarizer : Text;
     #magnetizer : Text;
     #metalCoat : Text;
@@ -85,17 +59,16 @@ actor {
     #seaScale : Text;
     #shineStone : Text;
     #skyScale : Text;
-    #thunderStone : Text;
     #upgrade : Text;
   };
 
-  type PokemonMove = {
+  public type NinjaTechnique = {
     name : Text;
     power : Nat;
-    effect : ?MoveEffect;
+    effect : ?TechniqueEffect;
   };
 
-  type MoveEffect = {
+  public type TechniqueEffect = {
     #boostAttack;
     #boostSpeed;
     #boostDefense;
@@ -103,86 +76,19 @@ actor {
     #confuseOpponent;
   };
 
-  public type PokemonTeam = [Pokemon];
-  public type PlayerParty = [Pokemon];
+  public type MonsterTeam = [Monster];
+  public type PlayerParty = [Monster];
 
-  type GameState = {
-    pokemon : [Pokemon];
+  public type GameState = {
+    monsters : [Monster];
     challenger : Text;
-    isPrimaryPokemon : Bool;
-    isChallengerPokemon : Bool;
-    isTrainerPokemon : Bool;
-    isWildPokemon : Bool;
+    isPrimaryMonster : Bool;
+    isChallengerMonster : Bool;
+    isTrainerMonster : Bool;
+    isWildMonster : Bool;
   };
 
-  type BattleLog = {
-    challenger : Text;
-    battleResult : BattleResult;
-    message : Text;
-  };
-
-  public type BattlePokemon = {
-    name : Text;
-    level : Nat;
-    baseAttack : Nat;
-    baseDefense : Nat;
-    baseSpeed : Nat;
-    images : [PokemonImage];
-    stats : BattleStats;
-    moves : [PokemonMove];
-  };
-
-  public type BattleStats = {
-    attacks : [MoveInstance];
-    health : Nat;
-    powerUps : [MoveInstance];
-    status : BattleStatus;
-  };
-
-  public type AttackStrengths = {
-    electric : Nat;
-    fire : Nat;
-    ice : Nat;
-    water : Nat;
-    grass : Nat;
-    dragon : Nat;
-    psychic : Nat;
-    fighting : Nat;
-    rock : Nat;
-    steel : Nat;
-    fairy : Nat;
-    normal : Nat;
-    ground : Nat;
-    poison : Nat;
-    bug : Nat;
-    flying : Nat;
-    ghost : Nat;
-    dark : Nat;
-  };
-
-  public type MoveInstance = {
-    name : Text;
-    attackStrength : AttackStrengths;
-    boostAttack : Bool;
-    boostDefense : Bool;
-    boostSpeed : Bool;
-  };
-
-  type BattleStatus = {
-    isBerserk : Bool;
-    isFatigued : Bool;
-    isPoisoned : Bool;
-    isParalyzed : Bool;
-    isConfused : Bool;
-    isShielded : Bool;
-    isAmped : Bool;
-    isCursed : Bool;
-    isLocked : Bool;
-  };
-
-  type Score = Text;
   type Rankings = [Text];
-  type Badge = Text;
   type BattleResult = {
     #challengerWin;
     #trainerWin;
@@ -202,37 +108,37 @@ actor {
   type StoryEpisode = {
     locations : [Text];
     battles : [BattleLog];
-    trainerBattles : [PokemonTeamBattle];
-    wildPokemon : [Pokemon];
-    gymBattles : [PokemonTeamBattle];
+    trainerBattles : [MonsterTeamBattle];
+    wildMonsters : [Monster];
+    dojoBattles : [MonsterTeamBattle];
     victoryBattle : ?Text;
     storyIntro : ?Text;
     storyOutro : ?Text;
   };
 
-  type PokemonRoster = {
-    pokemonRoster : [Pokemon];
-    badges : [Badge];
+  type MonsterRoster = {
+    monsterRoster : [Monster];
+    dojoSeals : [dojoSeal];
     storyArcProgress : [Text];
-    inventory : [PokemonEvolutionStone];
+    inventory : [ElementalMastery];
     battleHistory : [BattleLog];
   };
 
-  type PokemonTeamBattle = {
+  type MonsterTeamBattle = {
     trainer : Text;
-    team : [Pokemon];
+    team : [Monster];
   };
 
-  type PokemonMoveBattle = {
+  type MonsterTechniqueBattle = {
     name : Text;
     type_ : Text;
     power : Nat;
-    effect : ?MoveEffect;
+    effect : ?TechniqueEffect;
     isActive : Bool;
     isUsed : Bool;
   };
 
-  type PokemonImage = {
+  type MonsterImage = {
     image : Blob.Blob;
     isAnimated : Bool;
     imageUrl : Text;
@@ -240,22 +146,88 @@ actor {
     isRawImage : Bool;
   };
 
-  type BattlePokemonPersistent = {
-    name : Text;
+  type BattleLog = {
+    challenger : Text;
+    battleResult : BattleResult;
+    message : Text;
+  };
+
+  type BattleMonster = {
+    monsterName : Text;
     level : Nat;
     baseAttack : Nat;
     baseDefense : Nat;
     baseSpeed : Nat;
-    images : [PokemonImage];
+    images : [MonsterImage];
     stats : BattleStats;
-    moves : [PokemonMove];
+    battleTechniques : [NinjaTechnique];
   };
 
-  public type PokemonUltimate = {
+  type BattleStats = {
+    attacks : [TechniqueInstance];
+    health : Nat;
+    powerUps : [TechniqueInstance];
+    status : BattleStatus;
+  };
+
+  type TechniqueInstance = {
     name : Text;
-    id : Nat;
+    attackStrength : AttackStrengths;
+    boostAttack : Bool;
+    boostDefense : Bool;
+    boostSpeed : Bool;
+  };
+
+  type BattleStatus = {
+    isBerserk : Bool;
+    isFatigued : Bool;
+    isPoisoned : Bool;
+    isParalyzed : Bool;
+    isConfused : Bool;
+    isShielded : Bool;
+    isAmped : Bool;
+    isCursed : Bool;
+    isLocked : Bool;
+  };
+
+  type AttackStrengths = {
+    lightning : Nat;
+    fire : Nat;
+    ice : Nat;
+    water : Nat;
+    wind : Nat;
+    earth : Nat;
+    dragon : Nat;
+    psychic : Nat;
+    fighting : Nat;
+    rock : Nat;
+    steel : Nat;
+    fairy : Nat;
+    normal : Nat;
+    ground : Nat;
+    poison : Nat;
+    bug : Nat;
+    flying : Nat;
+    ghost : Nat;
+    dark : Nat;
+  };
+
+  type BattleMonsterPersistent = {
+    monsterName : Text;
+    level : Nat;
+    baseAttack : Nat;
+    baseDefense : Nat;
+    baseSpeed : Nat;
+    images : [MonsterImage];
+    stats : BattleStats;
+    battleTechniques : [NinjaTechnique];
+  };
+
+  public type MonsterUltimate = {
+    monsterName : Text;
+    monsterId : Nat;
     stage : Text;
-    images : [PokemonImage];
+    images : [MonsterImage];
     attack : Nat;
     defense : Nat;
     speed : Nat;
@@ -264,347 +236,83 @@ actor {
     shenanigans : Nat;
   };
 
-  let battlePokemon = Map.empty<Text, BattlePokemon>();
-  let battlePokemonPersistent = Map.empty<Text, BattlePokemonPersistent>();
+  type dojoSeal = Text;
+
+  let battleMonsters = Map.empty<Text, BattleMonster>();
+  let battleMonsterPersistent = Map.empty<Text, BattleMonsterPersistent>();
+
+  // ── User Profile ──────────────────────────────────────────────────────────
+
+  let userProfiles = Map.empty<Principal, UserProfile>();
+
+  public query ({ caller }) func getCallerUserProfile() : async UserProfile {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only users can get their profile");
+    };
+    switch (userProfiles.get(caller)) {
+      case (?profile) { profile };
+      case (null) { Runtime.trap("User profile not found") };
+    };
+  };
+
+  public query ({ caller }) func getUserProfile(user : Principal) : async UserProfile {
+    if (caller != user and not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Can only view your own profile");
+    };
+    switch (userProfiles.get(user)) {
+      case (?profile) { profile };
+      case (null) { Runtime.trap("User profile not found") };
+    };
+  };
+
+  public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only users can save profiles");
+    };
+    userProfiles.add(caller, profile);
+  };
 
   // ── Query endpoints ───────────────────────────────────────────────────────
 
-  public query ({ caller }) func getBadges() : async [Badge] {
+  public query ({ caller }) func getDojoSeals() : async [Text] {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can view badges");
+      Runtime.trap("Unauthorized: Only users can view dojo seals");
     };
-    getPokemonRoster().badges;
+    [];
   };
 
   public query ({ caller }) func getLog() : async [Text] {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only users can view battle logs");
     };
-    getBattleHistory().battles.map(func(x) { x.challenger });
+    [];
   };
 
-  public query ({ caller }) func getUltimatePokemon() : async [PokemonUltimate] {
+  public query ({ caller }) func getUltimateMonsters() : async [MonsterUltimate] {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can view ultimate Pokemon");
+      Runtime.trap("Unauthorized: Only users can view ultimate monsters");
     };
-    battlePokemonPersistent.keys().map(func(x) { convertPokemonToUltimate(battlePokemonPersistent.get(x)) }).toArray();
+    [];
   };
 
-  public query ({ caller }) func getPokemon() : async [Pokemon] {
+  public query ({ caller }) func getMonsters() : async [Monster] {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can view Pokemon");
+      Runtime.trap("Unauthorized: Only users can view monsters");
     };
-    getPokemonRoster().pokemonRoster;
+    [];
   };
 
   public query ({ caller }) func getOpponent(type_ : Text) : async Text {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only users can get opponent info");
     };
-    switch (type_) {
-      case ("eliteFour") { "Elite_4" };
-      case ("olympicChampion") { getOlympicChampion() };
-      case (_) { getJohtoChampion() };
-    };
+    "";
   };
 
-  public query ({ caller }) func getTrainerPokemon(pokemonId : Nat) : async ?BattlePokemonPersistent {
+  public query ({ caller }) func getMonsterDXData(monster : Text) : async ?Monster {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can view trainer Pokemon");
+      Runtime.trap("Unauthorized: Only users can view monster DX data");
     };
-    let name = pokemonId.toText();
-    if (not battlePokemon.containsKey(name)) { Runtime.trap("Pokemon does not exist") };
-    battlePokemonPersistent.get(name);
-  };
-
-  public query ({ caller }) func getBattlePokemonQuery(pokemon : Text) : async ?BattlePokemonPersistent {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can view battle Pokemon");
-    };
-    switch (battlePokemonPersistent.get(pokemon)) {
-      case (?bp) { ?bp };
-      case (null) { Runtime.trap("Pokemon does not exist") };
-    };
-  };
-
-  public query ({ caller }) func getStrategyResponse() : async Text {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can get strategy responses");
-    };
-    "NOT_DONE_YET";
-  };
-
-  public query ({ caller }) func getPersistent() : async BattlePokemonPersistent {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can get persistent data");
-    };
-    switch (battlePokemonPersistent.keys().toArray().size()) {
-      case (0) { Runtime.trap("No Pokemon found") };
-      case (_) {
-        switch (battlePokemonPersistent.get("0")) {
-          case (?battlePersistent) { battlePersistent };
-          case (_) { Runtime.trap("First persistent Pokemon not found") };
-        };
-      };
-    };
-  };
-
-  public query ({ caller }) func getPokemonDXData(pokemon : Text) : async ?Pokemon {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can view Pokemon DX data");
-    };
-    switch (battlePokemon.get(pokemon)) {
-      case (?p) { ?convertBattlePokemon(p) };
-      case (_) { Runtime.trap("Pokemon does not exist") };
-    };
-  };
-
-  public query ({ caller }) func hasStatus(status : Text) : async Bool {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can check status");
-    };
-    true;
-  };
-
-  // ── Shared (mutating) endpoints ───────────────────────────────────────────
-
-  public shared ({ caller }) func evolvePokemon() : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can evolve Pokemon");
-    };
-    addBadge("Evolved Pokemon");
-  };
-
-  public shared ({ caller }) func updateOpponent() : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can update opponent");
-    };
-    updateLogs();
-    updateBattleStates();
-  };
-
-  public shared ({ caller }) func updateTrainerParty() : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can update trainer party");
-    };
-    updateLogs();
-    updateBattleStates();
-  };
-
-  public shared ({ caller }) func createBattleLog(challenger : Text, result : BattleResult) : async BattleLog {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can create battle logs");
-    };
-    { challenger; battleResult = result; message = "BATTLE_MAGICAL_SENSEI_CHALLENGE" };
-  };
-
-  public shared ({ caller }) func getPokemonData() : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can get Pokemon data");
-    };
-    updateBattleStates();
-    updateLogs();
-  };
-
-  public shared ({ caller }) func updatePokemon(pokemon : Text) : async Bool {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can update Pokemon");
-    };
-    if (not battlePokemon.containsKey(pokemon)) { Runtime.trap("Pokemon does not exist") };
-    true;
-  };
-
-  public shared ({ caller }) func updateMoves() : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can update moves");
-    };
-  };
-
-  public shared ({ caller }) func updateStats() : async [Text] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can update stats");
-    };
-    ["BESERKER"];
-  };
-
-  public shared ({ caller }) func updateMusic() : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can update music");
-    };
-  };
-
-  public shared ({ caller }) func updateDialogs() : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can update dialogs");
-    };
-  };
-
-  public shared ({ caller }) func notifyBattleResult() : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can notify battle results");
-    };
-    addBadge("Battle result");
-  };
-
-  public shared ({ caller }) func challengeEliteFour() : async Text {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can challenge the Elite Four");
-    };
-    addBadge("Elite Four");
-    "Elite_4";
-  };
-
-  public shared ({ caller }) func challengeGymLeader() : async Text {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can challenge gym leaders");
-    };
-    addBadge("Gym Badge");
-    getJohtoGymLeader();
-  };
-
-  public shared ({ caller }) func challengeUltimateChampion() : async Text {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can challenge the ultimate champion");
-    };
-    addBadge("Champion Badge");
-    getOlympicChampion();
-  };
-
-  public shared ({ caller }) func getStoryArc() : async StoryArc {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can access story arcs");
-    };
-    if (getCurrentGameState().pokemon.isEmpty()) {
-      getStoryArcByName("Johto Journeys");
-    } else {
-      getStoryArcByName("Master Journeys");
-    };
-  };
-
-  // ── Private helpers ───────────────────────────────────────────────────────
-
-  func convertBattlePokemon(view : BattlePokemon) : Pokemon {
-    {
-      name = view.name;
-      level = view.level;
-      evolutionStone = null;
-      moves = view.moves;
-      baseAttack = view.baseAttack;
-      baseDefense = view.baseDefense;
-      baseSpeed = view.baseSpeed;
-      images = view.images;
-    };
-  };
-
-  func addBadge(_badge : Badge) {
-    updatePokemonRoster();
-  };
-
-  func updatePokemonRoster() {};
-
-  func updateGameState() {
-    updateBattleStates();
-    updateLogs();
-  };
-
-  func updateBattleStates() {
-    updateLogs();
-  };
-
-  func updateLogs() {};
-
-  func getJohtoChampion() : Text {
-    "JohtoChampion";
-  };
-
-  func getOlympicChampion() : Text {
-    "MagicalSensei";
-  };
-
-  func getJohtoGymLeader() : Text {
-    "JohtoGymLeader";
-  };
-
-  func getPokemonRoster() : PokemonRoster {
-    {
-      pokemonRoster = [];
-      badges = [];
-      storyArcProgress = [];
-      inventory = [];
-      battleHistory = [];
-    };
-  };
-
-  func getBattleHistory() : StoryEpisode {
-    {
-      locations = [];
-      battles = [];
-      trainerBattles = [];
-      wildPokemon = [];
-      gymBattles = [];
-      victoryBattle = null;
-      storyIntro = ?"Intro Text";
-      storyOutro = ?"Outro Text";
-    };
-  };
-
-  func getCurrentGameState() : GameState {
-    {
-      pokemon = [];
-      challenger = "";
-      isPrimaryPokemon = false;
-      isChallengerPokemon = false;
-      isTrainerPokemon = false;
-      isWildPokemon = false;
-    };
-  };
-
-  func getStoryArcByName(name : Text) : StoryArc {
-    if (name == "Johto Journeys") {
-      {
-        name = "Johto Journeys";
-        episodes = [];
-        currentEpisode = null;
-      };
-    } else {
-      {
-        name = "Master Journeys";
-        episodes = [];
-        currentEpisode = null;
-      };
-    };
-  };
-
-  func convertPokemonToUltimate(pokemon : ?BattlePokemonPersistent) : PokemonUltimate {
-    switch (pokemon) {
-      case (?p) {
-        {
-          name = p.name;
-          id = p.level;
-          stage = p.level.toText();
-          images = p.images;
-          attack = 1000;
-          defense = 1000;
-          speed = 1000;
-          agility = 1000;
-          reactions = 1001;
-          shenanigans = 1001;
-        };
-      };
-      case (null) {
-        {
-          name = "Ash";
-          id = 2;
-          stage = "LEGENDARY";
-          images = [];
-          attack = 1000;
-          defense = 1000;
-          speed = 1000;
-          agility = 1000;
-          reactions = 1001;
-          shenanigans = 1001;
-        };
-      };
-    };
+    null;
   };
 };

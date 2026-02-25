@@ -1,17 +1,13 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 7,
-  "summary": "A Pokemon-style mobile RPG game inspired by Ash Ketchum's journey. Player is Ash with Pikachu as starter (ATK 100, DEF 45, SPD 40). Features real-time anime-style battles (no turns), dodge mechanics, move clash system, gym battles for badges, Team Rocket encounters, story following Master Journeys/Johto Journeys/Ultimate Journeys arcs, evolution items (stones), animated Pokemon selection screen, and Professor Oak intro. Target: Play Store release.",
+  "projectStateVersion": 27,
+  "summary": "A fresh original monster-battling RPG game called 'Elites Monsters Battling' with elemental ninja theme. Player builds and battles with elemental ninja monsters. Real-time anime-style battles with dodge mechanics and move clashes. Moving away from Pokemon IP to avoid legal issues.",
   "architectural_notes": [
-    "Real-time battle engine: no turn system, moves fire on demand, dodge via movement input",
-    "Move clash system: stronger move destroys weaker; equal-strength moves can cancel each other",
-    "Pikachu stats: ATK 100, DEF 45, SPD 40; Electro Ball +45 ATK, Iron Tail +25 DEF, Quick Attack +30 SPD",
-    "Target platform: Android Play Store release",
-    "Z-Moves: one-time per battle super move requiring Z-Crystal; Mega Evolution: requires Mega Stone + Key Stone; Gigantamax: lasts a few turns with G-Max move",
-    "Dodge mechanic: player physically moves/drags their Pokemon on screen to dodge — no dedicated dodge button"
+    "Project pivoted away from Pokemon IP to original monster-battling RPG to avoid copyright/trademark issues"
   ],
   "known_issues": [],
   "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Pixel-art style ninja monster sprite sheet for Emberfang — dark silhouette ninja figure with fire-red clan markings, crouching idle pose, 4-frame horizontal strip on transparent background (emberfang-sprite.dim_256x64.png)\n- Pixel-art style ninja monster sprite sheet for Tidalstrike — dark silhouette ninja figure with teal/blue clan markings, crouching idle pose, 4-frame horizontal strip on transparent background (tidalstrike-sprite.dim_256x64.png)\n- Pixel-art style ninja monster sprite sheet for Stonefist — dark silhouette ninja figure with brown/gold clan markings, crouching idle pose, 4-frame horizontal strip on transparent background (stonefist-sprite.dim_256x64.png)\n- Pixel-art style ninja monster sprite sheet for Galestep — dark silhouette ninja figure with green clan markings, crouching idle pose, 4-frame horizontal strip on transparent background (galestep-sprite.dim_256x64.png)\n- Pixel-art style ninja monster sprite sheet for Voltclaw — dark silhouette ninja figure with electric-yellow clan markings, crouching idle pose, 4-frame horizontal strip on transparent background (voltclaw-sprite.dim_256x64.png)\n- Pixel-art style ninja monster sprite sheet for Voidshade — dark silhouette ninja figure with deep-purple shadow clan markings, crouching idle pose, 4-frame horizontal strip on transparent background (voidshade-sprite.dim_256x64.png)\n- Sumi-e ink brush horizontal divider stroke — black ink brushstroke on transparent background, wide and thin (brush-divider.dim_800x32.png)\n- Dark anime-style fire dojo battle background — volcanic rocky arena with glowing lava cracks, dark sky, foreground silhouette pillars, anime environmental art style (battle-bg-fire.dim_1280x720.png)\n- Dark anime-style water temple battle background — misty blue waterfall cavern, stone temple pillars, moonlit water reflections, anime environmental art style (battle-bg-water.dim_1280x720.png)\n- Dark anime-style bamboo forest battle background — dense dark green bamboo at night, moonlight filtering through, anime environmental art style (battle-bg-earth.dim_1280x720.png)\n- Dark anime-style storm peak battle background — grey mountain summit with storm clouds and electric lightning arcs, anime environmental art style (battle-bg-storm.dim_1280x720.png)\n- Dark anime-style shadow realm battle background — deep purple void with floating dark energy orbs and shadowy ground fog, anime environmental art style (battle-bg-shadow.dim_1280x720.png)\n- Dark anime-style earth canyon battle background — rust-red rocky canyon walls with dust haze and stone formations, anime environmental art style (battle-bg-wind.dim_1280x720.png)",
   "existing_features": [
     {
       "id": "feature-implement-a-professor-oak-introduction-screen-that-greets-the-player-explains-the-world-of-pokemon-and-introduces-ash-as-the-player-s-trainer-name-oak-s-appearance-should-be-modeled-after-the-anime-version-white-lab-coat-gray-hair-after-the-intro-transition-to-the-starter-pokemon-selection-screen",
@@ -124,108 +120,358 @@
         "REQ-17"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-fix-the-runtime-error-cannot-read-properties-of-undefined-reading-maxhp-in-the-battle-system-identify-all-locations-in-battle-tsx-and-related-battle-components-pokemonbattlesprite-tsx-attackanimation-tsx-healthbar-tsx-where-a-pokemon-object-s-maxhp-property-is-accessed-and-add-defensive-null-undefined-guards-e-g-optional-chaining-early-returns-or-default-fallback-values-before-each-such-access-ensure-the-battle-screen-does-not-crash-when-the-player-or-opponent-pokemon-object-has-not-yet-been-initialized-or-loaded",
+      "title": "Fix the runtime error 'Cannot read properties of undefined (reading maxHp)' in the battle system. Identify all locations in Battle.tsx and related battle components (PokemonBattleSprite.tsx, AttackAnimation.tsx, HealthBar.tsx) where a Pokemon object's 'maxHp' property is accessed, and add defensive null/undefined guards (e.g., optional chaining, early returns, or default fallback values) before each such access. Ensure the battle screen does not crash when the player or opponent Pokemon object has not yet been initialized or loaded.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-on-the-app-launch-login-screen-loginpage-tsx-add-an-animated-electricity-and-sparks-visual-effect-emanating-from-the-pikachu-sprite-displayed-on-screen-the-pikachu-should-visually-shoot-out-electric-bolts-lightning-sparks-and-crackling-energy-particles-continuously-while-the-login-screen-is-active-below-the-pikachu-sprite-display-the-text-ash-s-journey-in-bold-expressive-pok-mon-style-typography-using-the-bangers-font-with-electric-yellow-color-and-a-glow-effect-the-electricity-animation-should-use-css-keyframes-and-or-canvas-based-particle-effects-to-produce-dynamic-looping-electric-arcs-and-spark-bursts-radiating-outward-from-pikachu",
+      "title": "On the app launch/login screen (LoginPage.tsx), add an animated electricity and sparks visual effect emanating from the Pikachu sprite displayed on screen. The Pikachu should visually shoot out electric bolts, lightning sparks, and crackling energy particles continuously while the login screen is active. Below the Pikachu sprite, display the text \"Ash's Journey\" in bold, expressive Pokémon-style typography (using the Bangers font with electric-yellow color and a glow effect). The electricity animation should use CSS keyframes and/or canvas-based particle effects to produce dynamic, looping electric arcs and spark bursts radiating outward from Pikachu.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-the-story-campaign-screen-storycampaign-tsx-restructure-the-master-journeys-arc-to-contain-exactly-42-episodes-mj01-mj42-with-the-following-exact-titles-mj01-the-spectral-express-mj02-trials-of-a-budding-master-mj03-a-champion-time-mj04-kicking-it-from-here-into-tomorrow-mj05-the-future-is-now-thanks-to-strategy-mj06-a-night-in-the-nacrene-city-museum-mj07-unowning-a-pok-mon-mj08-trial-on-a-golden-scale-mj09-finding-a-legend-mj10-a-tokodile-s-sweet-revenge-mj11-when-a-house-is-not-a-home-mj12-a-rollicking-roll-mj13-searching-for-chivalry-mj14-lighting-the-way-home-mj15-under-color-of-darkness-mj16-absol-absolved-mj17-thrash-of-the-titans-mj18-ash-and-the-champion-mj19-sword-and-shield-the-legends-awaken-part-1-mj20-sword-and-shield-the-legends-awaken-part-2-mj21-sword-and-shield-the-legends-awaken-part-3-mj22-sword-and-shield-the-legends-awaken-part-4-mj23-narrowing-the-chaser-chase-mj24-a-midsummer-night-s-light-mj25-just-a-scone-s-throw-from-here-mj26-a-little-rocket-r-r-mj27-it-s-all-in-the-name-mj28-totally-normal-mj29-ultra-exciting-from-the-shocking-start-mj30-the-wayward-one-mj31-showtime-mj32-a-one-stick-wonder-mj33-looking-out-for-number-two-mj34-a-festival-reunion-mj35-keep-chasing-that-dream-mj36-battling-in-the-freezing-raid-mj37-a-fan-with-a-plan-mj38-the-homecoming-crown-mj39-take-my-thief-please-mj40-the-sweet-taste-of-battle-mj41-the-gates-of-warp-mj42-showdown-at-the-gates-of-warp-each-episode-entry-must-display-the-exact-episode-code-and-title-as-listed-above",
+      "title": "In the Story Campaign screen (StoryCampaign.tsx), restructure the Master Journeys arc to contain exactly 42 episodes (MJ01–MJ42) with the following exact titles: MJ01 – The Spectral Express!, MJ02 – Trials of a Budding Master!, MJ03 – A Champion Time!, MJ04 – Kicking It from Here Into Tomorrow!, MJ05 – The Future is Now, Thanks to Strategy!, MJ06 – A Night in the Nacrene City Museum!, MJ07 – Unowning a Pokémon!, MJ08 – Trial on a Golden Scale!, MJ09 – Finding a Legend!, MJ10 – A Tokodile's Sweet Revenge!, MJ11 – When a House is Not a Home!, MJ12 – A Rollicking Roll…!, MJ13 – Searching for Chivalry!, MJ14 – Lighting the Way Home!, MJ15 – Under Color of Darkness!, MJ16 – Absol Absolved!, MJ17 – Thrash of the Titans!, MJ18 – Ash and the Champion!, MJ19 – Sword and Shield… The Legends Awaken! Part 1, MJ20 – Sword and Shield… The Legends Awaken! Part 2, MJ21 – Sword and Shield… The Legends Awaken! Part 3, MJ22 – Sword and Shield… The Legends Awaken! Part 4, MJ23 – Narrowing the Chaser Chase!, MJ24 – A Midsummer Night's Light!, MJ25 – Just a Scone's Throw From Here!, MJ26 – A Little Rocket R & R!, MJ27 – It's All in the Name!, MJ28 – Totally Normal!, MJ29 – Ultra Exciting from the Shocking Start!, MJ30 – The Wayward One!, MJ31 – Showtime!, MJ32 – A One-Stick Wonder!, MJ33 – Looking Out for Number Two!, MJ34 – A Festival Reunion!, MJ35 – Keep Chasing That Dream!, MJ36 – Battling in the Freezing Raid!, MJ37 – A Fan with a Plan!, MJ38 – The Homecoming Crown!, MJ39 – Take My Thief! Please!, MJ40 – The Sweet Taste of Battle!, MJ41 – The Gates of Warp!, MJ42 – Showdown at the Gates of Warp!. Each episode entry must display the exact episode code and title as listed above.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-for-each-master-journeys-episode-mj01-mj42-displayed-in-the-story-campaign-screen-add-a-watch-episode-button-that-opens-the-corresponding-pok-mon-tv-search-url-in-a-new-browser-tab-all-episodes-link-to-https-watch-pokemon-com-search-query-mjxx-where-xx-is-the-zero-padded-episode-number-e-g-mj01-https-watch-pokemon-com-search-query-mj01-mj18-https-watch-pokemon-com-search-query-mj18-mj42-https-watch-pokemon-com-search-query-mj42-the-button-must-open-the-link-in-a-new-tab-target-blank-with-rel-noopener-noreferrer",
+      "title": "For each Master Journeys episode (MJ01–MJ42) displayed in the Story Campaign screen, add a 'Watch Episode' button that opens the corresponding Pokémon TV search URL in a new browser tab. All episodes link to https://watch.pokemon.com/search?query=MJxx where xx is the zero-padded episode number (e.g., MJ01 → https://watch.pokemon.com/search?query=MJ01, MJ18 → https://watch.pokemon.com/search?query=MJ18, MJ42 → https://watch.pokemon.com/search?query=MJ42). The button must open the link in a new tab (target='_blank' with rel='noopener noreferrer').",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-rebrand-the-entire-app-from-the-pokemon-theme-to-an-original-elemental-ninja-theme-rename-the-app-to-elemental-ninja-clash-replace-all-pokemon-specific-references-ash-professor-oak-pikachu-bulbasaur-charmander-squirtle-pok-dex-pok-mon-etc-with-original-elemental-ninja-equivalents-throughout-all-pages-components-and-data-files-the-trainer-character-should-be-called-kaze-or-allow-the-player-to-choose-a-ninja-clan-name-remove-or-replace-all-watch-links-to-official-pokemon-tv-content",
+      "title": "Rebrand the entire app from the Pokemon theme to an original 'Elemental Ninja' theme. Rename the app to 'Elemental Ninja Clash'. Replace all Pokemon-specific references (Ash, Professor Oak, Pikachu, Bulbasaur, Charmander, Squirtle, Pokédex, Pokémon, etc.) with original elemental ninja equivalents throughout all pages, components, and data files. The trainer character should be called 'Kaze' (or allow the player to choose a ninja clan name). Remove or replace all watch links to official Pokemon TV content.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-roster-of-6-original-elemental-ninja-starter-monsters-each-representing-a-classic-element-fire-ninja-emberfang-water-ninja-tidalstrike-earth-ninja-stonefist-wind-ninja-galestep-lightning-ninja-voltclaw-and-shadow-ninja-voidshade-each-monster-must-have-a-unique-emoji-visual-identity-a-set-of-4-thematic-moves-with-power-accuracy-stats-base-hp-attack-defense-speed-stats-and-an-element-type-store-this-data-in-frontend-src-data-monsterdata-ts-replacing-or-supplementing-the-existing-pokemondata-ts",
+      "title": "Create a roster of 6 original elemental ninja starter monsters, each representing a classic element: Fire Ninja (Emberfang), Water Ninja (Tidalstrike), Earth Ninja (Stonefist), Wind Ninja (Galestep), Lightning Ninja (Voltclaw), and Shadow Ninja (Voidshade). Each monster must have a unique emoji/visual identity, a set of 4 thematic moves with power/accuracy stats, base HP/Attack/Defense/Speed stats, and an element type. Store this data in frontend/src/data/monsterData.ts replacing or supplementing the existing pokemonData.ts.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-professor-oak-intro-screen-professoroakintro-tsx-with-an-original-sensei-ryoku-introduction-screen-sensei-ryoku-is-an-elderly-ninja-master-wearing-a-dark-grey-gi-with-a-teal-sash-and-a-long-white-beard-the-intro-dialogue-should-explain-the-world-of-elemental-ninja-clans-introduce-the-player-as-a-young-ninja-apprentice-and-prompt-them-to-choose-their-elemental-starter-monster-after-all-dialogue-lines-play-out-via-the-typewriter-animation-transition-to-the-starter-selection-screen",
+      "title": "Replace the Professor Oak intro screen (ProfessorOakIntro.tsx) with an original 'Sensei Ryoku' introduction screen. Sensei Ryoku is an elderly ninja master wearing a dark grey gi with a teal sash and a long white beard. The intro dialogue should explain the world of elemental ninja clans, introduce the player as a young ninja apprentice, and prompt them to choose their elemental starter monster. After all dialogue lines play out via the typewriter animation, transition to the starter selection screen.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-redesign-the-starter-selection-screen-starterselection-tsx-to-display-the-6-elemental-ninja-monsters-from-req-23-each-monster-card-should-show-its-element-type-badge-name-key-stats-hp-atk-spd-idle-animation-css-keyframe-bounce-or-float-and-an-element-colored-glow-the-selected-monster-should-be-highlighted-with-an-energetic-elemental-aura-effect-matching-its-element-color-red-for-fire-blue-for-water-brown-for-earth-green-for-wind-yellow-for-lightning-purple-for-shadow",
+      "title": "Redesign the starter selection screen (StarterSelection.tsx) to display the 6 elemental ninja monsters from REQ-23. Each monster card should show its element type badge, name, key stats (HP, ATK, SPD), idle animation (CSS keyframe bounce or float), and an element-colored glow. The selected monster should be highlighted with an energetic elemental aura effect matching its element color (red for fire, blue for water, brown for earth, green for wind, yellow for lightning, purple for shadow).",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-redesign-the-battle-system-visuals-and-data-in-battle-tsx-and-related-components-to-use-elemental-ninja-monsters-battle-backgrounds-should-reflect-ninja-dojo-environments-a-fire-dojo-red-orange-volcanic-rock-water-temple-blue-misty-waterfall-bamboo-forest-green-storm-peak-grey-electric-shadow-realm-dark-purple-void-and-earth-canyon-brown-rocky-terrain-the-background-should-match-the-opponent-s-element-type-replace-all-pokemon-move-names-with-the-elemental-ninja-move-names-defined-in-monsterdata-ts",
+      "title": "Redesign the battle system visuals and data in Battle.tsx and related components to use elemental ninja monsters. Battle backgrounds should reflect ninja dojo environments: a fire dojo (red/orange volcanic rock), water temple (blue misty waterfall), bamboo forest (green), storm peak (grey/electric), shadow realm (dark purple void), and earth canyon (brown rocky terrain). The background should match the opponent's element type. Replace all Pokemon move names with the elemental ninja move names defined in monsterData.ts.",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-gym-badge-system-with-an-original-elemental-dojo-seal-system-there-are-6-dojos-one-per-element-fire-dojo-water-dojo-earth-dojo-wind-dojo-lightning-dojo-shadow-dojo-each-dojo-is-led-by-an-original-ninja-master-character-with-a-unique-name-battle-style-description-and-a-team-of-3-elemental-ninja-monsters-of-that-element-type-earning-a-dojo-seal-is-displayed-on-the-trainer-profile-screen-as-a-glowing-elemental-seal-icon-update-gymbattles-tsx-and-badgedisplay-tsx-accordingly",
+      "title": "Replace the gym badge system with an original 'Elemental Dojo Seal' system. There are 6 dojos, one per element (Fire Dojo, Water Dojo, Earth Dojo, Wind Dojo, Lightning Dojo, Shadow Dojo). Each dojo is led by an original ninja master character with a unique name, battle style description, and a team of 3 elemental ninja monsters of that element type. Earning a Dojo Seal is displayed on the trainer profile screen as a glowing elemental seal icon. Update GymBattles.tsx and BadgeDisplay.tsx accordingly.",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-pokemon-evolution-stones-system-with-an-original-elemental-crystal-system-crystals-are-flame-crystal-tide-crystal-gale-crystal-thunder-crystal-terra-crystal-and-void-crystal-one-per-element-each-elemental-ninja-monster-has-a-single-evolved-form-with-a-new-name-upgraded-stats-and-new-moves-evolution-is-optional-and-player-triggered-update-the-evolution-modal-evolutionmodal-tsx-and-roster-page-pokemonroster-tsx-to-reflect-elemental-ninja-terminology-and-the-new-crystal-evolution-data",
+      "title": "Replace the Pokemon evolution stones system with an original 'Elemental Crystal' system. Crystals are: Flame Crystal, Tide Crystal, Gale Crystal, Thunder Crystal, Terra Crystal, and Void Crystal — one per element. Each elemental ninja monster has a single evolved form with a new name, upgraded stats, and new moves. Evolution is optional and player-triggered. Update the evolution modal (EvolutionModal.tsx) and roster page (PokemonRoster.tsx) to reflect elemental ninja terminology and the new crystal/evolution data.",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-redesign-the-overall-visual-theme-of-the-app-to-match-an-elemental-ninja-aesthetic-dark-backgrounds-with-glowing-elemental-accents-neon-red-electric-cyan-shadow-purple-earth-gold-brushstroke-style-typography-using-the-bangers-font-for-headers-particle-effects-suggesting-wind-and-energy-and-battle-dojo-environment-art-replace-the-existing-pokemon-yellow-red-blue-color-palette-with-the-elemental-ninja-palette-throughout-index-css-and-tailwind-config-js-the-login-screen-should-feature-the-chosen-starter-ninja-monster-with-crackling-elemental-energy-effects-instead-of-pikachu-s-electricity",
+      "title": "Redesign the overall visual theme of the app to match an elemental ninja aesthetic: dark backgrounds with glowing elemental accents (neon red, electric cyan, shadow purple, earth gold), brushstroke-style typography using the Bangers font for headers, particle effects suggesting wind and energy, and battle/dojo environment art. Replace the existing Pokemon yellow/red/blue color palette with the elemental ninja palette throughout index.css and tailwind.config.js. The login screen should feature the chosen starter ninja monster with crackling elemental energy effects instead of Pikachu's electricity.",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-story-campaign-arcs-johto-journeys-master-journeys-ultimate-journeys-sun-moon-with-original-elemental-ninja-story-arcs-the-five-dojos-beginner-arc-10-episodes-shadow-clan-uprising-mid-arc-10-episodes-and-clash-of-the-elements-final-arc-10-episodes-each-episode-should-have-an-original-title-a-featured-opponent-elemental-ninja-monster-and-a-brief-story-description-remove-all-pokemon-tv-watch-links-update-storycampaign-tsx-accordingly",
+      "title": "Replace the Story Campaign arcs (Johto Journeys, Master Journeys, Ultimate Journeys, Sun & Moon) with original elemental ninja story arcs: 'The Five Dojos' (beginner arc, 10 episodes), 'Shadow Clan Uprising' (mid arc, 10 episodes), and 'Clash of the Elements' (final arc, 10 episodes). Each episode should have an original title, a featured opponent elemental ninja monster, and a brief story description. Remove all Pokemon TV watch links. Update StoryCampaign.tsx accordingly.",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-dedicated-game-story-or-lore-section-visible-from-the-main-game-hub-gamehome-tsx-that-presents-the-overarching-narrative-of-elemental-ninja-clash-the-story-should-explain-the-ancient-world-of-elemental-ninja-clans-the-origin-of-the-six-elements-fire-water-earth-wind-lightning-shadow-the-rise-of-the-shadow-clan-as-the-primary-antagonist-faction-and-the-player-s-role-as-a-young-ninja-apprentice-chosen-to-master-the-elements-and-restore-balance-present-the-story-in-a-visually-immersive-format-a-scrollable-lore-panel-or-modal-with-chapter-style-sections-styled-with-the-elemental-ninja-dark-aesthetic-dark-background-glowing-elemental-accent-colors-bangers-font-for-chapter-titles-each-chapter-or-section-should-be-clearly-titled-and-accompanied-by-a-relevant-element-emoji-or-icon",
+      "title": "Add a dedicated 'Game Story' or 'Lore' section visible from the main game hub (GameHome.tsx) that presents the overarching narrative of Elemental Ninja Clash. The story should explain: the ancient world of elemental ninja clans, the origin of the six elements (Fire, Water, Earth, Wind, Lightning, Shadow), the rise of the Shadow Clan as the primary antagonist faction, and the player's role as a young ninja apprentice chosen to master the elements and restore balance. Present the story in a visually immersive format — a scrollable lore panel or modal with chapter-style sections, styled with the elemental ninja dark aesthetic (dark background, glowing elemental accent colors, Bangers font for chapter titles). Each chapter or section should be clearly titled and accompanied by a relevant element emoji or icon.",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-transform-all-6-elemental-starter-monsters-emberfang-tidalstrike-stonefist-galestep-voltclaw-voidshade-into-fully-ninja-themed-characters-in-monsterdata-ts-each-monster-must-have-a-ninja-style-visual-description-ninja-outfit-mask-clan-markings-matching-their-element-a-revised-narrative-description-emphasizing-ninja-lore-and-clan-identity-ninja-themed-move-names-e-g-shadow-blade-slash-inferno-shuriken-strike-tidal-katana-wave-and-move-animation-descriptions-that-evoke-ninja-combat-techniques-evolved-forms-must-also-reflect-ninja-progression-e-g-elite-ninja-jonin-shadow-master",
+      "title": "Transform all 6 elemental starter monsters (Emberfang, Tidalstrike, Stonefist, Galestep, Voltclaw, Voidshade) into fully ninja-themed characters in monsterData.ts. Each monster must have a ninja-style visual description (ninja outfit, mask, clan markings matching their element), a revised narrative description emphasizing ninja lore and clan identity, ninja-themed move names (e.g., 'Shadow Blade Slash', 'Inferno Shuriken Strike', 'Tidal Katana Wave'), and move animation descriptions that evoke ninja combat techniques. Evolved forms must also reflect ninja progression (e.g., elite ninja, jonin, shadow master).",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-ninjabattlesprite-tsx-and-animatedpokemon-tsx-components-to-render-each-elemental-monster-with-a-ninja-visual-identity-each-monster-s-emoji-or-sprite-representation-should-depict-a-ninja-silhouette-with-element-colored-accents-e-g-with-fire-glow-for-emberfang-with-teal-for-tidalstrike-add-a-small-element-type-icon-badge-overlaid-on-the-sprite-idle-animations-should-include-subtle-ninja-style-movements-crouching-stance-cloak-flutter-keyframe-rather-than-generic-bounce",
+      "title": "Update the NinjaBattleSprite.tsx and AnimatedPokemon.tsx components to render each elemental monster with a ninja visual identity. Each monster's emoji or sprite representation should depict a ninja silhouette with element-colored accents (e.g., 🥷 with fire glow for Emberfang, 🥷 with teal for Tidalstrike). Add a small element-type icon badge overlaid on the sprite. Idle animations should include subtle ninja-style movements (crouching stance, cloak flutter keyframe) rather than generic bounce.",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-starterselection-tsx-page-so-that-each-monster-card-displays-a-ninja-themed-flavor-text-line-beneath-the-monster-name-e-g-a-fierce-fire-clan-warrior-trained-in-the-art-of-inferno-ninjutsu-the-card-header-area-should-include-a-ninja-rank-label-e-g-genin-fire-clan-styled-with-the-element-s-accent-color-the-selection-confirmation-button-text-should-read-choose-this-ninja-instead-of-any-generic-label",
+      "title": "Update the StarterSelection.tsx page so that each monster card displays a ninja-themed flavor text line beneath the monster name (e.g., 'A fierce fire-clan warrior trained in the art of Inferno Ninjutsu'). The card header area should include a ninja rank label (e.g., 'Genin — Fire Clan') styled with the element's accent color. The selection confirmation button text should read 'Choose This Ninja' instead of any generic label.",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-battle-tsx-page-and-strategyinput-tsx-component-to-replace-any-remaining-generic-monster-labels-with-ninja-specific-terminology-strategy-input-placeholder-text-should-read-enter-your-ninja-battle-strategy-move-buttons-in-the-battle-ui-should-display-the-ninja-move-names-from-monsterdata-ts-the-battle-narrator-log-messages-should-use-ninja-combat-language-e-g-emberfang-unleashes-inferno-shuriken-strike-instead-of-generic-attack-text",
+      "title": "Update the Battle.tsx page and StrategyInput.tsx component to replace any remaining generic monster labels with ninja-specific terminology. Strategy input placeholder text should read 'Enter your ninja battle strategy…'. Move buttons in the battle UI should display the ninja move names from monsterData.ts. The battle narrator/log messages should use ninja combat language (e.g., 'Emberfang unleashes Inferno Shuriken Strike!' instead of generic attack text).",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-pokemonroster-tsx-monster-roster-page-to-use-ninja-themed-terminology-throughout-section-headers-should-read-your-ninja-squad-instead-of-any-roster-team-label-each-monster-card-should-display-the-monster-s-ninja-rank-alongside-its-stats-the-elemental-crystal-evolution-prompt-should-read-advance-to-next-ninja-rank-instead-of-a-generic-evolve-label-monster-descriptions-should-pull-the-ninja-flavor-text-from-monsterdata-ts",
+      "title": "Update the PokemonRoster.tsx (monster roster) page to use ninja-themed terminology throughout. Section headers should read 'Your Ninja Squad' instead of any roster/team label. Each monster card should display the monster's ninja rank alongside its stats. The elemental crystal evolution prompt should read 'Advance to Next Ninja Rank' instead of a generic evolve label. Monster descriptions should pull the ninja flavor text from monsterData.ts.",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-leveling-system-for-all-elemental-ninja-monsters-monsters-gain-xp-after-every-battle-win-or-loss-with-more-xp-for-wins-when-enough-xp-is-accumulated-the-monster-levels-up-starting-at-level-1-no-hard-cap-below-50-each-level-up-increases-the-monster-s-base-stats-hp-attack-defense-speed-by-a-small-fixed-percentage-display-the-monster-s-current-level-and-xp-progress-bar-on-the-roster-page-pokemonroster-tsx-on-each-monster-card-in-the-battle-ui-battle-tsx-and-on-the-trainer-profile-page-trainerprofile-tsx-show-a-level-up-notification-animation-in-the-battle-screen-when-a-level-up-occurs-after-a-battle-ends",
+      "title": "Add a leveling system for all elemental ninja monsters. Monsters gain XP after every battle (win or loss, with more XP for wins). When enough XP is accumulated, the monster levels up (starting at Level 1, no hard cap below 50). Each level-up increases the monster's base stats (HP, Attack, Defense, Speed) by a small fixed percentage. Display the monster's current level and XP progress bar on the roster page (PokemonRoster.tsx), on each monster card in the battle UI (Battle.tsx), and on the trainer profile page (TrainerProfile.tsx). Show a level-up notification/animation in the battle screen when a level-up occurs after a battle ends.",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-fire-dojo-battle-content-in-gymbattles-tsx-and-the-backend-the-fire-dojo-is-led-by-an-original-ninja-master-character-named-blaziken-ryu-a-battle-hardened-fire-clan-jonin-who-uses-aggressive-offensive-tactics-his-team-consists-of-3-fire-element-ninja-monsters-emberfang-and-two-fire-variant-enemies-defined-in-monsterdata-ts-or-as-dojo-exclusive-opponents-the-battle-background-must-use-the-fire-dojo-environment-red-orange-volcanic-rock-upon-defeating-blaziken-ryu-the-player-earns-the-flame-dojo-seal-which-is-stored-in-the-backend-and-displayed-as-a-glowing-red-seal-icon-on-the-trainer-profile-trainerprofile-tsx-and-badge-display-badgedisplay-tsx",
+      "title": "Implement Fire Dojo battle content in GymBattles.tsx and the backend. The Fire Dojo is led by an original ninja master character named 'Blaziken Ryu' — a battle-hardened fire-clan jonin who uses aggressive offensive tactics. His team consists of 3 fire-element ninja monsters (Emberfang and two fire-variant enemies defined in monsterData.ts or as dojo-exclusive opponents). The battle background must use the fire dojo environment (red/orange volcanic rock). Upon defeating Blaziken Ryu, the player earns the Flame Dojo Seal, which is stored in the backend and displayed as a glowing red seal icon on the trainer profile (TrainerProfile.tsx) and badge display (BadgeDisplay.tsx).",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-water-dojo-battle-content-in-gymbattles-tsx-and-the-backend-the-water-dojo-is-led-by-an-original-ninja-master-character-named-mistveil-sora-a-calm-strategic-water-clan-jonin-who-favors-defensive-counterattacks-her-team-consists-of-3-water-element-ninja-monsters-tidalstrike-and-two-water-variant-enemies-defined-in-monsterdata-ts-or-as-dojo-exclusive-opponents-the-battle-background-must-use-the-water-dojo-environment-blue-misty-waterfall-upon-defeating-mistveil-sora-the-player-earns-the-tide-dojo-seal-which-is-stored-in-the-backend-and-displayed-as-a-glowing-blue-seal-icon-on-the-trainer-profile-trainerprofile-tsx-and-badge-display-badgedisplay-tsx",
+      "title": "Implement Water Dojo battle content in GymBattles.tsx and the backend. The Water Dojo is led by an original ninja master character named 'Mistveil Sora' — a calm, strategic water-clan jonin who favors defensive counterattacks. Her team consists of 3 water-element ninja monsters (Tidalstrike and two water-variant enemies defined in monsterData.ts or as dojo-exclusive opponents). The battle background must use the water dojo environment (blue misty waterfall). Upon defeating Mistveil Sora, the player earns the Tide Dojo Seal, which is stored in the backend and displayed as a glowing blue seal icon on the trainer profile (TrainerProfile.tsx) and badge display (BadgeDisplay.tsx).",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-battle-tsx-and-related-battle-components-pokemonbattlesprite-tsx-ninjabattlesprite-tsx-strategyinput-tsx-increase-all-move-button-tap-targets-to-a-minimum-of-48-48px-on-mobile-ensure-buttons-have-sufficient-padding-and-spacing-so-they-do-not-overlap-or-become-hard-to-tap-on-small-screens-use-css-media-queries-or-tailwind-responsive-classes-to-apply-larger-sizing-on-screens-narrower-than-768px",
+      "title": "In Battle.tsx and related battle components (PokemonBattleSprite.tsx, NinjaBattleSprite.tsx, StrategyInput.tsx), increase all move button tap targets to a minimum of 48×48px on mobile. Ensure buttons have sufficient padding and spacing so they do not overlap or become hard to tap on small screens. Use CSS media queries or Tailwind responsive classes to apply larger sizing on screens narrower than 768px.",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-improve-the-drag-to-dodge-mechanic-in-pokemonbattlesprite-tsx-for-touchscreen-devices-ensure-touch-events-touchstart-touchmove-touchend-are-handled-alongside-pointer-events-the-draggable-monster-sprite-must-respond-immediately-to-finger-drag-without-lag-have-a-sufficiently-large-initial-touch-hit-area-at-least-64-64px-and-not-conflict-with-scroll-behavior-use-touch-action-none-on-the-draggable-element-to-prevent-default-scroll-interference-during-drag",
+      "title": "Improve the drag-to-dodge mechanic in PokemonBattleSprite.tsx for touchscreen devices. Ensure touch events (touchstart, touchmove, touchend) are handled alongside pointer events. The draggable monster sprite must respond immediately to finger drag without lag, have a sufficiently large initial touch hit area (at least 64×64px), and not conflict with scroll behavior. Use `touch-action: none` on the draggable element to prevent default scroll interference during drag.",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-audit-and-fix-responsive-layout-issues-across-battle-tsx-pokemonroster-tsx-gymbattles-tsx-gamelore-tsx-gamehome-tsx-storycampaign-tsx-and-trainerprofile-tsx-so-that-all-screens-display-without-horizontal-overflow-clipped-content-or-broken-layouts-on-screen-widths-from-320px-to-767px-apply-max-width-constraints-flex-wrap-and-overflow-hidden-where-needed-ensure-text-does-not-overflow-its-container-and-all-interactive-elements-remain-accessible",
+      "title": "Audit and fix responsive layout issues across Battle.tsx, PokemonRoster.tsx, GymBattles.tsx, GameLore.tsx, GameHome.tsx, StoryCampaign.tsx, and TrainerProfile.tsx so that all screens display without horizontal overflow, clipped content, or broken layouts on screen widths from 320px to 767px. Apply max-width constraints, flex-wrap, and overflow-hidden where needed. Ensure text does not overflow its container and all interactive elements remain accessible.",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-mobile-bottom-navigation-bar-to-layout-tsx-that-is-visible-only-on-screens-narrower-than-768px-hidden-on-desktop-the-bottom-nav-should-contain-icon-label-links-for-the-main-game-sections-home-battle-dojos-roster-and-profile-it-must-be-fixed-to-the-bottom-of-the-viewport-use-the-elemental-ninja-dark-theme-dark-background-glowing-accent-colors-and-not-obscure-page-content-add-bottom-padding-to-page-content-equal-to-the-nav-bar-height-when-it-is-visible-on-screens-768px-and-wider-keep-the-existing-horizontal-navigation-in-the-header",
+      "title": "Add a mobile bottom navigation bar to Layout.tsx that is visible only on screens narrower than 768px (hidden on desktop). The bottom nav should contain icon+label links for the main game sections: Home, Battle, Dojos, Roster, and Profile. It must be fixed to the bottom of the viewport, use the elemental ninja dark theme (dark background, glowing accent colors), and not obscure page content — add bottom padding to page content equal to the nav bar height when it is visible. On screens 768px and wider, keep the existing horizontal navigation in the header.",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-reduce-animation-intensity-on-mobile-devices-to-improve-rendering-performance-in-frontend-src-index-css-and-inline-component-styles-apply-a-media-max-width-767px-block-that-reduces-or-disables-particle-effects-in-loginpage-tsx-and-gamehome-tsx-e-g-lower-particle-count-or-disable-entirely-simplifies-or-shortens-css-keyframe-animations-e-g-reduce-animation-iteration-or-use-simpler-transforms-and-disables-or-reduces-the-electricityeffect-tsx-bolt-re-randomization-interval-frequency-on-mobile-use-will-change-transform-on-animated-battle-sprites-to-promote-gpu-compositing",
+      "title": "Reduce animation intensity on mobile devices to improve rendering performance. In frontend/src/index.css and inline component styles, apply a `@media (max-width: 767px)` block that: reduces or disables particle effects in LoginPage.tsx and GameHome.tsx (e.g., lower particle count or disable entirely), simplifies or shortens CSS keyframe animations (e.g., reduce animation iteration or use simpler transforms), and disables or reduces the ElectricityEffect.tsx bolt re-randomization interval frequency on mobile. Use `will-change: transform` on animated battle sprites to promote GPU compositing.",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-optimize-battle-tsx-for-portrait-orientation-on-mobile-the-battle-field-layout-must-stack-vertically-in-portrait-mode-opponent-monster-and-health-bar-at-the-top-third-player-monster-and-health-bar-in-the-middle-third-and-move-buttons-plus-strategy-input-at-the-bottom-third-apply-media-orientation-portrait-and-max-width-767px-css-rules-to-enforce-this-stacking-layout-ensure-the-move-button-grid-uses-a-2-2-layout-in-portrait-mode-to-fit-within-the-screen-width-without-requiring-horizontal-scroll",
+      "title": "Optimize Battle.tsx for portrait orientation on mobile. The battle field layout must stack vertically in portrait mode: opponent monster and health bar at the top third, player monster and health bar in the middle third, and move buttons plus strategy input at the bottom third. Apply `@media (orientation: portrait) and (max-width: 767px)` CSS rules to enforce this stacking layout. Ensure the move button grid uses a 2×2 layout in portrait mode to fit within the screen width without requiring horizontal scroll.",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-loginpage-tsx-remove-the-pikachu-mascot-sprite-image-and-the-ash-s-journey-title-text-from-the-login-screen-also-remove-the-electricityeffect-overlay-that-was-tied-to-the-pikachu-mascot-the-login-screen-should-retain-its-animated-background-particles-and-the-internet-identity-login-button-but-no-pikachu-image-or-ash-s-journey-label-should-be-rendered-anywhere-on-the-page",
+      "title": "In LoginPage.tsx, remove the Pikachu mascot sprite/image and the 'Ash's Journey' title text from the login screen. Also remove the ElectricityEffect overlay that was tied to the Pikachu mascot. The login screen should retain its animated background particles and the Internet Identity login button, but no Pikachu image or 'Ash's Journey' label should be rendered anywhere on the page.",
+      "reqIds": [
+        "REQ-48"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
     {
-      "id": "AR-1",
-      "summary": "Real-time anime-style battle system with dodge, move clash, and strategy text input",
+      "id": "AR-31",
+      "summary": "Create an elemental ninja starter character/monster with unique elemental abilities and ninja-themed moves",
       "reqIds": [],
       "status": "pending"
     },
     {
-      "id": "AR-2",
-      "summary": "Pikachu as overpowered starter: ATK 100, DEF 45, SPD 40 with moves Electro Web, Electro Ball, Iron Tail, Quick Attack and stat boosts per move",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Story following Master Journeys, Johto Journeys, and Ultimate Journeys arcs with Ash as trainer",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Gym battle system with badges, strong gym leaders based on anime episodes",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Team Rocket encounter events with blast-off moments",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Animated Pokemon starter selection screen with living/moving Pokemon",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Evolution items system: Water Stone, Fire Stone, Grass Stone, Electric Stone, etc.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-8",
-      "summary": "Professor Oak intro/character modeled after anime appearance",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-9",
-      "summary": "Multiplayer scaling: more dramatic/complex game as more players join",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-12",
-      "summary": "Define Pikachu as the strongest available Pokemon with stats: ATK 100, DEF 45, SPD 40. Assign Pikachu four moves with the following on-use stat effects: Electro Web (power +45 to electric attacks), Electro Ball (power +45), Iron Tail (DEF +25 for duration of move), Quick Attack (SPD +30 for duration). Pikachu must outperform all other Pokemon in battle.",
+      "id": "AR-38",
+      "summary": "Replace the Team Rocket encounter system with an original 'Shadow Clan' ambush encounter. The Shadow Clan consists of three original villain ninja characters: Kuro (the leader, fire), Shira (the strategist, shadow), and Zuki (the comic relief, water). They appear with dramatic villain dialogue and a 'vanish in smoke' escape animation when defeated. The encounter tone should be theatrical and comedic similar to the existing Team Rocket encounter. Update TeamRocketEncounter.tsx to reflect this.",
       "reqIds": [
-        "REQ-3"
+        "REQ-28"
       ],
       "status": "pending"
     },
     {
-      "id": "AR-20",
-      "summary": "Store all game state server-side: player profile (trainer name = Ash), Pokemon roster, badges earned, story arc progress, inventory (evolution stones), and battle history. Provide stable persistence so progress is saved across sessions.",
+      "id": "AR-42",
+      "summary": "Update the backend data models in backend/main.mo to replace Pokemon-specific type names and field names with elemental ninja equivalents. Replace 'Pokemon' type references with 'Monster', 'pokemonName' with 'monsterName', 'pokemonId' with 'monsterId', badge-related fields with 'dojo seal' equivalents, and story arc labels with the new arc names from REQ-31. Ensure existing game state logic (battles, profile, badges/seals) continues to function correctly with the renamed types.",
       "reqIds": [
-        "REQ-11"
+        "REQ-32"
       ],
       "status": "pending"
     },
     {
-      "id": "AR-21",
-      "summary": "Add Z-Moves system: one-time super moves per battle requiring matching Z-Crystal held by Pokemon",
+      "id": "AR-43",
+      "summary": "Transform all elemental monsters into ninja-themed characters visually and narratively — give them ninja outfits, ninja-style names/descriptions, and ninja-themed move names/animations throughout all screens (starter selection, battle, roster, lore).",
       "reqIds": [],
       "status": "pending"
     },
     {
-      "id": "AR-22",
-      "summary": "Add Mega Evolution system: temporary transformation requiring Mega Stone on Pokemon and Key Stone for trainer, boosting stats during battle",
+      "id": "AR-44",
+      "summary": "Add a leveling system for ninja monsters — monsters gain XP from battles and level up, progressing toward their Elemental Master evolution form.",
       "reqIds": [],
       "status": "pending"
     },
     {
-      "id": "AR-23",
-      "summary": "Add Gigantamax mechanic: Pokemon grows huge, changes appearance, uses unique G-Max move, lasts a few turns per battle",
+      "id": "AR-45",
+      "summary": "Implement Fire Dojo battle content — fire-element dojo leader, fire ninja monster team, fire dojo environment, and dojo seal reward.",
       "reqIds": [],
       "status": "pending"
     },
     {
-      "id": "AR-24",
-      "summary": "Incorporate Sun & Moon anime story arcs (SM001–SM146) including Alola, Ultra Adventures, and Ultra Legends seasons as additional story content",
+      "id": "AR-46",
+      "summary": "Implement Water Dojo battle content — water-element dojo leader, water ninja monster team, water dojo environment, and dojo seal reward.",
       "reqIds": [],
       "status": "pending"
     },
     {
-      "id": "AR-28",
-      "summary": "Update the backend story arc data model to support the Sun & Moon arc with its three sub-seasons and 146 episodes. Track per-episode completion status and current episode progress within the Sun & Moon arc separately from existing arcs.",
+      "id": "AR-47",
+      "summary": "Touch-optimized battle controls — larger tap targets for move buttons, better drag-to-dodge on touchscreens",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-48",
+      "summary": "Responsive layout fixes — ensure all screens (battle, roster, dojo, lore) fit cleanly on small screens without overflow",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-49",
+      "summary": "Mobile navigation — a bottom nav bar or hamburger menu for easier one-thumb navigation",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-50",
+      "summary": "Performance — reduce heavy animations on mobile to keep it smooth",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-51",
+      "summary": "Portrait mode optimization — lock key battle UI elements to work well in portrait orientation",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-52",
+      "summary": "Remove the Pikachu picture and 'Ash's Journey' text from the login/launch screen",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-53",
+      "summary": "Game visuals should blend all animation styles: dark/edgy anime style (Naruto/Demon Slayer/Bleach vibe), pixel art animation (retro sprite-based), and painted/ink brush style (traditional Japanese art). Apply this mixed aesthetic across all game screens and character sprites.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-54",
+      "summary": "Redesign all game visuals to blend three distinct art styles into a unified mixed aesthetic: (1) Dark/edgy anime style inspired by Naruto, Demon Slayer, and Bleach — high-contrast shadowing, dramatic speed lines, bold ink outlines, and intense elemental auras on monster sprites and battle backgrounds; (2) Pixel art animation — retro sprite-based idle and attack animations for all 6 elemental ninja monsters (Emberfang, Tidalstrike, Stonefist, Galestep, Voltclaw, Voidshade) rendered as CSS pixel-art keyframe animations using crisp, blocky movement frames; (3) Painted/ink brush style — traditional Japanese sumi-e brushstroke textures applied to UI panel borders, section dividers, background overlays, and chapter title headers. Apply this blended aesthetic consistently across all game screens: LoginPage, ProfessorOakIntro (Sensei Ryoku intro), StarterSelection, Battle, GameHome, StoryCampaign, GymBattles, PokemonRoster, GameLore, and TrainerProfile.",
       "reqIds": [
-        "REQ-16"
+        "REQ-49"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-55",
+      "summary": "Update NinjaBattleSprite.tsx and AnimatedPokemon.tsx to apply pixel-art rendering and anime-style motion to all 6 elemental ninja monsters. Each monster's sprite container must use CSS `image-rendering: pixelated` and `image-rendering: crisp-edges`. Idle animations must use multi-frame pixel-art style CSS @keyframes (e.g., 2–4 discrete transform steps with step-timing functions to simulate sprite sheet frames). Attack animations must add anime-style motion blur via CSS filter or translate offset trails. Each monster must have element-specific aura glow using the elemental color palette defined in tailwind.config.js.",
+      "reqIds": [
+        "REQ-50"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-56",
+      "summary": "Add brushstroke/ink-style decorative borders and dividers to the UI panels across GameLore.tsx, StoryCampaign.tsx, GymBattles.tsx, and GameHome.tsx. Implement these using SVG inline brushstroke shapes or CSS clip-path/border-image techniques that evoke traditional Japanese sumi-e painting. Arc title headers and chapter section titles must use the Bangers font with a subtle ink-texture text-shadow effect. Section separators between content blocks should use a horizontal brushstroke SVG line rather than a plain hr element.",
+      "reqIds": [
+        "REQ-51"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-57",
+      "summary": "Update battle screen backgrounds in Battle.tsx to use anime-style illustrated environment art rendered via CSS gradients, layered pseudo-elements, and SVG overlays. Each of the 6 dojo environments (fire dojo, water temple, bamboo forest, storm peak, shadow realm, earth canyon) must include: a multi-layer parallax-style background with at least 2 depth layers (foreground silhouette + background sky/terrain), anime-style atmospheric effects (e.g., falling embers for fire, mist particles for water, falling leaves for bamboo, lightning flashes for storm, floating shadows for shadow realm, dust motes for earth), and speed-line overlay elements that activate during attack animations. Background visuals must match the opponent's element type dynamically.",
+      "reqIds": [
+        "REQ-52"
       ],
       "status": "pending"
     }

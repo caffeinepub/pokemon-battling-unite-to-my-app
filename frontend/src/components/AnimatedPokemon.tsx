@@ -9,6 +9,8 @@ interface AnimatedPokemonProps {
   color?: string;
   className?: string;
   flipped?: boolean;
+  element?: string;
+  showBadge?: boolean;
 }
 
 const sizeMap = {
@@ -19,12 +21,21 @@ const sizeMap = {
 };
 
 const animationMap = {
-  idle: 'pokemon-idle',
+  idle: 'ninja-idle',
   bounce: 'pokemon-bounce',
-  float: 'pokemon-float',
+  float: 'ninja-float',
   attack: 'shake',
   hit: 'shake',
   faint: 'opacity-30 grayscale',
+};
+
+const ELEMENT_BADGE_EMOJI: Record<string, string> = {
+  fire: '🔥',
+  water: '💧',
+  earth: '🪨',
+  wind: '💨',
+  lightning: '⚡',
+  shadow: '🌑',
 };
 
 export default function AnimatedPokemon({
@@ -36,16 +47,19 @@ export default function AnimatedPokemon({
   color = '#FFD700',
   className = '',
   flipped = false,
+  element,
+  showBadge = false,
 }: AnimatedPokemonProps) {
   const sizeClass = sizeMap[size];
   const animClass = animationMap[animation];
+  const badgeEmoji = element ? (ELEMENT_BADGE_EMOJI[element] ?? '🥷') : null;
 
   return (
     <div
       className={`relative flex items-center justify-center ${sizeClass} ${animClass} ${className}`}
       style={{ transform: flipped ? 'scaleX(-1)' : undefined }}
     >
-      {/* Glow effect */}
+      {/* Ninja element glow effect */}
       <div
         className="absolute inset-0 rounded-full opacity-30 blur-xl"
         style={{ background: color }}
@@ -56,7 +70,10 @@ export default function AnimatedPokemon({
           src={sprite}
           alt={name}
           className="relative z-10 w-full h-full object-contain drop-shadow-lg"
-          style={{ imageRendering: 'pixelated' }}
+          style={{
+            imageRendering: 'pixelated',
+            filter: `drop-shadow(0 0 6px ${color})`,
+          }}
         />
       ) : (
         <span className="relative z-10 select-none" style={{ fontSize: 'inherit' }}>
@@ -64,13 +81,27 @@ export default function AnimatedPokemon({
         </span>
       )}
 
-      {/* Sparkle particles */}
+      {/* Element-type badge overlay */}
+      {showBadge && badgeEmoji && (
+        <div
+          className="absolute -top-1 -right-1 z-20 w-6 h-6 rounded-full flex items-center justify-center text-xs border"
+          style={{
+            background: `${color}30`,
+            borderColor: color,
+            boxShadow: `0 0 6px ${color}60`,
+          }}
+        >
+          {badgeEmoji}
+        </div>
+      )}
+
+      {/* Ninja sparkle particles */}
       {animation === 'idle' && (
         <>
           <div
             className="absolute top-0 right-0 text-xs sparkle-anim"
             style={{ animationDelay: '0s', color }}
-          >✨</div>
+          >🥷</div>
           <div
             className="absolute bottom-1 left-0 text-xs sparkle-anim"
             style={{ animationDelay: '0.7s', color }}

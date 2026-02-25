@@ -1,84 +1,61 @@
 import React, { useState } from 'react';
-import { Send, Zap } from 'lucide-react';
 
 interface StrategyInputProps {
-  onStrategy: (strategy: string, keywords: string[]) => void;
+  value: string;
+  onChange: (value: string) => void;
+  onSubmit: (value: string) => void;
   disabled?: boolean;
 }
 
-const STRATEGY_KEYWORDS: Record<string, { response: string; animation: string }> = {
-  'quick attack': { response: "Pikachu dashes at lightning speed, confusing the opponent!", animation: 'speed' },
-  'circle': { response: "Pikachu circles the opponent, creating an opening!", animation: 'dodge' },
-  'iron tail': { response: "Pikachu's tail glows silver — ready to counter!", animation: 'counter' },
-  'counter': { response: "Perfect counter strategy! Pikachu waits for the right moment!", animation: 'counter' },
-  'dodge': { response: "Pikachu sidesteps the incoming attack!", animation: 'dodge' },
-  'electro ball': { response: "Pikachu charges up a massive electric orb!", animation: 'charge' },
-  'electro web': { response: "Pikachu launches an electric web to trap the opponent!", animation: 'trap' },
-  'freeze': { response: "Watch out for Ice Beam! Use Iron Tail to counter!", animation: 'counter' },
-  'confuse': { response: "Use Quick Attack to confuse the opponent with speed!", animation: 'speed' },
-  'attack': { response: "Go for it! Unleash your strongest move!", animation: 'attack' },
-  'defend': { response: "Hold your ground! Use Iron Tail to boost defense!", animation: 'defend' },
-};
+const ninjaKeywords = ['shuriken', 'vanish', 'katana', 'jutsu', 'shadow clone', 'kunai', 'clan'];
 
-export default function StrategyInput({ onStrategy, disabled }: StrategyInputProps) {
-  const [text, setText] = useState('');
-  const [response, setResponse] = useState('');
+export default function StrategyInput({ value, onChange, onSubmit, disabled }: StrategyInputProps) {
+  const [focused, setFocused] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!text.trim() || disabled) return;
-
-    const lower = text.toLowerCase();
-    const foundKeywords: string[] = [];
-    let strategyResponse = "Ash thinks carefully about the strategy...";
-
-    for (const [keyword, data] of Object.entries(STRATEGY_KEYWORDS)) {
-      if (lower.includes(keyword)) {
-        foundKeywords.push(keyword);
-        strategyResponse = data.response;
-        break;
-      }
+    if (value.trim()) {
+      onSubmit(value.trim());
+      onChange('');
     }
-
-    setResponse(strategyResponse);
-    onStrategy(text, foundKeywords);
-    setText('');
-
-    setTimeout(() => {
-      setResponse('');
-    }, 3000);
   };
 
+  const detectedKeywords = ninjaKeywords.filter((kw) => value.toLowerCase().includes(kw));
+
   return (
-    <div className="bg-black/80 border border-electric-yellow/30 rounded-xl p-3">
-      <div className="flex items-center gap-2 mb-2">
-        <Zap className="w-4 h-4 text-electric-yellow" />
-        <span className="text-electric-yellow font-anime text-sm tracking-wide">STRATEGY</span>
-      </div>
-
-      {response && (
-        <div className="mb-2 p-2 bg-electric-yellow/10 border border-electric-yellow/30 rounded-lg text-electric-yellow text-xs font-bold dialog-slide-in">
-          🎯 {response}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="flex gap-2">
+    <form onSubmit={handleSubmit} className="w-full">
+      <label className="block text-[10px] md:text-xs font-bold text-primary/80 mb-1 tracking-widest uppercase">
+        🥷 Ninja Strategy
+      </label>
+      <div className={`flex gap-2 rounded-xl border transition-colors ${focused ? 'border-primary/60' : 'border-border'} bg-card`}>
         <input
           type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Type your strategy... (e.g. 'use quick attack to circle')"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           disabled={disabled}
-          className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-xs placeholder:text-white/40 focus:outline-none focus:border-electric-yellow/60"
+          placeholder="Enter your ninja battle strategy…"
+          className="flex-1 bg-transparent px-3 py-3 text-xs md:text-sm text-foreground placeholder:text-muted-foreground/60 outline-none disabled:opacity-50 min-h-[44px]"
+          style={{ fontSize: '16px' }} // prevent iOS zoom on focus
         />
         <button
           type="submit"
-          disabled={disabled || !text.trim()}
-          className="bg-electric-yellow text-dark-navy px-3 py-2 rounded-lg font-bold text-xs hover:bg-yellow-400 disabled:opacity-50 transition-colors flex items-center gap-1"
+          disabled={disabled || !value.trim()}
+          className="px-3 md:px-4 py-2 bg-primary text-primary-foreground rounded-r-xl text-xs font-bold disabled:opacity-40 transition-colors hover:bg-primary/90 min-h-[44px] min-w-[48px] touch-manipulation"
         >
-          <Send className="w-3 h-3" />
+          GO
         </button>
-      </form>
-    </div>
+      </div>
+      {detectedKeywords.length > 0 && (
+        <div className="flex flex-wrap gap-1 mt-1">
+          {detectedKeywords.map((kw) => (
+            <span key={kw} className="text-[9px] px-1.5 py-0.5 bg-primary/20 text-primary rounded-full font-medium">
+              {kw}
+            </span>
+          ))}
+        </div>
+      )}
+    </form>
   );
 }

@@ -7,53 +7,36 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
-export interface UserProfile {
-    trainerName: string;
-    avatarUrl?: string;
-}
-export interface PokemonMove {
+export type Blob = Uint8Array;
+export interface NinjaTechnique {
     name: string;
-    effect?: MoveEffect;
+    effect?: TechniqueEffect;
     power: bigint;
 }
-export interface BattleStatus {
-    isPoisoned: boolean;
-    isFatigued: boolean;
-    isBerserk: boolean;
-    isShielded: boolean;
-    isCursed: boolean;
-    isParalyzed: boolean;
-    isConfused: boolean;
-    isLocked: boolean;
-    isAmped: boolean;
-}
-export type PokemonEvolutionStone = {
-    __kind__: "iceStone";
-    iceStone: string;
-} | {
-    __kind__: "thunderStone";
-    thunderStone: string;
-} | {
-    __kind__: "duskStone";
-    duskStone: string;
+export type ElementalMastery = {
+    __kind__: "ice";
+    ice: string;
 } | {
     __kind__: "magnetizer";
     magnetizer: string;
 } | {
-    __kind__: "hydrationStone";
-    hydrationStone: string;
-} | {
-    __kind__: "leafStone";
-    leafStone: string;
-} | {
     __kind__: "magmarizer";
     magmarizer: string;
 } | {
-    __kind__: "electricStone";
-    electricStone: string;
+    __kind__: "dark";
+    dark: string;
 } | {
-    __kind__: "waterStone";
-    waterStone: string;
+    __kind__: "dawn";
+    dawn: string;
+} | {
+    __kind__: "dusk";
+    dusk: string;
+} | {
+    __kind__: "fire";
+    fire: string;
+} | {
+    __kind__: "wind";
+    wind: string;
 } | {
     __kind__: "metalCoat";
     metalCoat: string;
@@ -61,20 +44,11 @@ export type PokemonEvolutionStone = {
     __kind__: "upgrade";
     upgrade: string;
 } | {
-    __kind__: "fireSTONE";
-    fireSTONE: string;
-} | {
-    __kind__: "darkStone";
-    darkStone: string;
+    __kind__: "earth";
+    earth: string;
 } | {
     __kind__: "kingRock";
     kingRock: string;
-} | {
-    __kind__: "dawnStone";
-    dawnStone: string;
-} | {
-    __kind__: "fireStone";
-    fireStone: string;
 } | {
     __kind__: "skyScale";
     skyScale: string;
@@ -82,14 +56,20 @@ export type PokemonEvolutionStone = {
     __kind__: "protector";
     protector: string;
 } | {
+    __kind__: "hydration";
+    hydration: string;
+} | {
     __kind__: "moonStone";
     moonStone: string;
 } | {
-    __kind__: "grassStone";
-    grassStone: string;
+    __kind__: "water";
+    water: string;
 } | {
     __kind__: "prismScale";
     prismScale: string;
+} | {
+    __kind__: "lightning";
+    lightning: string;
 } | {
     __kind__: "ovalStone";
     ovalStone: string;
@@ -100,114 +80,43 @@ export type PokemonEvolutionStone = {
     __kind__: "seaScale";
     seaScale: string;
 };
-export interface BattleStats {
-    status: BattleStatus;
-    powerUps: Array<MoveInstance>;
-    attacks: Array<MoveInstance>;
-    health: bigint;
-}
-export interface Pokemon {
-    moves: Array<PokemonMove>;
-    name: string;
-    level: bigint;
-    baseSpeed: bigint;
-    baseAttack: bigint;
-    evolutionStone?: PokemonEvolutionStone;
-    baseDefense: bigint;
-    images: Array<PokemonImage>;
-}
-export interface StoryEpisode {
-    gymBattles: Array<PokemonTeamBattle>;
-    victoryBattle?: string;
-    wildPokemon: Array<Pokemon>;
-    storyOutro?: string;
-    locations: Array<string>;
-    battles: Array<BattleLog>;
-    trainerBattles: Array<PokemonTeamBattle>;
-    storyIntro?: string;
-}
-export interface PokemonUltimate {
-    id: bigint;
+export interface MonsterUltimate {
     shenanigans: bigint;
-    name: string;
     speed: bigint;
     stage: string;
+    monsterId: bigint;
     defense: bigint;
+    monsterName: string;
     agility: bigint;
     attack: bigint;
     reactions: bigint;
-    images: Array<PokemonImage>;
+    images: Array<MonsterImage>;
 }
-export type Blob = Uint8Array;
-export interface BattleLog {
-    battleResult: BattleResult;
-    message: string;
-    challenger: string;
-}
-export type Badge = string;
-export interface AttackStrengths {
-    bug: bigint;
-    ice: bigint;
-    psychic: bigint;
-    ground: bigint;
-    normal: bigint;
-    fighting: bigint;
-    dark: bigint;
-    fire: bigint;
-    flying: bigint;
-    rock: bigint;
-    steel: bigint;
-    ghost: bigint;
-    grass: bigint;
-    water: bigint;
-    electric: bigint;
-    dragon: bigint;
-    poison: bigint;
-    fairy: bigint;
-}
-export interface BattlePokemonPersistent {
-    moves: Array<PokemonMove>;
-    name: string;
+export interface Monster {
+    battleTechniques: Array<NinjaTechnique>;
     level: bigint;
-    stats: BattleStats;
     baseSpeed: bigint;
+    monsterName: string;
     baseAttack: bigint;
+    masteryElement?: ElementalMastery;
     baseDefense: bigint;
-    images: Array<PokemonImage>;
+    images: Array<MonsterImage>;
 }
-export interface StoryArc {
-    episodes: Array<StoryEpisode>;
-    name: string;
-    currentEpisode?: StoryEpisode;
-}
-export interface PokemonImage {
+export interface MonsterImage {
     isAnimated: boolean;
     imagePath: string;
     imageUrl: string;
     isRawImage: boolean;
     image: Blob;
 }
-export interface PokemonTeamBattle {
-    team: Array<Pokemon>;
-    trainer: string;
+export interface UserProfile {
+    victories: bigint;
+    ninjaName: string;
+    avatarUrl?: string;
+    dojoSeals: bigint;
+    clanName: string;
 }
-export interface MoveInstance {
-    boostSpeed: boolean;
-    name: string;
-    boostDefense: boolean;
-    boostAttack: boolean;
-    attackStrength: AttackStrengths;
-}
-export enum BattleResult {
-    pending = "pending",
-    trainerWin = "trainerWin",
-    invalid = "invalid",
-    draw = "draw",
-    error = "error",
-    ongoing = "ongoing",
-    challengerWin = "challengerWin"
-}
-export enum MoveEffect {
+export enum TechniqueEffect {
     boostSpeed = "boostSpeed",
     paralyzeOpponent = "paralyzeOpponent",
     confuseOpponent = "confuseOpponent",
@@ -221,35 +130,15 @@ export enum UserRole {
 }
 export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    challengeEliteFour(): Promise<string>;
-    challengeGymLeader(): Promise<string>;
-    challengeUltimateChampion(): Promise<string>;
-    createBattleLog(challenger: string, result: BattleResult): Promise<BattleLog>;
-    evolvePokemon(): Promise<void>;
-    getBadges(): Promise<Array<Badge>>;
-    getBattlePokemonQuery(pokemon: string): Promise<BattlePokemonPersistent | null>;
-    getCallerUserProfile(): Promise<UserProfile | null>;
+    getCallerUserProfile(): Promise<UserProfile>;
     getCallerUserRole(): Promise<UserRole>;
+    getDojoSeals(): Promise<Array<string>>;
     getLog(): Promise<Array<string>>;
+    getMonsterDXData(monster: string): Promise<Monster | null>;
+    getMonsters(): Promise<Array<Monster>>;
     getOpponent(type: string): Promise<string>;
-    getPersistent(): Promise<BattlePokemonPersistent>;
-    getPokemon(): Promise<Array<Pokemon>>;
-    getPokemonDXData(pokemon: string): Promise<Pokemon | null>;
-    getPokemonData(): Promise<void>;
-    getStoryArc(): Promise<StoryArc>;
-    getStrategyResponse(): Promise<string>;
-    getTrainerPokemon(pokemonId: bigint): Promise<BattlePokemonPersistent | null>;
-    getUltimatePokemon(): Promise<Array<PokemonUltimate>>;
-    getUserProfile(user: Principal): Promise<UserProfile | null>;
-    hasStatus(status: string): Promise<boolean>;
+    getUltimateMonsters(): Promise<Array<MonsterUltimate>>;
+    getUserProfile(user: Principal): Promise<UserProfile>;
     isCallerAdmin(): Promise<boolean>;
-    notifyBattleResult(): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
-    updateDialogs(): Promise<void>;
-    updateMoves(): Promise<void>;
-    updateMusic(): Promise<void>;
-    updateOpponent(): Promise<void>;
-    updatePokemon(pokemon: string): Promise<boolean>;
-    updateStats(): Promise<Array<string>>;
-    updateTrainerParty(): Promise<void>;
 }

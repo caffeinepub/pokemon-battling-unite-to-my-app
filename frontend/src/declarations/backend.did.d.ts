@@ -10,159 +10,74 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface AttackStrengths {
-  'bug' : bigint,
-  'ice' : bigint,
-  'psychic' : bigint,
-  'ground' : bigint,
-  'normal' : bigint,
-  'fighting' : bigint,
-  'dark' : bigint,
-  'fire' : bigint,
-  'flying' : bigint,
-  'rock' : bigint,
-  'steel' : bigint,
-  'ghost' : bigint,
-  'grass' : bigint,
-  'water' : bigint,
-  'electric' : bigint,
-  'dragon' : bigint,
-  'poison' : bigint,
-  'fairy' : bigint,
-}
-export type Badge = string;
-export interface BattleLog {
-  'battleResult' : BattleResult,
-  'message' : string,
-  'challenger' : string,
-}
-export interface BattlePokemonPersistent {
-  'moves' : Array<PokemonMove>,
-  'name' : string,
-  'level' : bigint,
-  'stats' : BattleStats,
-  'baseSpeed' : bigint,
-  'baseAttack' : bigint,
-  'baseDefense' : bigint,
-  'images' : Array<PokemonImage>,
-}
-export type BattleResult = { 'pending' : null } |
-  { 'trainerWin' : null } |
-  { 'invalid' : null } |
-  { 'draw' : null } |
-  { 'error' : null } |
-  { 'ongoing' : null } |
-  { 'challengerWin' : null };
-export interface BattleStats {
-  'status' : BattleStatus,
-  'powerUps' : Array<MoveInstance>,
-  'attacks' : Array<MoveInstance>,
-  'health' : bigint,
-}
-export interface BattleStatus {
-  'isPoisoned' : boolean,
-  'isFatigued' : boolean,
-  'isBerserk' : boolean,
-  'isShielded' : boolean,
-  'isCursed' : boolean,
-  'isParalyzed' : boolean,
-  'isConfused' : boolean,
-  'isLocked' : boolean,
-  'isAmped' : boolean,
-}
 export type Blob = Uint8Array;
-export type MoveEffect = { 'boostSpeed' : null } |
-  { 'paralyzeOpponent' : null } |
-  { 'confuseOpponent' : null } |
-  { 'boostDefense' : null } |
-  { 'boostAttack' : null };
-export interface MoveInstance {
-  'boostSpeed' : boolean,
-  'name' : string,
-  'boostDefense' : boolean,
-  'boostAttack' : boolean,
-  'attackStrength' : AttackStrengths,
-}
-export interface Pokemon {
-  'moves' : Array<PokemonMove>,
-  'name' : string,
-  'level' : bigint,
-  'baseSpeed' : bigint,
-  'baseAttack' : bigint,
-  'evolutionStone' : [] | [PokemonEvolutionStone],
-  'baseDefense' : bigint,
-  'images' : Array<PokemonImage>,
-}
-export type PokemonEvolutionStone = { 'iceStone' : string } |
-  { 'thunderStone' : string } |
-  { 'duskStone' : string } |
+export type ElementalMastery = { 'ice' : string } |
   { 'magnetizer' : string } |
-  { 'hydrationStone' : string } |
-  { 'leafStone' : string } |
   { 'magmarizer' : string } |
-  { 'electricStone' : string } |
-  { 'waterStone' : string } |
+  { 'dark' : string } |
+  { 'dawn' : string } |
+  { 'dusk' : string } |
+  { 'fire' : string } |
+  { 'wind' : string } |
   { 'metalCoat' : string } |
   { 'upgrade' : string } |
-  { 'fireSTONE' : string } |
-  { 'darkStone' : string } |
+  { 'earth' : string } |
   { 'kingRock' : string } |
-  { 'dawnStone' : string } |
-  { 'fireStone' : string } |
   { 'skyScale' : string } |
   { 'protector' : string } |
+  { 'hydration' : string } |
   { 'moonStone' : string } |
-  { 'grassStone' : string } |
+  { 'water' : string } |
   { 'prismScale' : string } |
+  { 'lightning' : string } |
   { 'ovalStone' : string } |
   { 'shineStone' : string } |
   { 'seaScale' : string };
-export interface PokemonImage {
+export interface Monster {
+  'battleTechniques' : Array<NinjaTechnique>,
+  'level' : bigint,
+  'baseSpeed' : bigint,
+  'monsterName' : string,
+  'baseAttack' : bigint,
+  'masteryElement' : [] | [ElementalMastery],
+  'baseDefense' : bigint,
+  'images' : Array<MonsterImage>,
+}
+export interface MonsterImage {
   'isAnimated' : boolean,
   'imagePath' : string,
   'imageUrl' : string,
   'isRawImage' : boolean,
   'image' : Blob,
 }
-export interface PokemonMove {
-  'name' : string,
-  'effect' : [] | [MoveEffect],
-  'power' : bigint,
-}
-export interface PokemonTeamBattle {
-  'team' : Array<Pokemon>,
-  'trainer' : string,
-}
-export interface PokemonUltimate {
-  'id' : bigint,
+export interface MonsterUltimate {
   'shenanigans' : bigint,
-  'name' : string,
   'speed' : bigint,
   'stage' : string,
+  'monsterId' : bigint,
   'defense' : bigint,
+  'monsterName' : string,
   'agility' : bigint,
   'attack' : bigint,
   'reactions' : bigint,
-  'images' : Array<PokemonImage>,
+  'images' : Array<MonsterImage>,
 }
-export interface StoryArc {
-  'episodes' : Array<StoryEpisode>,
+export interface NinjaTechnique {
   'name' : string,
-  'currentEpisode' : [] | [StoryEpisode],
+  'effect' : [] | [TechniqueEffect],
+  'power' : bigint,
 }
-export interface StoryEpisode {
-  'gymBattles' : Array<PokemonTeamBattle>,
-  'victoryBattle' : [] | [string],
-  'wildPokemon' : Array<Pokemon>,
-  'storyOutro' : [] | [string],
-  'locations' : Array<string>,
-  'battles' : Array<BattleLog>,
-  'trainerBattles' : Array<PokemonTeamBattle>,
-  'storyIntro' : [] | [string],
-}
+export type TechniqueEffect = { 'boostSpeed' : null } |
+  { 'paralyzeOpponent' : null } |
+  { 'confuseOpponent' : null } |
+  { 'boostDefense' : null } |
+  { 'boostAttack' : null };
 export interface UserProfile {
-  'trainerName' : string,
+  'victories' : bigint,
+  'ninjaName' : string,
   'avatarUrl' : [] | [string],
+  'dojoSeals' : bigint,
+  'clanName' : string,
 }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
@@ -196,40 +111,17 @@ export interface _SERVICE {
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'challengeEliteFour' : ActorMethod<[], string>,
-  'challengeGymLeader' : ActorMethod<[], string>,
-  'challengeUltimateChampion' : ActorMethod<[], string>,
-  'createBattleLog' : ActorMethod<[string, BattleResult], BattleLog>,
-  'evolvePokemon' : ActorMethod<[], undefined>,
-  'getBadges' : ActorMethod<[], Array<Badge>>,
-  'getBattlePokemonQuery' : ActorMethod<
-    [string],
-    [] | [BattlePokemonPersistent]
-  >,
-  'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
+  'getCallerUserProfile' : ActorMethod<[], UserProfile>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getDojoSeals' : ActorMethod<[], Array<string>>,
   'getLog' : ActorMethod<[], Array<string>>,
+  'getMonsterDXData' : ActorMethod<[string], [] | [Monster]>,
+  'getMonsters' : ActorMethod<[], Array<Monster>>,
   'getOpponent' : ActorMethod<[string], string>,
-  'getPersistent' : ActorMethod<[], BattlePokemonPersistent>,
-  'getPokemon' : ActorMethod<[], Array<Pokemon>>,
-  'getPokemonDXData' : ActorMethod<[string], [] | [Pokemon]>,
-  'getPokemonData' : ActorMethod<[], undefined>,
-  'getStoryArc' : ActorMethod<[], StoryArc>,
-  'getStrategyResponse' : ActorMethod<[], string>,
-  'getTrainerPokemon' : ActorMethod<[bigint], [] | [BattlePokemonPersistent]>,
-  'getUltimatePokemon' : ActorMethod<[], Array<PokemonUltimate>>,
-  'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
-  'hasStatus' : ActorMethod<[string], boolean>,
+  'getUltimateMonsters' : ActorMethod<[], Array<MonsterUltimate>>,
+  'getUserProfile' : ActorMethod<[Principal], UserProfile>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
-  'notifyBattleResult' : ActorMethod<[], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
-  'updateDialogs' : ActorMethod<[], undefined>,
-  'updateMoves' : ActorMethod<[], undefined>,
-  'updateMusic' : ActorMethod<[], undefined>,
-  'updateOpponent' : ActorMethod<[], undefined>,
-  'updatePokemon' : ActorMethod<[string], boolean>,
-  'updateStats' : ActorMethod<[], Array<string>>,
-  'updateTrainerParty' : ActorMethod<[], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

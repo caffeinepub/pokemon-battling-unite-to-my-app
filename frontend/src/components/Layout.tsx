@@ -1,113 +1,147 @@
-import React from 'react';
-import { Outlet, useNavigate, useLocation } from '@tanstack/react-router';
-import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import { useQueryClient } from '@tanstack/react-query';
-import { Zap, Map, Sword, User, Package, Home } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link, useLocation } from '@tanstack/react-router';
+import { Home, Swords, Building2, Users, User, ScrollText, Menu, X } from 'lucide-react';
 
-export default function Layout() {
-  const navigate = useNavigate();
+const navItems = [
+  { path: '/game', label: 'Home', icon: Home },
+  { path: '/battle', label: 'Battle', icon: Swords },
+  { path: '/gyms', label: 'Dojos', icon: Building2 },
+  { path: '/roster', label: 'Roster', icon: Users },
+  { path: '/lore', label: 'Lore', icon: ScrollText },
+  { path: '/profile', label: 'Profile', icon: User },
+];
+
+const mobileBottomNav = [
+  { path: '/game', label: 'Home', icon: Home },
+  { path: '/battle', label: 'Battle', icon: Swords },
+  { path: '/gyms', label: 'Dojos', icon: Building2 },
+  { path: '/roster', label: 'Roster', icon: Users },
+  { path: '/profile', label: 'Profile', icon: User },
+];
+
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
-  const { identity, clear } = useInternetIdentity();
-  const queryClient = useQueryClient();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleLogout = async () => {
-    await clear();
-    queryClient.clear();
-    navigate({ to: '/' });
-  };
-
-  const navItems = [
-    { path: '/game', icon: <Home className="w-5 h-5" />, label: 'Home' },
-    { path: '/story', icon: <Map className="w-5 h-5" />, label: 'Story' },
-    { path: '/gyms', icon: <Sword className="w-5 h-5" />, label: 'Gyms' },
-    { path: '/roster', icon: <Package className="w-5 h-5" />, label: 'Roster' },
-    { path: '/profile', icon: <User className="w-5 h-5" />, label: 'Profile' },
-  ];
-
-  const isGameRoute = ['/battle', '/intro', '/starter-selection'].some((r) =>
-    location.pathname.startsWith(r)
-  );
+  const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '/');
 
   return (
-    <div className="min-h-screen bg-dark-navy flex flex-col">
-      {/* Header */}
-      {!isGameRoute && (
-        <header className="bg-black/80 border-b border-electric-yellow/20 sticky top-0 z-40">
-          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <button
-              onClick={() => navigate({ to: '/game' })}
-              className="flex items-center gap-2"
-            >
-              <img
-                src="/assets/generated/app-logo.dim_600x200.png"
-                alt="Ash's Pokemon Journey"
-                className="h-10 object-contain"
-              />
-            </button>
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Desktop Header */}
+      <header className="hidden md:flex sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 max-w-screen-2xl items-center px-4">
+          <Link to="/game" className="flex items-center gap-2 mr-6">
+            <span className="text-xl font-bold text-primary tracking-wider">⚡ NINJA QUEST</span>
+          </Link>
+          <nav className="flex items-center gap-1 flex-1">
+            {navItems.map(({ path, label, icon: Icon }) => (
+              <Link
+                key={path}
+                to={path}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive(path)
+                    ? 'bg-primary/20 text-primary'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/10'
+                }`}
+              >
+                <Icon size={15} />
+                {label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      </header>
 
-            <div className="flex items-center gap-2">
-              {identity && (
-                <button
-                  onClick={handleLogout}
-                  className="text-white/60 hover:text-white text-sm font-bold px-3 py-1 rounded-lg border border-white/20 hover:border-white/40 transition-colors"
+      {/* Mobile Header */}
+      <header className="md:hidden sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur">
+        <div className="flex h-12 items-center justify-between px-4">
+          <Link to="/game" className="flex items-center gap-2">
+            <span className="text-lg font-bold text-primary tracking-wider">⚡ NINJA QUEST</span>
+          </Link>
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/10 transition-colors"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
+
+        {/* Mobile Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div className="border-t border-border/40 bg-background/98 backdrop-blur">
+            <nav className="flex flex-col py-2">
+              {navItems.map(({ path, label, icon: Icon }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors ${
+                    isActive(path)
+                      ? 'bg-primary/20 text-primary'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/10'
+                  }`}
                 >
-                  Logout
-                </button>
-              )}
-            </div>
+                  <Icon size={18} />
+                  {label}
+                </Link>
+              ))}
+            </nav>
           </div>
-        </header>
-      )}
+        )}
+      </header>
 
-      {/* Main content */}
-      <main className="flex-1">
-        <Outlet />
+      {/* Main Content — add bottom padding on mobile for bottom nav */}
+      <main className="flex-1 pb-16 md:pb-0">
+        {children}
       </main>
 
-      {/* Bottom navigation (game screens) */}
-      {!isGameRoute && identity && (
-        <nav className="bg-black/90 border-t border-electric-yellow/20 sticky bottom-0 z-40">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center justify-around py-2">
-              {navItems.map((item) => {
-                const isActive = location.pathname === item.path;
-                return (
-                  <button
-                    key={item.path}
-                    onClick={() => navigate({ to: item.path as '/' })}
-                    className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all ${
-                      isActive
-                        ? 'text-electric-yellow bg-electric-yellow/10'
-                        : 'text-white/50 hover:text-white/80'
-                    }`}
-                  >
-                    {item.icon}
-                    <span className="text-xs font-bold">{item.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </nav>
-      )}
+      {/* Mobile Bottom Navigation Bar */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-border/60 bg-background/98 backdrop-blur-md">
+        <div className="flex items-stretch h-16">
+          {mobileBottomNav.map(({ path, label, icon: Icon }) => {
+            const active = isActive(path);
+            return (
+              <Link
+                key={path}
+                to={path}
+                className={`flex-1 flex flex-col items-center justify-center gap-0.5 min-h-[48px] transition-colors ${
+                  active
+                    ? 'text-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <div className={`p-1 rounded-lg transition-all ${active ? 'bg-primary/20' : ''}`}>
+                  <Icon size={20} strokeWidth={active ? 2.5 : 1.8} />
+                </div>
+                <span className={`text-[10px] font-medium leading-none ${active ? 'text-primary' : ''}`}>
+                  {label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
 
-      {/* Footer */}
-      {!isGameRoute && (
-        <footer className="bg-black/60 border-t border-white/5 py-3 text-center">
-          <p className="text-white/30 text-xs">
-            © {new Date().getFullYear()} Ash's Pokemon Journey — Built with{' '}
-            <span className="text-red-400">❤️</span> using{' '}
-            <a
-              href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname || 'ashs-pokemon-journey')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-electric-yellow hover:underline"
-            >
-              caffeine.ai
-            </a>
-          </p>
-        </footer>
-      )}
+      {/* Footer — hidden on mobile to save space */}
+      <footer className="hidden md:block border-t border-border/40 bg-background/80 py-4 text-center text-xs text-muted-foreground">
+        <p>
+          © {new Date().getFullYear()} Ninja Quest &nbsp;·&nbsp; Built with{' '}
+          <span className="text-red-500">♥</span> using{' '}
+          <a
+            href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(typeof window !== 'undefined' ? window.location.hostname : 'ninja-quest')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            caffeine.ai
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }

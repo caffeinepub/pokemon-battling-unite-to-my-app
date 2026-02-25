@@ -89,60 +89,36 @@ export class ExternalBlob {
         return this;
     }
 }
-export interface UserProfile {
-    trainerName: string;
-    avatarUrl?: string;
-}
-export interface _CaffeineStorageRefillResult {
-    success?: boolean;
-    topped_up_amount?: bigint;
-}
-export interface PokemonMove {
+export type Blob = Uint8Array;
+export interface NinjaTechnique {
     name: string;
-    effect?: MoveEffect;
+    effect?: TechniqueEffect;
     power: bigint;
 }
-export interface BattleStatus {
-    isPoisoned: boolean;
-    isFatigued: boolean;
-    isBerserk: boolean;
-    isShielded: boolean;
-    isCursed: boolean;
-    isParalyzed: boolean;
-    isConfused: boolean;
-    isLocked: boolean;
-    isAmped: boolean;
-}
-export interface _CaffeineStorageRefillInformation {
-    proposed_top_up_amount?: bigint;
-}
-export type PokemonEvolutionStone = {
-    __kind__: "iceStone";
-    iceStone: string;
-} | {
-    __kind__: "thunderStone";
-    thunderStone: string;
-} | {
-    __kind__: "duskStone";
-    duskStone: string;
+export type ElementalMastery = {
+    __kind__: "ice";
+    ice: string;
 } | {
     __kind__: "magnetizer";
     magnetizer: string;
 } | {
-    __kind__: "hydrationStone";
-    hydrationStone: string;
-} | {
-    __kind__: "leafStone";
-    leafStone: string;
-} | {
     __kind__: "magmarizer";
     magmarizer: string;
 } | {
-    __kind__: "electricStone";
-    electricStone: string;
+    __kind__: "dark";
+    dark: string;
 } | {
-    __kind__: "waterStone";
-    waterStone: string;
+    __kind__: "dawn";
+    dawn: string;
+} | {
+    __kind__: "dusk";
+    dusk: string;
+} | {
+    __kind__: "fire";
+    fire: string;
+} | {
+    __kind__: "wind";
+    wind: string;
 } | {
     __kind__: "metalCoat";
     metalCoat: string;
@@ -150,20 +126,11 @@ export type PokemonEvolutionStone = {
     __kind__: "upgrade";
     upgrade: string;
 } | {
-    __kind__: "fireSTONE";
-    fireSTONE: string;
-} | {
-    __kind__: "darkStone";
-    darkStone: string;
+    __kind__: "earth";
+    earth: string;
 } | {
     __kind__: "kingRock";
     kingRock: string;
-} | {
-    __kind__: "dawnStone";
-    dawnStone: string;
-} | {
-    __kind__: "fireStone";
-    fireStone: string;
 } | {
     __kind__: "skyScale";
     skyScale: string;
@@ -171,14 +138,20 @@ export type PokemonEvolutionStone = {
     __kind__: "protector";
     protector: string;
 } | {
+    __kind__: "hydration";
+    hydration: string;
+} | {
     __kind__: "moonStone";
     moonStone: string;
 } | {
-    __kind__: "grassStone";
-    grassStone: string;
+    __kind__: "water";
+    water: string;
 } | {
     __kind__: "prismScale";
     prismScale: string;
+} | {
+    __kind__: "lightning";
+    lightning: string;
 } | {
     __kind__: "ovalStone";
     ovalStone: string;
@@ -189,118 +162,54 @@ export type PokemonEvolutionStone = {
     __kind__: "seaScale";
     seaScale: string;
 };
-export interface BattleStats {
-    status: BattleStatus;
-    powerUps: Array<MoveInstance>;
-    attacks: Array<MoveInstance>;
-    health: bigint;
+export interface _CaffeineStorageRefillInformation {
+    proposed_top_up_amount?: bigint;
 }
-export interface Pokemon {
-    moves: Array<PokemonMove>;
-    name: string;
+export interface MonsterUltimate {
+    shenanigans: bigint;
+    speed: bigint;
+    stage: string;
+    monsterId: bigint;
+    defense: bigint;
+    monsterName: string;
+    agility: bigint;
+    attack: bigint;
+    reactions: bigint;
+    images: Array<MonsterImage>;
+}
+export interface Monster {
+    battleTechniques: Array<NinjaTechnique>;
     level: bigint;
     baseSpeed: bigint;
+    monsterName: string;
     baseAttack: bigint;
-    evolutionStone?: PokemonEvolutionStone;
+    masteryElement?: ElementalMastery;
     baseDefense: bigint;
-    images: Array<PokemonImage>;
-}
-export interface StoryEpisode {
-    gymBattles: Array<PokemonTeamBattle>;
-    victoryBattle?: string;
-    wildPokemon: Array<Pokemon>;
-    storyOutro?: string;
-    locations: Array<string>;
-    battles: Array<BattleLog>;
-    trainerBattles: Array<PokemonTeamBattle>;
-    storyIntro?: string;
+    images: Array<MonsterImage>;
 }
 export interface _CaffeineStorageCreateCertificateResult {
     method: string;
     blob_hash: string;
 }
-export interface PokemonUltimate {
-    id: bigint;
-    shenanigans: bigint;
-    name: string;
-    speed: bigint;
-    stage: string;
-    defense: bigint;
-    agility: bigint;
-    attack: bigint;
-    reactions: bigint;
-    images: Array<PokemonImage>;
-}
-export type Blob = Uint8Array;
-export interface BattleLog {
-    battleResult: BattleResult;
-    message: string;
-    challenger: string;
-}
-export type Badge = string;
-export interface AttackStrengths {
-    bug: bigint;
-    ice: bigint;
-    psychic: bigint;
-    ground: bigint;
-    normal: bigint;
-    fighting: bigint;
-    dark: bigint;
-    fire: bigint;
-    flying: bigint;
-    rock: bigint;
-    steel: bigint;
-    ghost: bigint;
-    grass: bigint;
-    water: bigint;
-    electric: bigint;
-    dragon: bigint;
-    poison: bigint;
-    fairy: bigint;
-}
-export interface BattlePokemonPersistent {
-    moves: Array<PokemonMove>;
-    name: string;
-    level: bigint;
-    stats: BattleStats;
-    baseSpeed: bigint;
-    baseAttack: bigint;
-    baseDefense: bigint;
-    images: Array<PokemonImage>;
-}
-export interface StoryArc {
-    episodes: Array<StoryEpisode>;
-    name: string;
-    currentEpisode?: StoryEpisode;
-}
-export interface PokemonImage {
+export interface MonsterImage {
     isAnimated: boolean;
     imagePath: string;
     imageUrl: string;
     isRawImage: boolean;
     image: Blob;
 }
-export interface PokemonTeamBattle {
-    team: Array<Pokemon>;
-    trainer: string;
+export interface UserProfile {
+    victories: bigint;
+    ninjaName: string;
+    avatarUrl?: string;
+    dojoSeals: bigint;
+    clanName: string;
 }
-export interface MoveInstance {
-    boostSpeed: boolean;
-    name: string;
-    boostDefense: boolean;
-    boostAttack: boolean;
-    attackStrength: AttackStrengths;
+export interface _CaffeineStorageRefillResult {
+    success?: boolean;
+    topped_up_amount?: bigint;
 }
-export enum BattleResult {
-    pending = "pending",
-    trainerWin = "trainerWin",
-    invalid = "invalid",
-    draw = "draw",
-    error = "error",
-    ongoing = "ongoing",
-    challengerWin = "challengerWin"
-}
-export enum MoveEffect {
+export enum TechniqueEffect {
     boostSpeed = "boostSpeed",
     paralyzeOpponent = "paralyzeOpponent",
     confuseOpponent = "confuseOpponent",
@@ -321,39 +230,19 @@ export interface backendInterface {
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    challengeEliteFour(): Promise<string>;
-    challengeGymLeader(): Promise<string>;
-    challengeUltimateChampion(): Promise<string>;
-    createBattleLog(challenger: string, result: BattleResult): Promise<BattleLog>;
-    evolvePokemon(): Promise<void>;
-    getBadges(): Promise<Array<Badge>>;
-    getBattlePokemonQuery(pokemon: string): Promise<BattlePokemonPersistent | null>;
-    getCallerUserProfile(): Promise<UserProfile | null>;
+    getCallerUserProfile(): Promise<UserProfile>;
     getCallerUserRole(): Promise<UserRole>;
+    getDojoSeals(): Promise<Array<string>>;
     getLog(): Promise<Array<string>>;
+    getMonsterDXData(monster: string): Promise<Monster | null>;
+    getMonsters(): Promise<Array<Monster>>;
     getOpponent(type: string): Promise<string>;
-    getPersistent(): Promise<BattlePokemonPersistent>;
-    getPokemon(): Promise<Array<Pokemon>>;
-    getPokemonDXData(pokemon: string): Promise<Pokemon | null>;
-    getPokemonData(): Promise<void>;
-    getStoryArc(): Promise<StoryArc>;
-    getStrategyResponse(): Promise<string>;
-    getTrainerPokemon(pokemonId: bigint): Promise<BattlePokemonPersistent | null>;
-    getUltimatePokemon(): Promise<Array<PokemonUltimate>>;
-    getUserProfile(user: Principal): Promise<UserProfile | null>;
-    hasStatus(status: string): Promise<boolean>;
+    getUltimateMonsters(): Promise<Array<MonsterUltimate>>;
+    getUserProfile(user: Principal): Promise<UserProfile>;
     isCallerAdmin(): Promise<boolean>;
-    notifyBattleResult(): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
-    updateDialogs(): Promise<void>;
-    updateMoves(): Promise<void>;
-    updateMusic(): Promise<void>;
-    updateOpponent(): Promise<void>;
-    updatePokemon(pokemon: string): Promise<boolean>;
-    updateStats(): Promise<Array<string>>;
-    updateTrainerParty(): Promise<void>;
 }
-import type { BattleLog as _BattleLog, BattlePokemonPersistent as _BattlePokemonPersistent, BattleResult as _BattleResult, BattleStats as _BattleStats, MoveEffect as _MoveEffect, Pokemon as _Pokemon, PokemonEvolutionStone as _PokemonEvolutionStone, PokemonImage as _PokemonImage, PokemonMove as _PokemonMove, PokemonTeamBattle as _PokemonTeamBattle, StoryArc as _StoryArc, StoryEpisode as _StoryEpisode, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { ElementalMastery as _ElementalMastery, Monster as _Monster, MonsterImage as _MonsterImage, NinjaTechnique as _NinjaTechnique, TechniqueEffect as _TechniqueEffect, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -468,130 +357,46 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async challengeEliteFour(): Promise<string> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.challengeEliteFour();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.challengeEliteFour();
-            return result;
-        }
-    }
-    async challengeGymLeader(): Promise<string> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.challengeGymLeader();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.challengeGymLeader();
-            return result;
-        }
-    }
-    async challengeUltimateChampion(): Promise<string> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.challengeUltimateChampion();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.challengeUltimateChampion();
-            return result;
-        }
-    }
-    async createBattleLog(arg0: string, arg1: BattleResult): Promise<BattleLog> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.createBattleLog(arg0, to_candid_BattleResult_n10(this._uploadFile, this._downloadFile, arg1));
-                return from_candid_BattleLog_n12(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.createBattleLog(arg0, to_candid_BattleResult_n10(this._uploadFile, this._downloadFile, arg1));
-            return from_candid_BattleLog_n12(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async evolvePokemon(): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.evolvePokemon();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.evolvePokemon();
-            return result;
-        }
-    }
-    async getBadges(): Promise<Array<Badge>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getBadges();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getBadges();
-            return result;
-        }
-    }
-    async getBattlePokemonQuery(arg0: string): Promise<BattlePokemonPersistent | null> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getBattlePokemonQuery(arg0);
-                return from_candid_opt_n16(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getBattlePokemonQuery(arg0);
-            return from_candid_opt_n16(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getCallerUserProfile(): Promise<UserProfile | null> {
+    async getCallerUserProfile(): Promise<UserProfile> {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerUserProfile();
-                return from_candid_opt_n25(this._uploadFile, this._downloadFile, result);
+                return from_candid_UserProfile_n10(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerUserProfile();
-            return from_candid_opt_n25(this._uploadFile, this._downloadFile, result);
+            return from_candid_UserProfile_n10(this._uploadFile, this._downloadFile, result);
         }
     }
     async getCallerUserRole(): Promise<UserRole> {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerUserRole();
-                return from_candid_UserRole_n29(this._uploadFile, this._downloadFile, result);
+                return from_candid_UserRole_n13(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerUserRole();
-            return from_candid_UserRole_n29(this._uploadFile, this._downloadFile, result);
+            return from_candid_UserRole_n13(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getDojoSeals(): Promise<Array<string>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getDojoSeals();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getDojoSeals();
+            return result;
         }
     }
     async getLog(): Promise<Array<string>> {
@@ -608,6 +413,34 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async getMonsterDXData(arg0: string): Promise<Monster | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getMonsterDXData(arg0);
+                return from_candid_opt_n15(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getMonsterDXData(arg0);
+            return from_candid_opt_n15(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getMonsters(): Promise<Array<Monster>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getMonsters();
+                return from_candid_vec_n27(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getMonsters();
+            return from_candid_vec_n27(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getOpponent(arg0: string): Promise<string> {
         if (this.processError) {
             try {
@@ -622,144 +455,32 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getPersistent(): Promise<BattlePokemonPersistent> {
+    async getUltimateMonsters(): Promise<Array<MonsterUltimate>> {
         if (this.processError) {
             try {
-                const result = await this.actor.getPersistent();
-                return from_candid_BattlePokemonPersistent_n17(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getPersistent();
-            return from_candid_BattlePokemonPersistent_n17(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getPokemon(): Promise<Array<Pokemon>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getPokemon();
-                return from_candid_vec_n31(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getPokemon();
-            return from_candid_vec_n31(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getPokemonDXData(arg0: string): Promise<Pokemon | null> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getPokemonDXData(arg0);
-                return from_candid_opt_n37(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getPokemonDXData(arg0);
-            return from_candid_opt_n37(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getPokemonData(): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getPokemonData();
+                const result = await this.actor.getUltimateMonsters();
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getPokemonData();
+            const result = await this.actor.getUltimateMonsters();
             return result;
         }
     }
-    async getStoryArc(): Promise<StoryArc> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getStoryArc();
-                return from_candid_StoryArc_n38(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getStoryArc();
-            return from_candid_StoryArc_n38(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getStrategyResponse(): Promise<string> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getStrategyResponse();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getStrategyResponse();
-            return result;
-        }
-    }
-    async getTrainerPokemon(arg0: bigint): Promise<BattlePokemonPersistent | null> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getTrainerPokemon(arg0);
-                return from_candid_opt_n16(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getTrainerPokemon(arg0);
-            return from_candid_opt_n16(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getUltimatePokemon(): Promise<Array<PokemonUltimate>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getUltimatePokemon();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getUltimatePokemon();
-            return result;
-        }
-    }
-    async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
+    async getUserProfile(arg0: Principal): Promise<UserProfile> {
         if (this.processError) {
             try {
                 const result = await this.actor.getUserProfile(arg0);
-                return from_candid_opt_n25(this._uploadFile, this._downloadFile, result);
+                return from_candid_UserProfile_n10(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getUserProfile(arg0);
-            return from_candid_opt_n25(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async hasStatus(arg0: string): Promise<boolean> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.hasStatus(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.hasStatus(arg0);
-            return result;
+            return from_candid_UserProfile_n10(this._uploadFile, this._downloadFile, result);
         }
     }
     async isCallerAdmin(): Promise<boolean> {
@@ -776,192 +497,53 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async notifyBattleResult(): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.notifyBattleResult();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.notifyBattleResult();
-            return result;
-        }
-    }
     async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.saveCallerUserProfile(to_candid_UserProfile_n48(this._uploadFile, this._downloadFile, arg0));
+                const result = await this.actor.saveCallerUserProfile(to_candid_UserProfile_n28(this._uploadFile, this._downloadFile, arg0));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.saveCallerUserProfile(to_candid_UserProfile_n48(this._uploadFile, this._downloadFile, arg0));
-            return result;
-        }
-    }
-    async updateDialogs(): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.updateDialogs();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.updateDialogs();
-            return result;
-        }
-    }
-    async updateMoves(): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.updateMoves();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.updateMoves();
-            return result;
-        }
-    }
-    async updateMusic(): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.updateMusic();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.updateMusic();
-            return result;
-        }
-    }
-    async updateOpponent(): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.updateOpponent();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.updateOpponent();
-            return result;
-        }
-    }
-    async updatePokemon(arg0: string): Promise<boolean> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.updatePokemon(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.updatePokemon(arg0);
-            return result;
-        }
-    }
-    async updateStats(): Promise<Array<string>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.updateStats();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.updateStats();
-            return result;
-        }
-    }
-    async updateTrainerParty(): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.updateTrainerParty();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.updateTrainerParty();
+            const result = await this.actor.saveCallerUserProfile(to_candid_UserProfile_n28(this._uploadFile, this._downloadFile, arg0));
             return result;
         }
     }
 }
-function from_candid_BattleLog_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _BattleLog): BattleLog {
-    return from_candid_record_n13(_uploadFile, _downloadFile, value);
+function from_candid_ElementalMastery_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _ElementalMastery): ElementalMastery {
+    return from_candid_variant_n26(_uploadFile, _downloadFile, value);
 }
-function from_candid_BattlePokemonPersistent_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _BattlePokemonPersistent): BattlePokemonPersistent {
-    return from_candid_record_n18(_uploadFile, _downloadFile, value);
+function from_candid_Monster_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Monster): Monster {
+    return from_candid_record_n17(_uploadFile, _downloadFile, value);
 }
-function from_candid_BattleResult_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _BattleResult): BattleResult {
-    return from_candid_variant_n15(_uploadFile, _downloadFile, value);
+function from_candid_NinjaTechnique_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _NinjaTechnique): NinjaTechnique {
+    return from_candid_record_n20(_uploadFile, _downloadFile, value);
 }
-function from_candid_MoveEffect_n23(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _MoveEffect): MoveEffect {
-    return from_candid_variant_n24(_uploadFile, _downloadFile, value);
+function from_candid_TechniqueEffect_n22(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _TechniqueEffect): TechniqueEffect {
+    return from_candid_variant_n23(_uploadFile, _downloadFile, value);
 }
-function from_candid_PokemonEvolutionStone_n35(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _PokemonEvolutionStone): PokemonEvolutionStone {
-    return from_candid_variant_n36(_uploadFile, _downloadFile, value);
+function from_candid_UserProfile_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserProfile): UserProfile {
+    return from_candid_record_n11(_uploadFile, _downloadFile, value);
 }
-function from_candid_PokemonMove_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _PokemonMove): PokemonMove {
-    return from_candid_record_n21(_uploadFile, _downloadFile, value);
-}
-function from_candid_PokemonTeamBattle_n44(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _PokemonTeamBattle): PokemonTeamBattle {
-    return from_candid_record_n45(_uploadFile, _downloadFile, value);
-}
-function from_candid_Pokemon_n32(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Pokemon): Pokemon {
-    return from_candid_record_n33(_uploadFile, _downloadFile, value);
-}
-function from_candid_StoryArc_n38(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _StoryArc): StoryArc {
-    return from_candid_record_n39(_uploadFile, _downloadFile, value);
-}
-function from_candid_StoryEpisode_n41(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _StoryEpisode): StoryEpisode {
-    return from_candid_record_n42(_uploadFile, _downloadFile, value);
-}
-function from_candid_UserProfile_n26(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserProfile): UserProfile {
-    return from_candid_record_n27(_uploadFile, _downloadFile, value);
-}
-function from_candid_UserRole_n29(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
-    return from_candid_variant_n30(_uploadFile, _downloadFile, value);
+function from_candid_UserRole_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
+    return from_candid_variant_n14(_uploadFile, _downloadFile, value);
 }
 function from_candid__CaffeineStorageRefillResult_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: __CaffeineStorageRefillResult): _CaffeineStorageRefillResult {
     return from_candid_record_n5(_uploadFile, _downloadFile, value);
 }
-function from_candid_opt_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_BattlePokemonPersistent]): BattlePokemonPersistent | null {
-    return value.length === 0 ? null : from_candid_BattlePokemonPersistent_n17(_uploadFile, _downloadFile, value[0]);
-}
-function from_candid_opt_n22(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_MoveEffect]): MoveEffect | null {
-    return value.length === 0 ? null : from_candid_MoveEffect_n23(_uploadFile, _downloadFile, value[0]);
-}
-function from_candid_opt_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
-    return value.length === 0 ? null : from_candid_UserProfile_n26(_uploadFile, _downloadFile, value[0]);
-}
-function from_candid_opt_n28(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
+function from_candid_opt_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_opt_n34(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_PokemonEvolutionStone]): PokemonEvolutionStone | null {
-    return value.length === 0 ? null : from_candid_PokemonEvolutionStone_n35(_uploadFile, _downloadFile, value[0]);
+function from_candid_opt_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Monster]): Monster | null {
+    return value.length === 0 ? null : from_candid_Monster_n16(_uploadFile, _downloadFile, value[0]);
 }
-function from_candid_opt_n37(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Pokemon]): Pokemon | null {
-    return value.length === 0 ? null : from_candid_Pokemon_n32(_uploadFile, _downloadFile, value[0]);
+function from_candid_opt_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_TechniqueEffect]): TechniqueEffect | null {
+    return value.length === 0 ? null : from_candid_TechniqueEffect_n22(_uploadFile, _downloadFile, value[0]);
 }
-function from_candid_opt_n47(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_StoryEpisode]): StoryEpisode | null {
-    return value.length === 0 ? null : from_candid_StoryEpisode_n41(_uploadFile, _downloadFile, value[0]);
+function from_candid_opt_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_ElementalMastery]): ElementalMastery | null {
+    return value.length === 0 ? null : from_candid_ElementalMastery_n25(_uploadFile, _downloadFile, value[0]);
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
     return value.length === 0 ? null : value[0];
@@ -969,163 +551,70 @@ function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Ar
 function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [bigint]): bigint | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_record_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    battleResult: _BattleResult;
-    message: string;
-    challenger: string;
-}): {
-    battleResult: BattleResult;
-    message: string;
-    challenger: string;
-} {
-    return {
-        battleResult: from_candid_BattleResult_n14(_uploadFile, _downloadFile, value.battleResult),
-        message: value.message,
-        challenger: value.challenger
-    };
-}
-function from_candid_record_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    moves: Array<_PokemonMove>;
-    name: string;
-    level: bigint;
-    stats: _BattleStats;
-    baseSpeed: bigint;
-    baseAttack: bigint;
-    baseDefense: bigint;
-    images: Array<_PokemonImage>;
-}): {
-    moves: Array<PokemonMove>;
-    name: string;
-    level: bigint;
-    stats: BattleStats;
-    baseSpeed: bigint;
-    baseAttack: bigint;
-    baseDefense: bigint;
-    images: Array<PokemonImage>;
-} {
-    return {
-        moves: from_candid_vec_n19(_uploadFile, _downloadFile, value.moves),
-        name: value.name,
-        level: value.level,
-        stats: value.stats,
-        baseSpeed: value.baseSpeed,
-        baseAttack: value.baseAttack,
-        baseDefense: value.baseDefense,
-        images: value.images
-    };
-}
-function from_candid_record_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    name: string;
-    effect: [] | [_MoveEffect];
-    power: bigint;
-}): {
-    name: string;
-    effect?: MoveEffect;
-    power: bigint;
-} {
-    return {
-        name: value.name,
-        effect: record_opt_to_undefined(from_candid_opt_n22(_uploadFile, _downloadFile, value.effect)),
-        power: value.power
-    };
-}
-function from_candid_record_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    trainerName: string;
+function from_candid_record_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    victories: bigint;
+    ninjaName: string;
     avatarUrl: [] | [string];
+    dojoSeals: bigint;
+    clanName: string;
 }): {
-    trainerName: string;
+    victories: bigint;
+    ninjaName: string;
     avatarUrl?: string;
+    dojoSeals: bigint;
+    clanName: string;
 } {
     return {
-        trainerName: value.trainerName,
-        avatarUrl: record_opt_to_undefined(from_candid_opt_n28(_uploadFile, _downloadFile, value.avatarUrl))
+        victories: value.victories,
+        ninjaName: value.ninjaName,
+        avatarUrl: record_opt_to_undefined(from_candid_opt_n12(_uploadFile, _downloadFile, value.avatarUrl)),
+        dojoSeals: value.dojoSeals,
+        clanName: value.clanName
     };
 }
-function from_candid_record_n33(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    moves: Array<_PokemonMove>;
-    name: string;
+function from_candid_record_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    battleTechniques: Array<_NinjaTechnique>;
     level: bigint;
     baseSpeed: bigint;
+    monsterName: string;
     baseAttack: bigint;
-    evolutionStone: [] | [_PokemonEvolutionStone];
+    masteryElement: [] | [_ElementalMastery];
     baseDefense: bigint;
-    images: Array<_PokemonImage>;
+    images: Array<_MonsterImage>;
 }): {
-    moves: Array<PokemonMove>;
-    name: string;
+    battleTechniques: Array<NinjaTechnique>;
     level: bigint;
     baseSpeed: bigint;
+    monsterName: string;
     baseAttack: bigint;
-    evolutionStone?: PokemonEvolutionStone;
+    masteryElement?: ElementalMastery;
     baseDefense: bigint;
-    images: Array<PokemonImage>;
+    images: Array<MonsterImage>;
 } {
     return {
-        moves: from_candid_vec_n19(_uploadFile, _downloadFile, value.moves),
-        name: value.name,
+        battleTechniques: from_candid_vec_n18(_uploadFile, _downloadFile, value.battleTechniques),
         level: value.level,
         baseSpeed: value.baseSpeed,
+        monsterName: value.monsterName,
         baseAttack: value.baseAttack,
-        evolutionStone: record_opt_to_undefined(from_candid_opt_n34(_uploadFile, _downloadFile, value.evolutionStone)),
+        masteryElement: record_opt_to_undefined(from_candid_opt_n24(_uploadFile, _downloadFile, value.masteryElement)),
         baseDefense: value.baseDefense,
         images: value.images
     };
 }
-function from_candid_record_n39(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    episodes: Array<_StoryEpisode>;
+function from_candid_record_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     name: string;
-    currentEpisode: [] | [_StoryEpisode];
+    effect: [] | [_TechniqueEffect];
+    power: bigint;
 }): {
-    episodes: Array<StoryEpisode>;
     name: string;
-    currentEpisode?: StoryEpisode;
+    effect?: TechniqueEffect;
+    power: bigint;
 } {
     return {
-        episodes: from_candid_vec_n40(_uploadFile, _downloadFile, value.episodes),
         name: value.name,
-        currentEpisode: record_opt_to_undefined(from_candid_opt_n47(_uploadFile, _downloadFile, value.currentEpisode))
-    };
-}
-function from_candid_record_n42(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    gymBattles: Array<_PokemonTeamBattle>;
-    victoryBattle: [] | [string];
-    wildPokemon: Array<_Pokemon>;
-    storyOutro: [] | [string];
-    locations: Array<string>;
-    battles: Array<_BattleLog>;
-    trainerBattles: Array<_PokemonTeamBattle>;
-    storyIntro: [] | [string];
-}): {
-    gymBattles: Array<PokemonTeamBattle>;
-    victoryBattle?: string;
-    wildPokemon: Array<Pokemon>;
-    storyOutro?: string;
-    locations: Array<string>;
-    battles: Array<BattleLog>;
-    trainerBattles: Array<PokemonTeamBattle>;
-    storyIntro?: string;
-} {
-    return {
-        gymBattles: from_candid_vec_n43(_uploadFile, _downloadFile, value.gymBattles),
-        victoryBattle: record_opt_to_undefined(from_candid_opt_n28(_uploadFile, _downloadFile, value.victoryBattle)),
-        wildPokemon: from_candid_vec_n31(_uploadFile, _downloadFile, value.wildPokemon),
-        storyOutro: record_opt_to_undefined(from_candid_opt_n28(_uploadFile, _downloadFile, value.storyOutro)),
-        locations: value.locations,
-        battles: from_candid_vec_n46(_uploadFile, _downloadFile, value.battles),
-        trainerBattles: from_candid_vec_n43(_uploadFile, _downloadFile, value.trainerBattles),
-        storyIntro: record_opt_to_undefined(from_candid_opt_n28(_uploadFile, _downloadFile, value.storyIntro))
-    };
-}
-function from_candid_record_n45(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    team: Array<_Pokemon>;
-    trainer: string;
-}): {
-    team: Array<Pokemon>;
-    trainer: string;
-} {
-    return {
-        team: from_candid_vec_n31(_uploadFile, _downloadFile, value.team),
-        trainer: value.trainer
+        effect: record_opt_to_undefined(from_candid_opt_n21(_uploadFile, _downloadFile, value.effect)),
+        power: value.power
     };
 }
 function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
@@ -1140,24 +629,16 @@ function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint
         topped_up_amount: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.topped_up_amount))
     };
 }
-function from_candid_variant_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    pending: null;
+function from_candid_variant_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    admin: null;
 } | {
-    trainerWin: null;
+    user: null;
 } | {
-    invalid: null;
-} | {
-    draw: null;
-} | {
-    error: null;
-} | {
-    ongoing: null;
-} | {
-    challengerWin: null;
-}): BattleResult {
-    return "pending" in value ? BattleResult.pending : "trainerWin" in value ? BattleResult.trainerWin : "invalid" in value ? BattleResult.invalid : "draw" in value ? BattleResult.draw : "error" in value ? BattleResult.error : "ongoing" in value ? BattleResult.ongoing : "challengerWin" in value ? BattleResult.challengerWin : value;
+    guest: null;
+}): UserRole {
+    return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
 }
-function from_candid_variant_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_variant_n23(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     boostSpeed: null;
 } | {
     paralyzeOpponent: null;
@@ -1167,60 +648,47 @@ function from_candid_variant_n24(_uploadFile: (file: ExternalBlob) => Promise<Ui
     boostDefense: null;
 } | {
     boostAttack: null;
-}): MoveEffect {
-    return "boostSpeed" in value ? MoveEffect.boostSpeed : "paralyzeOpponent" in value ? MoveEffect.paralyzeOpponent : "confuseOpponent" in value ? MoveEffect.confuseOpponent : "boostDefense" in value ? MoveEffect.boostDefense : "boostAttack" in value ? MoveEffect.boostAttack : value;
+}): TechniqueEffect {
+    return "boostSpeed" in value ? TechniqueEffect.boostSpeed : "paralyzeOpponent" in value ? TechniqueEffect.paralyzeOpponent : "confuseOpponent" in value ? TechniqueEffect.confuseOpponent : "boostDefense" in value ? TechniqueEffect.boostDefense : "boostAttack" in value ? TechniqueEffect.boostAttack : value;
 }
-function from_candid_variant_n30(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    admin: null;
-} | {
-    user: null;
-} | {
-    guest: null;
-}): UserRole {
-    return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
-}
-function from_candid_variant_n36(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    iceStone: string;
-} | {
-    thunderStone: string;
-} | {
-    duskStone: string;
+function from_candid_variant_n26(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    ice: string;
 } | {
     magnetizer: string;
 } | {
-    hydrationStone: string;
-} | {
-    leafStone: string;
-} | {
     magmarizer: string;
 } | {
-    electricStone: string;
+    dark: string;
 } | {
-    waterStone: string;
+    dawn: string;
+} | {
+    dusk: string;
+} | {
+    fire: string;
+} | {
+    wind: string;
 } | {
     metalCoat: string;
 } | {
     upgrade: string;
 } | {
-    fireSTONE: string;
-} | {
-    darkStone: string;
+    earth: string;
 } | {
     kingRock: string;
-} | {
-    dawnStone: string;
-} | {
-    fireStone: string;
 } | {
     skyScale: string;
 } | {
     protector: string;
 } | {
+    hydration: string;
+} | {
     moonStone: string;
 } | {
-    grassStone: string;
+    water: string;
 } | {
     prismScale: string;
+} | {
+    lightning: string;
 } | {
     ovalStone: string;
 } | {
@@ -1228,32 +696,29 @@ function from_candid_variant_n36(_uploadFile: (file: ExternalBlob) => Promise<Ui
 } | {
     seaScale: string;
 }): {
-    __kind__: "iceStone";
-    iceStone: string;
-} | {
-    __kind__: "thunderStone";
-    thunderStone: string;
-} | {
-    __kind__: "duskStone";
-    duskStone: string;
+    __kind__: "ice";
+    ice: string;
 } | {
     __kind__: "magnetizer";
     magnetizer: string;
 } | {
-    __kind__: "hydrationStone";
-    hydrationStone: string;
-} | {
-    __kind__: "leafStone";
-    leafStone: string;
-} | {
     __kind__: "magmarizer";
     magmarizer: string;
 } | {
-    __kind__: "electricStone";
-    electricStone: string;
+    __kind__: "dark";
+    dark: string;
 } | {
-    __kind__: "waterStone";
-    waterStone: string;
+    __kind__: "dawn";
+    dawn: string;
+} | {
+    __kind__: "dusk";
+    dusk: string;
+} | {
+    __kind__: "fire";
+    fire: string;
+} | {
+    __kind__: "wind";
+    wind: string;
 } | {
     __kind__: "metalCoat";
     metalCoat: string;
@@ -1261,20 +726,11 @@ function from_candid_variant_n36(_uploadFile: (file: ExternalBlob) => Promise<Ui
     __kind__: "upgrade";
     upgrade: string;
 } | {
-    __kind__: "fireSTONE";
-    fireSTONE: string;
-} | {
-    __kind__: "darkStone";
-    darkStone: string;
+    __kind__: "earth";
+    earth: string;
 } | {
     __kind__: "kingRock";
     kingRock: string;
-} | {
-    __kind__: "dawnStone";
-    dawnStone: string;
-} | {
-    __kind__: "fireStone";
-    fireStone: string;
 } | {
     __kind__: "skyScale";
     skyScale: string;
@@ -1282,14 +738,20 @@ function from_candid_variant_n36(_uploadFile: (file: ExternalBlob) => Promise<Ui
     __kind__: "protector";
     protector: string;
 } | {
+    __kind__: "hydration";
+    hydration: string;
+} | {
     __kind__: "moonStone";
     moonStone: string;
 } | {
-    __kind__: "grassStone";
-    grassStone: string;
+    __kind__: "water";
+    water: string;
 } | {
     __kind__: "prismScale";
     prismScale: string;
+} | {
+    __kind__: "lightning";
+    lightning: string;
 } | {
     __kind__: "ovalStone";
     ovalStone: string;
@@ -1300,69 +762,63 @@ function from_candid_variant_n36(_uploadFile: (file: ExternalBlob) => Promise<Ui
     __kind__: "seaScale";
     seaScale: string;
 } {
-    return "iceStone" in value ? {
-        __kind__: "iceStone",
-        iceStone: value.iceStone
-    } : "thunderStone" in value ? {
-        __kind__: "thunderStone",
-        thunderStone: value.thunderStone
-    } : "duskStone" in value ? {
-        __kind__: "duskStone",
-        duskStone: value.duskStone
+    return "ice" in value ? {
+        __kind__: "ice",
+        ice: value.ice
     } : "magnetizer" in value ? {
         __kind__: "magnetizer",
         magnetizer: value.magnetizer
-    } : "hydrationStone" in value ? {
-        __kind__: "hydrationStone",
-        hydrationStone: value.hydrationStone
-    } : "leafStone" in value ? {
-        __kind__: "leafStone",
-        leafStone: value.leafStone
     } : "magmarizer" in value ? {
         __kind__: "magmarizer",
         magmarizer: value.magmarizer
-    } : "electricStone" in value ? {
-        __kind__: "electricStone",
-        electricStone: value.electricStone
-    } : "waterStone" in value ? {
-        __kind__: "waterStone",
-        waterStone: value.waterStone
+    } : "dark" in value ? {
+        __kind__: "dark",
+        dark: value.dark
+    } : "dawn" in value ? {
+        __kind__: "dawn",
+        dawn: value.dawn
+    } : "dusk" in value ? {
+        __kind__: "dusk",
+        dusk: value.dusk
+    } : "fire" in value ? {
+        __kind__: "fire",
+        fire: value.fire
+    } : "wind" in value ? {
+        __kind__: "wind",
+        wind: value.wind
     } : "metalCoat" in value ? {
         __kind__: "metalCoat",
         metalCoat: value.metalCoat
     } : "upgrade" in value ? {
         __kind__: "upgrade",
         upgrade: value.upgrade
-    } : "fireSTONE" in value ? {
-        __kind__: "fireSTONE",
-        fireSTONE: value.fireSTONE
-    } : "darkStone" in value ? {
-        __kind__: "darkStone",
-        darkStone: value.darkStone
+    } : "earth" in value ? {
+        __kind__: "earth",
+        earth: value.earth
     } : "kingRock" in value ? {
         __kind__: "kingRock",
         kingRock: value.kingRock
-    } : "dawnStone" in value ? {
-        __kind__: "dawnStone",
-        dawnStone: value.dawnStone
-    } : "fireStone" in value ? {
-        __kind__: "fireStone",
-        fireStone: value.fireStone
     } : "skyScale" in value ? {
         __kind__: "skyScale",
         skyScale: value.skyScale
     } : "protector" in value ? {
         __kind__: "protector",
         protector: value.protector
+    } : "hydration" in value ? {
+        __kind__: "hydration",
+        hydration: value.hydration
     } : "moonStone" in value ? {
         __kind__: "moonStone",
         moonStone: value.moonStone
-    } : "grassStone" in value ? {
-        __kind__: "grassStone",
-        grassStone: value.grassStone
+    } : "water" in value ? {
+        __kind__: "water",
+        water: value.water
     } : "prismScale" in value ? {
         __kind__: "prismScale",
         prismScale: value.prismScale
+    } : "lightning" in value ? {
+        __kind__: "lightning",
+        lightning: value.lightning
     } : "ovalStone" in value ? {
         __kind__: "ovalStone",
         ovalStone: value.ovalStone
@@ -1374,26 +830,14 @@ function from_candid_variant_n36(_uploadFile: (file: ExternalBlob) => Promise<Ui
         seaScale: value.seaScale
     } : value;
 }
-function from_candid_vec_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_PokemonMove>): Array<PokemonMove> {
-    return value.map((x)=>from_candid_PokemonMove_n20(_uploadFile, _downloadFile, x));
+function from_candid_vec_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_NinjaTechnique>): Array<NinjaTechnique> {
+    return value.map((x)=>from_candid_NinjaTechnique_n19(_uploadFile, _downloadFile, x));
 }
-function from_candid_vec_n31(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Pokemon>): Array<Pokemon> {
-    return value.map((x)=>from_candid_Pokemon_n32(_uploadFile, _downloadFile, x));
+function from_candid_vec_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Monster>): Array<Monster> {
+    return value.map((x)=>from_candid_Monster_n16(_uploadFile, _downloadFile, x));
 }
-function from_candid_vec_n40(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_StoryEpisode>): Array<StoryEpisode> {
-    return value.map((x)=>from_candid_StoryEpisode_n41(_uploadFile, _downloadFile, x));
-}
-function from_candid_vec_n43(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_PokemonTeamBattle>): Array<PokemonTeamBattle> {
-    return value.map((x)=>from_candid_PokemonTeamBattle_n44(_uploadFile, _downloadFile, x));
-}
-function from_candid_vec_n46(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_BattleLog>): Array<BattleLog> {
-    return value.map((x)=>from_candid_BattleLog_n12(_uploadFile, _downloadFile, x));
-}
-function to_candid_BattleResult_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: BattleResult): _BattleResult {
-    return to_candid_variant_n11(_uploadFile, _downloadFile, value);
-}
-function to_candid_UserProfile_n48(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserProfile): _UserProfile {
-    return to_candid_record_n49(_uploadFile, _downloadFile, value);
+function to_candid_UserProfile_n28(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserProfile): _UserProfile {
+    return to_candid_record_n29(_uploadFile, _downloadFile, value);
 }
 function to_candid_UserRole_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
     return to_candid_variant_n9(_uploadFile, _downloadFile, value);
@@ -1404,6 +848,27 @@ function to_candid__CaffeineStorageRefillInformation_n2(_uploadFile: (file: Exte
 function to_candid_opt_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _CaffeineStorageRefillInformation | null): [] | [__CaffeineStorageRefillInformation] {
     return value === null ? candid_none() : candid_some(to_candid__CaffeineStorageRefillInformation_n2(_uploadFile, _downloadFile, value));
 }
+function to_candid_record_n29(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    victories: bigint;
+    ninjaName: string;
+    avatarUrl?: string;
+    dojoSeals: bigint;
+    clanName: string;
+}): {
+    victories: bigint;
+    ninjaName: string;
+    avatarUrl: [] | [string];
+    dojoSeals: bigint;
+    clanName: string;
+} {
+    return {
+        victories: value.victories,
+        ninjaName: value.ninjaName,
+        avatarUrl: value.avatarUrl ? candid_some(value.avatarUrl) : candid_none(),
+        dojoSeals: value.dojoSeals,
+        clanName: value.clanName
+    };
+}
 function to_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     proposed_top_up_amount?: bigint;
 }): {
@@ -1412,49 +877,6 @@ function to_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
     return {
         proposed_top_up_amount: value.proposed_top_up_amount ? candid_some(value.proposed_top_up_amount) : candid_none()
     };
-}
-function to_candid_record_n49(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    trainerName: string;
-    avatarUrl?: string;
-}): {
-    trainerName: string;
-    avatarUrl: [] | [string];
-} {
-    return {
-        trainerName: value.trainerName,
-        avatarUrl: value.avatarUrl ? candid_some(value.avatarUrl) : candid_none()
-    };
-}
-function to_candid_variant_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: BattleResult): {
-    pending: null;
-} | {
-    trainerWin: null;
-} | {
-    invalid: null;
-} | {
-    draw: null;
-} | {
-    error: null;
-} | {
-    ongoing: null;
-} | {
-    challengerWin: null;
-} {
-    return value == BattleResult.pending ? {
-        pending: null
-    } : value == BattleResult.trainerWin ? {
-        trainerWin: null
-    } : value == BattleResult.invalid ? {
-        invalid: null
-    } : value == BattleResult.draw ? {
-        draw: null
-    } : value == BattleResult.error ? {
-        error: null
-    } : value == BattleResult.ongoing ? {
-        ongoing: null
-    } : value == BattleResult.challengerWin ? {
-        challengerWin: null
-    } : value;
 }
 function to_candid_variant_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): {
     admin: null;

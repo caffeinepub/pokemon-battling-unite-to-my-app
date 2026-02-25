@@ -24,165 +24,78 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
-export const BattleResult = IDL.Variant({
-  'pending' : IDL.Null,
-  'trainerWin' : IDL.Null,
-  'invalid' : IDL.Null,
-  'draw' : IDL.Null,
-  'error' : IDL.Null,
-  'ongoing' : IDL.Null,
-  'challengerWin' : IDL.Null,
+export const UserProfile = IDL.Record({
+  'victories' : IDL.Nat,
+  'ninjaName' : IDL.Text,
+  'avatarUrl' : IDL.Opt(IDL.Text),
+  'dojoSeals' : IDL.Nat,
+  'clanName' : IDL.Text,
 });
-export const BattleLog = IDL.Record({
-  'battleResult' : BattleResult,
-  'message' : IDL.Text,
-  'challenger' : IDL.Text,
-});
-export const Badge = IDL.Text;
-export const MoveEffect = IDL.Variant({
+export const TechniqueEffect = IDL.Variant({
   'boostSpeed' : IDL.Null,
   'paralyzeOpponent' : IDL.Null,
   'confuseOpponent' : IDL.Null,
   'boostDefense' : IDL.Null,
   'boostAttack' : IDL.Null,
 });
-export const PokemonMove = IDL.Record({
+export const NinjaTechnique = IDL.Record({
   'name' : IDL.Text,
-  'effect' : IDL.Opt(MoveEffect),
+  'effect' : IDL.Opt(TechniqueEffect),
   'power' : IDL.Nat,
 });
-export const BattleStatus = IDL.Record({
-  'isPoisoned' : IDL.Bool,
-  'isFatigued' : IDL.Bool,
-  'isBerserk' : IDL.Bool,
-  'isShielded' : IDL.Bool,
-  'isCursed' : IDL.Bool,
-  'isParalyzed' : IDL.Bool,
-  'isConfused' : IDL.Bool,
-  'isLocked' : IDL.Bool,
-  'isAmped' : IDL.Bool,
-});
-export const AttackStrengths = IDL.Record({
-  'bug' : IDL.Nat,
-  'ice' : IDL.Nat,
-  'psychic' : IDL.Nat,
-  'ground' : IDL.Nat,
-  'normal' : IDL.Nat,
-  'fighting' : IDL.Nat,
-  'dark' : IDL.Nat,
-  'fire' : IDL.Nat,
-  'flying' : IDL.Nat,
-  'rock' : IDL.Nat,
-  'steel' : IDL.Nat,
-  'ghost' : IDL.Nat,
-  'grass' : IDL.Nat,
-  'water' : IDL.Nat,
-  'electric' : IDL.Nat,
-  'dragon' : IDL.Nat,
-  'poison' : IDL.Nat,
-  'fairy' : IDL.Nat,
-});
-export const MoveInstance = IDL.Record({
-  'boostSpeed' : IDL.Bool,
-  'name' : IDL.Text,
-  'boostDefense' : IDL.Bool,
-  'boostAttack' : IDL.Bool,
-  'attackStrength' : AttackStrengths,
-});
-export const BattleStats = IDL.Record({
-  'status' : BattleStatus,
-  'powerUps' : IDL.Vec(MoveInstance),
-  'attacks' : IDL.Vec(MoveInstance),
-  'health' : IDL.Nat,
+export const ElementalMastery = IDL.Variant({
+  'ice' : IDL.Text,
+  'magnetizer' : IDL.Text,
+  'magmarizer' : IDL.Text,
+  'dark' : IDL.Text,
+  'dawn' : IDL.Text,
+  'dusk' : IDL.Text,
+  'fire' : IDL.Text,
+  'wind' : IDL.Text,
+  'metalCoat' : IDL.Text,
+  'upgrade' : IDL.Text,
+  'earth' : IDL.Text,
+  'kingRock' : IDL.Text,
+  'skyScale' : IDL.Text,
+  'protector' : IDL.Text,
+  'hydration' : IDL.Text,
+  'moonStone' : IDL.Text,
+  'water' : IDL.Text,
+  'prismScale' : IDL.Text,
+  'lightning' : IDL.Text,
+  'ovalStone' : IDL.Text,
+  'shineStone' : IDL.Text,
+  'seaScale' : IDL.Text,
 });
 export const Blob = IDL.Vec(IDL.Nat8);
-export const PokemonImage = IDL.Record({
+export const MonsterImage = IDL.Record({
   'isAnimated' : IDL.Bool,
   'imagePath' : IDL.Text,
   'imageUrl' : IDL.Text,
   'isRawImage' : IDL.Bool,
   'image' : Blob,
 });
-export const BattlePokemonPersistent = IDL.Record({
-  'moves' : IDL.Vec(PokemonMove),
-  'name' : IDL.Text,
-  'level' : IDL.Nat,
-  'stats' : BattleStats,
-  'baseSpeed' : IDL.Nat,
-  'baseAttack' : IDL.Nat,
-  'baseDefense' : IDL.Nat,
-  'images' : IDL.Vec(PokemonImage),
-});
-export const UserProfile = IDL.Record({
-  'trainerName' : IDL.Text,
-  'avatarUrl' : IDL.Opt(IDL.Text),
-});
-export const PokemonEvolutionStone = IDL.Variant({
-  'iceStone' : IDL.Text,
-  'thunderStone' : IDL.Text,
-  'duskStone' : IDL.Text,
-  'magnetizer' : IDL.Text,
-  'hydrationStone' : IDL.Text,
-  'leafStone' : IDL.Text,
-  'magmarizer' : IDL.Text,
-  'electricStone' : IDL.Text,
-  'waterStone' : IDL.Text,
-  'metalCoat' : IDL.Text,
-  'upgrade' : IDL.Text,
-  'fireSTONE' : IDL.Text,
-  'darkStone' : IDL.Text,
-  'kingRock' : IDL.Text,
-  'dawnStone' : IDL.Text,
-  'fireStone' : IDL.Text,
-  'skyScale' : IDL.Text,
-  'protector' : IDL.Text,
-  'moonStone' : IDL.Text,
-  'grassStone' : IDL.Text,
-  'prismScale' : IDL.Text,
-  'ovalStone' : IDL.Text,
-  'shineStone' : IDL.Text,
-  'seaScale' : IDL.Text,
-});
-export const Pokemon = IDL.Record({
-  'moves' : IDL.Vec(PokemonMove),
-  'name' : IDL.Text,
+export const Monster = IDL.Record({
+  'battleTechniques' : IDL.Vec(NinjaTechnique),
   'level' : IDL.Nat,
   'baseSpeed' : IDL.Nat,
+  'monsterName' : IDL.Text,
   'baseAttack' : IDL.Nat,
-  'evolutionStone' : IDL.Opt(PokemonEvolutionStone),
+  'masteryElement' : IDL.Opt(ElementalMastery),
   'baseDefense' : IDL.Nat,
-  'images' : IDL.Vec(PokemonImage),
+  'images' : IDL.Vec(MonsterImage),
 });
-export const PokemonTeamBattle = IDL.Record({
-  'team' : IDL.Vec(Pokemon),
-  'trainer' : IDL.Text,
-});
-export const StoryEpisode = IDL.Record({
-  'gymBattles' : IDL.Vec(PokemonTeamBattle),
-  'victoryBattle' : IDL.Opt(IDL.Text),
-  'wildPokemon' : IDL.Vec(Pokemon),
-  'storyOutro' : IDL.Opt(IDL.Text),
-  'locations' : IDL.Vec(IDL.Text),
-  'battles' : IDL.Vec(BattleLog),
-  'trainerBattles' : IDL.Vec(PokemonTeamBattle),
-  'storyIntro' : IDL.Opt(IDL.Text),
-});
-export const StoryArc = IDL.Record({
-  'episodes' : IDL.Vec(StoryEpisode),
-  'name' : IDL.Text,
-  'currentEpisode' : IDL.Opt(StoryEpisode),
-});
-export const PokemonUltimate = IDL.Record({
-  'id' : IDL.Nat,
+export const MonsterUltimate = IDL.Record({
   'shenanigans' : IDL.Nat,
-  'name' : IDL.Text,
   'speed' : IDL.Nat,
   'stage' : IDL.Text,
+  'monsterId' : IDL.Nat,
   'defense' : IDL.Nat,
+  'monsterName' : IDL.Text,
   'agility' : IDL.Nat,
   'attack' : IDL.Nat,
   'reactions' : IDL.Nat,
-  'images' : IDL.Vec(PokemonImage),
+  'images' : IDL.Vec(MonsterImage),
 });
 
 export const idlService = IDL.Service({
@@ -214,49 +127,17 @@ export const idlService = IDL.Service({
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-  'challengeEliteFour' : IDL.Func([], [IDL.Text], []),
-  'challengeGymLeader' : IDL.Func([], [IDL.Text], []),
-  'challengeUltimateChampion' : IDL.Func([], [IDL.Text], []),
-  'createBattleLog' : IDL.Func([IDL.Text, BattleResult], [BattleLog], []),
-  'evolvePokemon' : IDL.Func([], [], []),
-  'getBadges' : IDL.Func([], [IDL.Vec(Badge)], ['query']),
-  'getBattlePokemonQuery' : IDL.Func(
-      [IDL.Text],
-      [IDL.Opt(BattlePokemonPersistent)],
-      ['query'],
-    ),
-  'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+  'getCallerUserProfile' : IDL.Func([], [UserProfile], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getDojoSeals' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
   'getLog' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
+  'getMonsterDXData' : IDL.Func([IDL.Text], [IDL.Opt(Monster)], ['query']),
+  'getMonsters' : IDL.Func([], [IDL.Vec(Monster)], ['query']),
   'getOpponent' : IDL.Func([IDL.Text], [IDL.Text], ['query']),
-  'getPersistent' : IDL.Func([], [BattlePokemonPersistent], ['query']),
-  'getPokemon' : IDL.Func([], [IDL.Vec(Pokemon)], ['query']),
-  'getPokemonDXData' : IDL.Func([IDL.Text], [IDL.Opt(Pokemon)], ['query']),
-  'getPokemonData' : IDL.Func([], [], []),
-  'getStoryArc' : IDL.Func([], [StoryArc], []),
-  'getStrategyResponse' : IDL.Func([], [IDL.Text], ['query']),
-  'getTrainerPokemon' : IDL.Func(
-      [IDL.Nat],
-      [IDL.Opt(BattlePokemonPersistent)],
-      ['query'],
-    ),
-  'getUltimatePokemon' : IDL.Func([], [IDL.Vec(PokemonUltimate)], ['query']),
-  'getUserProfile' : IDL.Func(
-      [IDL.Principal],
-      [IDL.Opt(UserProfile)],
-      ['query'],
-    ),
-  'hasStatus' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
+  'getUltimateMonsters' : IDL.Func([], [IDL.Vec(MonsterUltimate)], ['query']),
+  'getUserProfile' : IDL.Func([IDL.Principal], [UserProfile], ['query']),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
-  'notifyBattleResult' : IDL.Func([], [], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-  'updateDialogs' : IDL.Func([], [], []),
-  'updateMoves' : IDL.Func([], [], []),
-  'updateMusic' : IDL.Func([], [], []),
-  'updateOpponent' : IDL.Func([], [], []),
-  'updatePokemon' : IDL.Func([IDL.Text], [IDL.Bool], []),
-  'updateStats' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
-  'updateTrainerParty' : IDL.Func([], [], []),
 });
 
 export const idlInitArgs = [];
@@ -278,165 +159,78 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
-  const BattleResult = IDL.Variant({
-    'pending' : IDL.Null,
-    'trainerWin' : IDL.Null,
-    'invalid' : IDL.Null,
-    'draw' : IDL.Null,
-    'error' : IDL.Null,
-    'ongoing' : IDL.Null,
-    'challengerWin' : IDL.Null,
+  const UserProfile = IDL.Record({
+    'victories' : IDL.Nat,
+    'ninjaName' : IDL.Text,
+    'avatarUrl' : IDL.Opt(IDL.Text),
+    'dojoSeals' : IDL.Nat,
+    'clanName' : IDL.Text,
   });
-  const BattleLog = IDL.Record({
-    'battleResult' : BattleResult,
-    'message' : IDL.Text,
-    'challenger' : IDL.Text,
-  });
-  const Badge = IDL.Text;
-  const MoveEffect = IDL.Variant({
+  const TechniqueEffect = IDL.Variant({
     'boostSpeed' : IDL.Null,
     'paralyzeOpponent' : IDL.Null,
     'confuseOpponent' : IDL.Null,
     'boostDefense' : IDL.Null,
     'boostAttack' : IDL.Null,
   });
-  const PokemonMove = IDL.Record({
+  const NinjaTechnique = IDL.Record({
     'name' : IDL.Text,
-    'effect' : IDL.Opt(MoveEffect),
+    'effect' : IDL.Opt(TechniqueEffect),
     'power' : IDL.Nat,
   });
-  const BattleStatus = IDL.Record({
-    'isPoisoned' : IDL.Bool,
-    'isFatigued' : IDL.Bool,
-    'isBerserk' : IDL.Bool,
-    'isShielded' : IDL.Bool,
-    'isCursed' : IDL.Bool,
-    'isParalyzed' : IDL.Bool,
-    'isConfused' : IDL.Bool,
-    'isLocked' : IDL.Bool,
-    'isAmped' : IDL.Bool,
-  });
-  const AttackStrengths = IDL.Record({
-    'bug' : IDL.Nat,
-    'ice' : IDL.Nat,
-    'psychic' : IDL.Nat,
-    'ground' : IDL.Nat,
-    'normal' : IDL.Nat,
-    'fighting' : IDL.Nat,
-    'dark' : IDL.Nat,
-    'fire' : IDL.Nat,
-    'flying' : IDL.Nat,
-    'rock' : IDL.Nat,
-    'steel' : IDL.Nat,
-    'ghost' : IDL.Nat,
-    'grass' : IDL.Nat,
-    'water' : IDL.Nat,
-    'electric' : IDL.Nat,
-    'dragon' : IDL.Nat,
-    'poison' : IDL.Nat,
-    'fairy' : IDL.Nat,
-  });
-  const MoveInstance = IDL.Record({
-    'boostSpeed' : IDL.Bool,
-    'name' : IDL.Text,
-    'boostDefense' : IDL.Bool,
-    'boostAttack' : IDL.Bool,
-    'attackStrength' : AttackStrengths,
-  });
-  const BattleStats = IDL.Record({
-    'status' : BattleStatus,
-    'powerUps' : IDL.Vec(MoveInstance),
-    'attacks' : IDL.Vec(MoveInstance),
-    'health' : IDL.Nat,
+  const ElementalMastery = IDL.Variant({
+    'ice' : IDL.Text,
+    'magnetizer' : IDL.Text,
+    'magmarizer' : IDL.Text,
+    'dark' : IDL.Text,
+    'dawn' : IDL.Text,
+    'dusk' : IDL.Text,
+    'fire' : IDL.Text,
+    'wind' : IDL.Text,
+    'metalCoat' : IDL.Text,
+    'upgrade' : IDL.Text,
+    'earth' : IDL.Text,
+    'kingRock' : IDL.Text,
+    'skyScale' : IDL.Text,
+    'protector' : IDL.Text,
+    'hydration' : IDL.Text,
+    'moonStone' : IDL.Text,
+    'water' : IDL.Text,
+    'prismScale' : IDL.Text,
+    'lightning' : IDL.Text,
+    'ovalStone' : IDL.Text,
+    'shineStone' : IDL.Text,
+    'seaScale' : IDL.Text,
   });
   const Blob = IDL.Vec(IDL.Nat8);
-  const PokemonImage = IDL.Record({
+  const MonsterImage = IDL.Record({
     'isAnimated' : IDL.Bool,
     'imagePath' : IDL.Text,
     'imageUrl' : IDL.Text,
     'isRawImage' : IDL.Bool,
     'image' : Blob,
   });
-  const BattlePokemonPersistent = IDL.Record({
-    'moves' : IDL.Vec(PokemonMove),
-    'name' : IDL.Text,
-    'level' : IDL.Nat,
-    'stats' : BattleStats,
-    'baseSpeed' : IDL.Nat,
-    'baseAttack' : IDL.Nat,
-    'baseDefense' : IDL.Nat,
-    'images' : IDL.Vec(PokemonImage),
-  });
-  const UserProfile = IDL.Record({
-    'trainerName' : IDL.Text,
-    'avatarUrl' : IDL.Opt(IDL.Text),
-  });
-  const PokemonEvolutionStone = IDL.Variant({
-    'iceStone' : IDL.Text,
-    'thunderStone' : IDL.Text,
-    'duskStone' : IDL.Text,
-    'magnetizer' : IDL.Text,
-    'hydrationStone' : IDL.Text,
-    'leafStone' : IDL.Text,
-    'magmarizer' : IDL.Text,
-    'electricStone' : IDL.Text,
-    'waterStone' : IDL.Text,
-    'metalCoat' : IDL.Text,
-    'upgrade' : IDL.Text,
-    'fireSTONE' : IDL.Text,
-    'darkStone' : IDL.Text,
-    'kingRock' : IDL.Text,
-    'dawnStone' : IDL.Text,
-    'fireStone' : IDL.Text,
-    'skyScale' : IDL.Text,
-    'protector' : IDL.Text,
-    'moonStone' : IDL.Text,
-    'grassStone' : IDL.Text,
-    'prismScale' : IDL.Text,
-    'ovalStone' : IDL.Text,
-    'shineStone' : IDL.Text,
-    'seaScale' : IDL.Text,
-  });
-  const Pokemon = IDL.Record({
-    'moves' : IDL.Vec(PokemonMove),
-    'name' : IDL.Text,
+  const Monster = IDL.Record({
+    'battleTechniques' : IDL.Vec(NinjaTechnique),
     'level' : IDL.Nat,
     'baseSpeed' : IDL.Nat,
+    'monsterName' : IDL.Text,
     'baseAttack' : IDL.Nat,
-    'evolutionStone' : IDL.Opt(PokemonEvolutionStone),
+    'masteryElement' : IDL.Opt(ElementalMastery),
     'baseDefense' : IDL.Nat,
-    'images' : IDL.Vec(PokemonImage),
+    'images' : IDL.Vec(MonsterImage),
   });
-  const PokemonTeamBattle = IDL.Record({
-    'team' : IDL.Vec(Pokemon),
-    'trainer' : IDL.Text,
-  });
-  const StoryEpisode = IDL.Record({
-    'gymBattles' : IDL.Vec(PokemonTeamBattle),
-    'victoryBattle' : IDL.Opt(IDL.Text),
-    'wildPokemon' : IDL.Vec(Pokemon),
-    'storyOutro' : IDL.Opt(IDL.Text),
-    'locations' : IDL.Vec(IDL.Text),
-    'battles' : IDL.Vec(BattleLog),
-    'trainerBattles' : IDL.Vec(PokemonTeamBattle),
-    'storyIntro' : IDL.Opt(IDL.Text),
-  });
-  const StoryArc = IDL.Record({
-    'episodes' : IDL.Vec(StoryEpisode),
-    'name' : IDL.Text,
-    'currentEpisode' : IDL.Opt(StoryEpisode),
-  });
-  const PokemonUltimate = IDL.Record({
-    'id' : IDL.Nat,
+  const MonsterUltimate = IDL.Record({
     'shenanigans' : IDL.Nat,
-    'name' : IDL.Text,
     'speed' : IDL.Nat,
     'stage' : IDL.Text,
+    'monsterId' : IDL.Nat,
     'defense' : IDL.Nat,
+    'monsterName' : IDL.Text,
     'agility' : IDL.Nat,
     'attack' : IDL.Nat,
     'reactions' : IDL.Nat,
-    'images' : IDL.Vec(PokemonImage),
+    'images' : IDL.Vec(MonsterImage),
   });
   
   return IDL.Service({
@@ -468,49 +262,17 @@ export const idlFactory = ({ IDL }) => {
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-    'challengeEliteFour' : IDL.Func([], [IDL.Text], []),
-    'challengeGymLeader' : IDL.Func([], [IDL.Text], []),
-    'challengeUltimateChampion' : IDL.Func([], [IDL.Text], []),
-    'createBattleLog' : IDL.Func([IDL.Text, BattleResult], [BattleLog], []),
-    'evolvePokemon' : IDL.Func([], [], []),
-    'getBadges' : IDL.Func([], [IDL.Vec(Badge)], ['query']),
-    'getBattlePokemonQuery' : IDL.Func(
-        [IDL.Text],
-        [IDL.Opt(BattlePokemonPersistent)],
-        ['query'],
-      ),
-    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+    'getCallerUserProfile' : IDL.Func([], [UserProfile], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getDojoSeals' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
     'getLog' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
+    'getMonsterDXData' : IDL.Func([IDL.Text], [IDL.Opt(Monster)], ['query']),
+    'getMonsters' : IDL.Func([], [IDL.Vec(Monster)], ['query']),
     'getOpponent' : IDL.Func([IDL.Text], [IDL.Text], ['query']),
-    'getPersistent' : IDL.Func([], [BattlePokemonPersistent], ['query']),
-    'getPokemon' : IDL.Func([], [IDL.Vec(Pokemon)], ['query']),
-    'getPokemonDXData' : IDL.Func([IDL.Text], [IDL.Opt(Pokemon)], ['query']),
-    'getPokemonData' : IDL.Func([], [], []),
-    'getStoryArc' : IDL.Func([], [StoryArc], []),
-    'getStrategyResponse' : IDL.Func([], [IDL.Text], ['query']),
-    'getTrainerPokemon' : IDL.Func(
-        [IDL.Nat],
-        [IDL.Opt(BattlePokemonPersistent)],
-        ['query'],
-      ),
-    'getUltimatePokemon' : IDL.Func([], [IDL.Vec(PokemonUltimate)], ['query']),
-    'getUserProfile' : IDL.Func(
-        [IDL.Principal],
-        [IDL.Opt(UserProfile)],
-        ['query'],
-      ),
-    'hasStatus' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
+    'getUltimateMonsters' : IDL.Func([], [IDL.Vec(MonsterUltimate)], ['query']),
+    'getUserProfile' : IDL.Func([IDL.Principal], [UserProfile], ['query']),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
-    'notifyBattleResult' : IDL.Func([], [], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-    'updateDialogs' : IDL.Func([], [], []),
-    'updateMoves' : IDL.Func([], [], []),
-    'updateMusic' : IDL.Func([], [], []),
-    'updateOpponent' : IDL.Func([], [], []),
-    'updatePokemon' : IDL.Func([IDL.Text], [IDL.Bool], []),
-    'updateStats' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
-    'updateTrainerParty' : IDL.Func([], [], []),
   });
 };
 

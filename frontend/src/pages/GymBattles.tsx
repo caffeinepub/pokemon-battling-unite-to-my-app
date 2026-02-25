@@ -1,193 +1,226 @@
 import React, { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { GYM_LEADERS } from '../data/pokemonData';
-import { useGetBadges, useChallengeGymLeader } from '../hooks/useQueries';
-import BadgeDisplay from '../components/BadgeDisplay';
-import { ArrowLeft, Skull, ChevronRight } from 'lucide-react';
+import { useInternetIdentity } from '../hooks/useInternetIdentity';
+import { useGetCallerUserProfile, useChallengeDojoLeader } from '../hooks/useQueries';
+
+const dojos = [
+  {
+    id: 'fire',
+    name: 'Fire Dojo',
+    leader: 'Blaziken Ryu',
+    element: 'fire',
+    color: '#ef4444',
+    emoji: '🔥',
+    description: 'Master the flames of destruction',
+    difficulty: 'Intermediate',
+  },
+  {
+    id: 'water',
+    name: 'Water Dojo',
+    leader: 'Mistveil Sora',
+    element: 'water',
+    color: '#3b82f6',
+    emoji: '💧',
+    description: 'Flow like the endless ocean',
+    difficulty: 'Beginner',
+  },
+  {
+    id: 'earth',
+    name: 'Earth Dojo',
+    leader: 'Stonefist Golem',
+    element: 'earth',
+    color: '#a16207',
+    emoji: '🪨',
+    description: 'Stand firm as the mountain',
+    difficulty: 'Intermediate',
+  },
+  {
+    id: 'wind',
+    name: 'Wind Dojo',
+    leader: 'Galestep Zephyr',
+    element: 'wind',
+    color: '#06b6d4',
+    emoji: '💨',
+    description: 'Strike swift as the wind',
+    difficulty: 'Advanced',
+  },
+  {
+    id: 'lightning',
+    name: 'Lightning Dojo',
+    leader: 'Voltclaw Raiden',
+    element: 'lightning',
+    color: '#eab308',
+    emoji: '⚡',
+    description: "Channel the storm's fury",
+    difficulty: 'Advanced',
+  },
+  {
+    id: 'shadow',
+    name: 'Shadow Dojo',
+    leader: 'Voidshade Kage',
+    element: 'shadow',
+    color: '#7c3aed',
+    emoji: '🌑',
+    description: 'Embrace the void within',
+    difficulty: 'Master',
+  },
+];
+
+const difficultyColor: Record<string, string> = {
+  Beginner: '#22c55e',
+  Intermediate: '#eab308',
+  Advanced: '#ef4444',
+  Master: '#7c3aed',
+};
 
 export default function GymBattles() {
   const navigate = useNavigate();
-  const { data: badges = [] } = useGetBadges();
-  const challengeGym = useChallengeGymLeader();
-  const [selectedGym, setSelectedGym] = useState<(typeof GYM_LEADERS)[0] | null>(null);
-  const [showChallenge, setShowChallenge] = useState(false);
+  const { identity } = useInternetIdentity();
+  const { data: userProfile } = useGetCallerUserProfile();
+  const challengeMutation = useChallengeDojoLeader();
+  const [selectedDojo, setSelectedDojo] = useState<(typeof dojos)[0] | null>(null);
+  const [challenging, setChallenging] = useState(false);
 
-  const handleChallenge = async (gym: (typeof GYM_LEADERS)[0]) => {
-    setSelectedGym(gym);
-    setShowChallenge(true);
-  };
+  const earnedSeals = Number(userProfile?.dojoSeals || 0);
 
-  const handleBattle = async () => {
-    if (!selectedGym) return;
+  const handleChallenge = async () => {
+    if (!selectedDojo) return;
+    setChallenging(true);
     try {
-      await challengeGym.mutateAsync();
+      sessionStorage.setItem(
+        'currentDojo',
+        JSON.stringify({ dojoType: selectedDojo.element, dojoLeader: selectedDojo.leader })
+      );
+      await challengeMutation.mutateAsync({
+        dojoType: selectedDojo.element,
+        dojoLeader: selectedDojo.leader,
+      });
+      navigate({ to: '/battle' });
     } catch {
-      // Continue regardless
+      navigate({ to: '/battle' });
+    } finally {
+      setChallenging(false);
+      setSelectedDojo(null);
     }
-    setShowChallenge(false);
-    navigate({
-      to: '/battle',
-      search: {
-        opponentId: String((selectedGym.id - 1) % 15),
-        bgType: 'gym',
-      },
-    });
   };
+
+  if (!identity) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] px-4">
+        <p className="text-muted-foreground text-center">Please log in to challenge dojos</p>
+      </div>
+    );
+  }
 
   return (
-    <div
-      className="min-h-screen"
-      style={{ background: 'linear-gradient(180deg, #0D1B2A 0%, #1A1A2E 100%)' }}
-    >
-      {/* Challenge modal */}
-      {showChallenge && selectedGym && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-          <div className="max-w-sm w-full mx-4 bg-gradient-to-b from-gray-900 to-black border-2 border-electric-yellow rounded-2xl overflow-hidden">
-            <div
-              className="px-4 py-3 text-center"
-              style={{ background: selectedGym.badgeColor + '44' }}
+    <div className="min-h-screen bg-background px-3 py-4 md:px-6 md:py-8 overflow-x-hidden">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-4 md:mb-6">
+          <h1 className="text-2xl md:text-3xl font-black text-primary tracking-wider">
+            🏯 ELEMENTAL DOJOS
+          </h1>
+          <p className="text-xs md:text-sm text-muted-foreground mt-1">
+            Seals earned: <span className="text-primary font-bold">{earnedSeals}</span> /{' '}
+            {dojos.length}
+          </p>
+        </div>
+
+        {/* Dojo Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+          {dojos.map((dojo) => (
+            <button
+              key={dojo.id}
+              onClick={() => setSelectedDojo(dojo)}
+              className="flex flex-col gap-3 p-3 md:p-4 bg-card border border-border rounded-2xl hover:border-primary/40 active:scale-95 transition-all text-left touch-manipulation"
+              style={{ minHeight: '120px', borderLeft: `4px solid ${dojo.color}` }}
             >
-              <h2 className="text-white font-anime text-2xl">{selectedGym.gym}</h2>
-            </div>
-            <div className="p-6 text-center">
-              <div className="text-5xl mb-3">🏟️</div>
-              <h3 className="text-electric-yellow font-anime text-xl mb-1">{selectedGym.name}</h3>
-              <p className="text-white/60 text-sm mb-2">{selectedGym.description}</p>
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <span
-                  className="text-xs px-3 py-1 rounded-full font-bold text-white"
-                  style={{ background: selectedGym.badgeColor + '88' }}
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0"
+                  style={{ background: `${dojo.color}22` }}
                 >
-                  {selectedGym.type} Type
-                </span>
-                <div className="flex gap-1">
-                  {Array.from({ length: selectedGym.difficulty }).map((_, i) => (
-                    <Skull key={i} className="w-3 h-3 text-red-400" />
-                  ))}
+                  {dojo.emoji}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold text-sm text-foreground leading-tight">{dojo.name}</p>
+                  <p className="text-[10px] text-muted-foreground truncate">{dojo.leader}</p>
                 </div>
               </div>
-              <p className="text-white/70 text-sm mb-4">
-                Defeat {selectedGym.name} to earn the{' '}
-                <span className="font-bold" style={{ color: selectedGym.badgeColor }}>
-                  {selectedGym.badge}
-                </span>
-                !
-              </p>
-              <div className="flex gap-3">
-                <button
-                  onClick={handleBattle}
-                  disabled={challengeGym.isPending}
-                  className="flex-1 bg-electric-yellow text-dark-navy font-anime text-lg py-3 rounded-xl hover:bg-yellow-400 transition-colors disabled:opacity-60 anime-btn"
-                >
-                  {challengeGym.isPending ? '...' : '⚔️ CHALLENGE!'}
-                </button>
-                <button
-                  onClick={() => setShowChallenge(false)}
-                  className="flex-1 bg-white/10 text-white font-anime text-lg py-3 rounded-xl hover:bg-white/20 transition-colors"
-                >
-                  BACK
-                </button>
+              <div>
+                <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                  {dojo.description}
+                </p>
+                <div className="flex items-center justify-between mt-2">
+                  <span
+                    className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                    style={{
+                      background: `${difficultyColor[dojo.difficulty]}22`,
+                      color: difficultyColor[dojo.difficulty],
+                    }}
+                  >
+                    {dojo.difficulty}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground">Tap to challenge →</span>
+                </div>
               </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Grand Master unlock */}
+        {earnedSeals >= dojos.length && (
+          <div className="mt-6 p-4 bg-primary/10 border border-primary/30 rounded-2xl text-center">
+            <p className="text-lg font-black text-primary">🏆 GRAND MASTER UNLOCKED!</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              You have mastered all elemental arts
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Challenge Modal */}
+      {selectedDojo && (
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm px-4 pb-4 sm:pb-0"
+          onClick={() => setSelectedDojo(null)}
+        >
+          <div
+            className="w-full max-w-sm bg-card border border-border rounded-2xl p-5 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div
+                className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl shrink-0"
+                style={{ background: `${selectedDojo.color}22` }}
+              >
+                {selectedDojo.emoji}
+              </div>
+              <div>
+                <h3 className="font-black text-lg text-foreground">{selectedDojo.name}</h3>
+                <p className="text-xs text-muted-foreground">{selectedDojo.leader}</p>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground mb-5">{selectedDojo.description}</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setSelectedDojo(null)}
+                className="flex-1 py-3 border border-border rounded-xl text-sm font-bold text-muted-foreground hover:text-foreground transition-colors min-h-[48px] touch-manipulation"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleChallenge}
+                disabled={challenging}
+                className="flex-1 py-3 text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-60 min-h-[48px] touch-manipulation"
+                style={{ background: selectedDojo.color }}
+              >
+                {challenging ? 'Entering...' : `Challenge ${selectedDojo.emoji}`}
+              </button>
             </div>
           </div>
         </div>
       )}
-
-      <div className="max-w-2xl mx-auto px-4 py-6">
-        <div className="flex items-center gap-3 mb-6">
-          <button
-            onClick={() => navigate({ to: '/game' })}
-            className="text-white/60 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="font-anime text-3xl text-electric-yellow tracking-wide">GYM BATTLES</h1>
-        </div>
-
-        {/* Badge display */}
-        <div className="mb-6">
-          <BadgeDisplay />
-        </div>
-
-        {/* Gym leaders */}
-        <h2 className="text-white/60 font-bold text-sm mb-3 uppercase tracking-wider">
-          Gym Leaders
-        </h2>
-        <div className="space-y-3">
-          {GYM_LEADERS.map((gym, idx) => {
-            const isEarned = badges.length > idx;
-            const isLocked = idx > 0 && badges.length < idx;
-
-            return (
-              <button
-                key={gym.id}
-                onClick={() => !isLocked && handleChallenge(gym)}
-                disabled={isLocked}
-                className={`w-full anime-card p-4 flex items-center gap-4 text-left transition-all ${
-                  isLocked
-                    ? 'opacity-40 cursor-not-allowed'
-                    : 'hover:border-white/40 hover:scale-[1.01] active:scale-[0.99]'
-                }`}
-              >
-                {/* Badge icon */}
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-2xl shrink-0 border-2"
-                  style={{
-                    background: isEarned ? gym.badgeColor + '33' : '#ffffff11',
-                    borderColor: isEarned ? gym.badgeColor : '#ffffff22',
-                  }}
-                >
-                  {isEarned ? '🏅' : isLocked ? '🔒' : '⭕'}
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <h3 className="text-white font-anime text-lg">{gym.name}</h3>
-                    <span
-                      className="text-xs px-2 py-0.5 rounded-full font-bold text-white"
-                      style={{ background: gym.badgeColor + '66' }}
-                    >
-                      {gym.type}
-                    </span>
-                  </div>
-                  <p className="text-white/50 text-xs">{gym.gym}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-white/40 text-xs">Difficulty:</span>
-                    <div className="flex gap-0.5">
-                      {Array.from({ length: gym.difficulty }).map((_, i) => (
-                        <Skull key={i} className="w-3 h-3 text-red-400" />
-                      ))}
-                    </div>
-                    {isEarned && (
-                      <span className="text-green-400 text-xs font-bold ml-2">✓ BADGE EARNED</span>
-                    )}
-                  </div>
-                </div>
-
-                {!isLocked && (
-                  <ChevronRight className="w-5 h-5 text-white/30 shrink-0" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Elite Four teaser */}
-        {badges.length >= 8 && (
-          <div className="mt-6 anime-card p-5 border-electric-yellow/50 bg-electric-yellow/5">
-            <h3 className="text-electric-yellow font-anime text-xl mb-2">⚡ ELITE FOUR AWAITS!</h3>
-            <p className="text-white/70 text-sm mb-4">
-              You've earned all 8 badges! Challenge the Elite Four and become Champion!
-            </p>
-            <button
-              onClick={() => navigate({ to: '/battle', search: { opponentId: '13', bgType: 'stadium' } })}
-              className="w-full bg-electric-yellow text-dark-navy font-anime text-xl py-3 rounded-xl hover:bg-yellow-400 transition-colors anime-btn"
-            >
-              🏆 CHALLENGE ELITE FOUR!
-            </button>
-          </div>
-        )}
-      </div>
     </div>
   );
 }

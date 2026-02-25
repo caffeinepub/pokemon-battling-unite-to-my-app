@@ -1,27 +1,4 @@
 {
   "kind": "feature_evidence_report",
-  "features": [
-    {
-      "featureId": "feature-replace-the-dodge-button-input-control-in-the-battle-screen-with-a-drag-to-reposition-mechanic-the-player-must-physically-drag-or-move-their-pokemon-sprite-to-a-new-position-on-the-battle-field-to-dodge-incoming-opponent-attacks-there-should-be-no-dedicated-dodge-button-dodging-is-achieved-purely-by-repositioning-the-pokemon-away-from-the-path-of-the-incoming-move",
-      "featureTitle": "Replace the dodge button/input control in the battle screen with a drag-to-reposition mechanic. The player must physically drag or move their Pokemon sprite to a new position on the battle field to dodge incoming opponent attacks. There should be no dedicated 'Dodge' button — dodging is achieved purely by repositioning the Pokemon away from the path of the incoming move.",
-      "files": [
-        "frontend/src/components/AttackAnimation.tsx",
-        "frontend/src/components/PokemonBattleSprite.tsx",
-        "frontend/src/pages/Battle.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-17"
-      ],
-      "confidence": "high"
-    }
-  ]
+  "features": []
 }

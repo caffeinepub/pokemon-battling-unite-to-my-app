@@ -1,451 +1,467 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { PIKACHU, OPPONENT_POKEMON, LocalPokemon, LocalMove } from '../data/pokemonData';
+import { useInternetIdentity } from '../hooks/useInternetIdentity';
+import { useGetCallerUserProfile, useGetMonsters, useAwardBattleXP } from '../hooks/useQueries';
+import { MONSTERS, ELEMENT_COLORS, ElementType } from '../data/monsterData';
 import PokemonBattleSprite from '../components/PokemonBattleSprite';
+import NinjaBattleSprite from '../components/NinjaBattleSprite';
 import HealthBar from '../components/HealthBar';
 import AttackAnimation from '../components/AttackAnimation';
 import StrategyInput from '../components/StrategyInput';
-import { useCreateBattleLog, useNotifyBattleResult } from '../hooks/useQueries';
-import { BattleResult } from '../backend';
-import { ArrowLeft, ChevronUp, ChevronDown, Move } from 'lucide-react';
 
-type AnimState = 'idle' | 'attack' | 'hit' | 'faint' | 'dodge';
-
-interface ActiveAttack {
-  id: number;
-  move: LocalMove;
-  direction: 'left' | 'right';
+interface BattleMonsterState {
+  id: string;
+  name: string;
+  hp: number;
+  maxHp: number;
+  attack: number;
+  defense: number;
+  speed: number;
+  element: ElementType;
+  sprite: string;
+  moves: Array<{ name: string; power: number; effect?: string; element: ElementType }>;
+  rank?: string;
 }
+
+const elementEmoji: Record<ElementType, string> = {
+  fire: '🔥',
+  water: '💧',
+  earth: '🪨',
+  wind: '💨',
+  lightning: '⚡',
+  shadow: '🌑',
+};
+
+function buildBattleMonster(monster: (typeof MONSTERS)[0]): BattleMonsterState {
+  const element = monster.element;
+  const baseHp = monster.baseHp;
+  return {
+    id: monster.id,
+    name: monster.name,
+    hp: baseHp,
+    maxHp: baseHp,
+    attack: monster.attack,
+    defense: monster.defense,
+    speed: monster.speed,
+    element,
+    sprite: monster.imagePath,
+    moves: (monster.moves || []).slice(0, 4).map((m) => ({
+      name: m.name,
+      power: m.power || 40,
+      element: m.element,
+    })),
+    rank: monster.ninjaRank,
+  };
+}
+
+type BattlePhase = 'select' | 'battle' | 'result';
+type AnimState = { show: boolean; move: string; fromPlayer: boolean; element: ElementType };
 
 export default function Battle() {
   const navigate = useNavigate();
+  const { identity } = useInternetIdentity();
+  const { data: userProfile } = useGetCallerUserProfile();
+  const { data: userMonsters } = useGetMonsters();
+  const awardXP = useAwardBattleXP();
 
-  // Read search params from URL manually to avoid strict route typing issues
-  const searchParams = new URLSearchParams(window.location.search);
-  const opponentIdParam = searchParams.get('opponentId');
-  const bgTypeParam = searchParams.get('bgType') || 'forest';
+  // Suppress unused variable warnings
+  void userProfile;
+  void userMonsters;
 
-  const opponentIndex = opponentIdParam
-    ? parseInt(opponentIdParam) % OPPONENT_POKEMON.length
-    : Math.floor(Math.random() * OPPONENT_POKEMON.length);
-
-  const bgMap: Record<string, string> = {
-    stadium: '/assets/generated/battle-bg-stadium.dim_1200x600.png',
-    gym: '/assets/generated/battle-bg-gym.dim_1200x600.png',
-    forest: '/assets/generated/battle-bg-forest.dim_1200x600.png',
-  };
-
-  const [playerPokemon] = useState<LocalPokemon>(() => {
-    try {
-      const stored = sessionStorage.getItem('starterPokemon');
-      if (stored) return JSON.parse(stored) as LocalPokemon;
-    } catch {
-      // fallback
-    }
-    return PIKACHU;
+  const [phase, setPhase] = useState<BattlePhase>('select');
+  const [playerMonster, setPlayerMonster] = useState<BattleMonsterState | null>(null);
+  const [opponentMonster, setOpponentMonster] = useState<BattleMonsterState | null>(null);
+  const [battleLog, setBattleLog] = useState<string[]>([]);
+  const [animState, setAnimState] = useState<AnimState>({
+    show: false,
+    move: '',
+    fromPlayer: true,
+    element: 'lightning',
   });
+  const [isPlayerTurn, setIsPlayerTurn] = useState(true);
+  const [result, setResult] = useState<'win' | 'lose' | null>(null);
+  const [strategy, setStrategy] = useState('');
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [dojoInfo, setDojoInfo] = useState<{ dojoType: string; dojoLeader: string } | null>(null);
+  const logRef = useRef<HTMLDivElement>(null);
 
-  const [opponentPokemon] = useState<LocalPokemon>(() => ({
-    ...OPPONENT_POKEMON[opponentIndex],
-    hp: OPPONENT_POKEMON[opponentIndex].maxHp,
-  }));
-
-  const [playerHp, setPlayerHp] = useState(playerPokemon.maxHp);
-  const [opponentHp, setOpponentHp] = useState(opponentPokemon.maxHp);
-  const [playerAnim, setPlayerAnim] = useState<AnimState>('idle');
-  const [opponentAnim, setOpponentAnim] = useState<AnimState>('idle');
-  const [activeAttacks, setActiveAttacks] = useState<ActiveAttack[]>([]);
-  const [battleLog, setBattleLog] = useState<string[]>([
-    `A wild ${OPPONENT_POKEMON[opponentIndex].name} appeared!`,
-    'Go, Pikachu! Drag to dodge incoming attacks!',
-  ]);
-  const [battleOver, setBattleOver] = useState(false);
-  const [winner, setWinner] = useState<'player' | 'opponent' | null>(null);
-  const [playerPos, setPlayerPos] = useState({ x: 0, y: 0 });
-  const [tempBoosts, setTempBoosts] = useState({ attack: 0, defense: 0, speed: 0 });
-  const [showStrategy, setShowStrategy] = useState(false);
-  const [showLog, setShowLog] = useState(false);
-  const [showDodgeHint, setShowDodgeHint] = useState(true);
-
-  const attackIdRef = useRef(0);
-  const opponentTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const battleOverRef = useRef(false);
-  const playerPosRef = useRef(playerPos);
-  const tempBoostsRef = useRef(tempBoosts);
-
-  const createBattleLogMutation = useCreateBattleLog();
-  const notifyBattleResult = useNotifyBattleResult();
-
-  // Keep refs in sync
-  useEffect(() => { battleOverRef.current = battleOver; }, [battleOver]);
   useEffect(() => {
-    playerPosRef.current = playerPos;
-  }, [playerPos]);
-  useEffect(() => { tempBoostsRef.current = tempBoosts; }, [tempBoosts]);
-
-  // Hide dodge hint after 5 seconds
-  useEffect(() => {
-    const t = setTimeout(() => setShowDodgeHint(false), 5000);
-    return () => clearTimeout(t);
-  }, []);
-
-  const addLog = useCallback((msg: string) => {
-    setBattleLog((prev) => [msg, ...prev].slice(0, 10));
-  }, []);
-
-  // Handle player position change from drag
-  const handlePlayerPositionChange = useCallback((pos: { x: number; y: number }) => {
-    setPlayerPos(pos);
-    playerPosRef.current = pos;
-  }, []);
-
-  // executeMove — renamed from useMove to avoid react-hooks/rules-of-hooks false positive
-  const executeMove = useCallback((move: LocalMove) => {
-    if (battleOverRef.current) return;
-
-    const id = ++attackIdRef.current;
-    setPlayerAnim('attack');
-    addLog(`${playerPokemon.name} used ${move.name}!`);
-
-    if (move.effect === 'boostAttack' && move.effectValue) {
-      setTempBoosts((prev) => ({ ...prev, attack: prev.attack + (move.effectValue ?? 0) }));
-      addLog(`${playerPokemon.name}'s attack rose by ${move.effectValue}!`);
-    }
-    if (move.effect === 'boostDefense' && move.effectValue) {
-      setTempBoosts((prev) => ({ ...prev, defense: prev.defense + (move.effectValue ?? 0) }));
-      addLog(`${playerPokemon.name}'s defense rose by ${move.effectValue}!`);
-    }
-    if (move.effect === 'boostSpeed' && move.effectValue) {
-      setTempBoosts((prev) => ({ ...prev, speed: prev.speed + (move.effectValue ?? 0) }));
-      addLog(`${playerPokemon.name}'s speed rose by ${move.effectValue}!`);
-    }
-
-    setActiveAttacks((prev) => [...prev, { id, move, direction: 'right' }]);
-
-    setTimeout(() => {
-      if (battleOverRef.current) return;
-      setPlayerAnim('idle');
-      const atk = playerPokemon.attack + tempBoostsRef.current.attack;
-      const dmg = Math.max(1, Math.floor((move.power * atk) / 100) - Math.floor(opponentPokemon.defense * 0.15));
-      setOpponentHp((prev) => {
-        const next = Math.max(0, prev - dmg);
-        if (next === 0) {
-          battleOverRef.current = true;
-          setBattleOver(true);
-          setWinner('player');
-          setOpponentAnim('faint');
-        } else {
-          setOpponentAnim('hit');
-          setTimeout(() => setOpponentAnim('idle'), 500);
-        }
-        return next;
-      });
-      addLog(`${opponentPokemon.name} took ${dmg} damage!`);
-    }, 700);
-  }, [playerPokemon, opponentPokemon, addLog]);
-
-  // Opponent AI
-  useEffect(() => {
-    const scheduleOpponentAttack = () => {
-      const delay = 2500 + Math.random() * 2000;
-      opponentTimerRef.current = setTimeout(() => {
-        if (battleOverRef.current) return;
-
-        const move = opponentPokemon.moves[Math.floor(Math.random() * opponentPokemon.moves.length)];
-        const id = ++attackIdRef.current;
-
-        setOpponentAnim('attack');
-        addLog(`${opponentPokemon.name} used ${move.name}!`);
-        setActiveAttacks((prev) => [...prev, { id, move, direction: 'left' }]);
-
-        setTimeout(() => {
-          if (battleOverRef.current) return;
-          setOpponentAnim('idle');
-          // Damage is handled by AttackAnimation's onComplete callback
-          // which passes whether the attack was dodged
-          if (!battleOverRef.current) scheduleOpponentAttack();
-        }, 1200);
-      }, delay);
-    };
-
-    scheduleOpponentAttack();
-    return () => {
-      if (opponentTimerRef.current) clearTimeout(opponentTimerRef.current);
-    };
-  // Only run once on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Save battle result
-  useEffect(() => {
-    if (battleOver && winner) {
-      const result = winner === 'player' ? BattleResult.challengerWin : BattleResult.trainerWin;
-      createBattleLogMutation.mutate({ challenger: opponentPokemon.name, result });
-      notifyBattleResult.mutate();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [battleOver, winner]);
-
-  const handleStrategy = useCallback((strategy: string, keywords: string[]) => {
-    if (keywords.includes('iron tail') || keywords.includes('counter')) {
-      const ironTail = playerPokemon.moves.find((m) => m.name === 'Iron Tail');
-      if (ironTail) executeMove(ironTail);
-    }
-    if (keywords.includes('electro ball') || keywords.includes('attack')) {
-      const electroBall = playerPokemon.moves.find((m) => m.name === 'Electro Ball');
-      if (electroBall) executeMove(electroBall);
-    }
-  }, [executeMove, playerPokemon.moves]);
-
-  // Handle attack completion — apply damage if not dodged
-  const handleAttackComplete = useCallback((attackId: number, move: LocalMove, direction: 'left' | 'right', dodged?: boolean) => {
-    setActiveAttacks((prev) => prev.filter((a) => a.id !== attackId));
-
-    // Only apply damage for opponent attacks (direction: 'left') that weren't dodged
-    if (direction === 'left' && !battleOverRef.current) {
-      if (!dodged) {
-        const def = playerPokemon.defense + tempBoostsRef.current.defense;
-        const dmg = Math.max(1, Math.floor(move.power * 0.4) - Math.floor(def * 0.2));
-        setPlayerHp((prev) => {
-          const next = Math.max(0, prev - dmg);
-          if (next === 0) {
-            battleOverRef.current = true;
-            setBattleOver(true);
-            setWinner('opponent');
-            setPlayerAnim('faint');
-          } else {
-            setPlayerAnim('hit');
-            setTimeout(() => setPlayerAnim('idle'), 500);
-          }
-          return next;
-        });
-        addLog(`${playerPokemon.name} took damage!`);
-      } else {
-        addLog(`${playerPokemon.name} dodged the attack!`);
-        setPlayerAnim('dodge');
-        setTimeout(() => setPlayerAnim('idle'), 400);
+    const stored = sessionStorage.getItem('currentDojo');
+    if (stored) {
+      try {
+        setDojoInfo(JSON.parse(stored));
+      } catch {
+        // ignore
       }
     }
-  }, [playerPokemon, addLog]);
+  }, []);
 
-  const bgImage = bgMap[bgTypeParam] || bgMap.forest;
+  useEffect(() => {
+    if (logRef.current) {
+      logRef.current.scrollTop = logRef.current.scrollHeight;
+    }
+  }, [battleLog]);
 
-  return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden" style={{ background: '#0D1B2A' }}>
-      {/* Battle background */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${bgImage})` }}
-      />
-      <div className="absolute inset-0 bg-black/40" />
+  const selectMonster = useCallback(
+    (monster: (typeof MONSTERS)[0]) => {
+      const player = buildBattleMonster(monster);
+      const opponents = MONSTERS.filter((m) => m.id !== monster.id);
+      const opp = opponents[Math.floor(Math.random() * opponents.length)];
+      const opponent = buildBattleMonster(opp);
+      setPlayerMonster(player);
+      setOpponentMonster(opponent);
+      setBattleLog([
+        `🥷 ${dojoInfo ? `[${dojoInfo.dojoType} Dojo] ` : ''}Battle begins!`,
+        `${player.name} vs ${opponent.name}`,
+      ]);
+      setPhase('battle');
+      setIsPlayerTurn(true);
+      setResult(null);
+    },
+    [dojoInfo]
+  );
 
-      {/* Back button */}
-      <button
-        onClick={() => navigate({ to: '/game' })}
-        className="absolute top-4 left-4 z-30 bg-black/60 text-white p-2 rounded-xl border border-white/20 hover:bg-black/80 transition-colors"
-      >
-        <ArrowLeft className="w-5 h-5" />
-      </button>
+  const addLog = useCallback((msg: string) => {
+    setBattleLog((prev) => [...prev.slice(-20), msg]);
+  }, []);
 
-      {/* Dodge hint */}
-      {showDodgeHint && !battleOver && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-black/80 border border-yellow-400/50 text-yellow-300 text-xs font-bold px-4 py-2 rounded-full flex items-center gap-2 animate-pulse">
-          <Move className="w-3 h-3" />
-          Drag your Pokémon to dodge attacks!
-        </div>
-      )}
+  const endBattle = useCallback(
+    (playerWon: boolean) => {
+      setResult(playerWon ? 'win' : 'lose');
+      setPhase('result');
+      addLog(playerWon ? '🏆 Victory! You win!' : '💀 Defeated... Try again!');
+      if (playerMonster) {
+        awardXP.mutate({ monsterId: playerMonster.id, isWin: playerWon });
+      }
+    },
+    [addLog, playerMonster, awardXP]
+  );
 
-      {/* Battle arena */}
-      <div className="relative z-10 flex-1 flex flex-col max-w-2xl mx-auto w-full">
-        {/* Health bars */}
-        <div className="flex justify-between items-start p-4 gap-3">
-          <HealthBar
-            current={opponentHp}
-            max={opponentPokemon.maxHp}
-            name={opponentPokemon.name}
-            level={opponentPokemon.level}
-            side="opponent"
-          />
-          <HealthBar
-            current={playerHp}
-            max={playerPokemon.maxHp}
-            name={playerPokemon.name}
-            level={playerPokemon.level}
-            side="player"
-          />
-        </div>
+  const executeMove = useCallback(
+    async (
+      move: { name: string; power: number; element: ElementType },
+      fromPlayer: boolean
+    ) => {
+      if (isAnimating) return;
+      setIsAnimating(true);
 
-        {/* Pokemon battle area */}
-        <div className="flex-1 relative flex items-center justify-between px-6 md:px-12 min-h-[200px]">
-          {/* Attack animations */}
-          {activeAttacks.map((atk) => (
-            <AttackAnimation
-              key={atk.id}
-              moveName={atk.move.name}
-              moveType={atk.move.type}
-              moveColor={atk.move.color}
-              moveEmoji={atk.move.emoji}
-              direction={atk.direction}
-              playerPosition={atk.direction === 'left' ? playerPosRef.current : undefined}
-              onComplete={(dodged) => handleAttackComplete(atk.id, atk.move, atk.direction, dodged)}
-            />
-          ))}
+      const attacker = fromPlayer ? playerMonster : opponentMonster;
+      const defender = fromPlayer ? opponentMonster : playerMonster;
+      if (!attacker || !defender) {
+        setIsAnimating(false);
+        return;
+      }
 
-          {/* Opponent Pokemon */}
-          <div className="slide-in-right">
-            <PokemonBattleSprite
-              pokemon={opponentPokemon}
-              side="opponent"
-              animState={opponentAnim}
-            />
-          </div>
+      const verbOptions = ['unleashes', 'executes', 'strikes with', 'channels'];
+      const verb = verbOptions[Math.floor(Math.random() * verbOptions.length)];
+      addLog(`${elementEmoji[attacker.element]} ${attacker.name} ${verb} ${move.name}!`);
 
-          {/* VS indicator */}
-          <div className="text-white/30 font-anime text-2xl">VS</div>
+      setAnimState({ show: true, move: move.name, fromPlayer, element: move.element });
+      await new Promise((r) => setTimeout(r, 600));
+      setAnimState((s) => ({ ...s, show: false }));
 
-          {/* Player Pokemon — draggable to dodge */}
-          <div className="slide-in-left">
-            <PokemonBattleSprite
-              pokemon={playerPokemon}
-              side="player"
-              animState={playerAnim}
-              position={playerPos}
-              isDraggable={!battleOver}
-              onPositionChange={handlePlayerPositionChange}
-            />
-          </div>
-        </div>
+      const damage = Math.max(
+        1,
+        Math.floor(
+          ((attacker.attack * move.power) / 100) *
+            (1 - defender.defense / 200) *
+            (0.85 + Math.random() * 0.3)
+        )
+      );
 
-        {/* Stat boosts display */}
-        {(tempBoosts.attack > 0 || tempBoosts.defense > 0 || tempBoosts.speed > 0) && (
-          <div className="flex justify-end px-4 gap-2 mb-1">
-            {tempBoosts.attack > 0 && (
-              <span className="text-xs bg-red-500/30 border border-red-500/50 text-red-300 px-2 py-0.5 rounded-full font-bold">
-                ATK +{tempBoosts.attack}
-              </span>
-            )}
-            {tempBoosts.defense > 0 && (
-              <span className="text-xs bg-blue-500/30 border border-blue-500/50 text-blue-300 px-2 py-0.5 rounded-full font-bold">
-                DEF +{tempBoosts.defense}
-              </span>
-            )}
-            {tempBoosts.speed > 0 && (
-              <span className="text-xs bg-green-500/30 border border-green-500/50 text-green-300 px-2 py-0.5 rounded-full font-bold">
-                SPD +{tempBoosts.speed}
-              </span>
-            )}
-          </div>
-        )}
+      if (fromPlayer) {
+        setOpponentMonster((prev) => {
+          if (!prev) return prev;
+          const newHp = Math.max(0, prev.hp - damage);
+          if (newHp === 0) {
+            setTimeout(() => endBattle(true), 400);
+          }
+          return { ...prev, hp: newHp };
+        });
+      } else {
+        setPlayerMonster((prev) => {
+          if (!prev) return prev;
+          const newHp = Math.max(0, prev.hp - damage);
+          if (newHp === 0) {
+            setTimeout(() => endBattle(false), 400);
+          }
+          return { ...prev, hp: newHp };
+        });
+      }
 
-        {/* Battle over overlay */}
-        {battleOver && (
-          <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/70">
-            <div className="text-center fade-in-up">
-              {winner === 'player' ? (
-                <>
-                  <div className="text-6xl mb-4">🏆</div>
-                  <p className="text-electric-yellow font-anime text-4xl mb-2">VICTORY!</p>
-                  <p className="text-white text-lg mb-6">Ash wins the battle!</p>
-                </>
-              ) : (
-                <>
-                  <div className="text-6xl mb-4">💔</div>
-                  <p className="text-red-400 font-anime text-4xl mb-2">DEFEATED!</p>
-                  <p className="text-white text-lg mb-6">Don't give up, Ash!</p>
-                </>
-              )}
-              <button
-                onClick={() => navigate({ to: '/game' })}
-                className="bg-electric-yellow text-dark-navy font-anime text-xl px-8 py-3 rounded-xl hover:bg-yellow-400 transition-colors anime-btn"
-              >
-                CONTINUE
-              </button>
-            </div>
-          </div>
-        )}
+      addLog(`💥 ${damage} damage dealt!`);
 
-        {/* Bottom UI */}
-        <div className="p-3 space-y-2">
-          {/* Battle log toggle */}
+      setIsAnimating(false);
+      if (fromPlayer) {
+        setIsPlayerTurn(false);
+        setTimeout(() => opponentTurn(), 1200);
+      } else {
+        setIsPlayerTurn(true);
+      }
+    },
+    [isAnimating, playerMonster, opponentMonster, addLog, endBattle] // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  const opponentTurn = useCallback(() => {
+    if (!opponentMonster || !playerMonster) return;
+    const moves = opponentMonster.moves;
+    if (!moves.length) return;
+    const move = moves[Math.floor(Math.random() * moves.length)];
+    executeMove(move, false);
+  }, [opponentMonster, playerMonster, executeMove]);
+
+  if (!identity) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] px-4">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">Please log in to battle</p>
           <button
-            onClick={() => setShowLog((v) => !v)}
-            className="w-full flex items-center justify-between bg-black/60 border border-white/10 rounded-xl px-3 py-2 text-white/70 text-sm"
+            onClick={() => navigate({ to: '/' })}
+            className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-bold"
           >
-            <span className="font-bold">
-              {battleLog[0] || 'Battle started!'}
-            </span>
-            {showLog ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+            Go to Login
           </button>
+        </div>
+      </div>
+    );
+  }
 
-          {showLog && (
-            <div className="bg-black/70 border border-white/10 rounded-xl p-3 max-h-28 overflow-y-auto space-y-1">
-              {battleLog.map((log, i) => (
-                <p key={i} className="text-white/70 text-xs">
-                  {i === 0 ? '▶ ' : '  '}{log}
-                </p>
-              ))}
-            </div>
+  // Monster Selection Phase
+  if (phase === 'select') {
+    return (
+      <div className="min-h-screen bg-background px-3 py-4 md:px-6 md:py-8">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-2xl md:text-3xl font-bold text-center text-primary mb-2 tracking-wider">
+            🥷 CHOOSE YOUR NINJA
+          </h1>
+          {dojoInfo && (
+            <p className="text-center text-muted-foreground text-sm mb-4">
+              Challenging:{' '}
+              <span className="text-primary font-semibold">{dojoInfo.dojoType} Dojo</span> —{' '}
+              {dojoInfo.dojoLeader}
+            </p>
           )}
-
-          {/* Move buttons */}
-          {!battleOver && (
-            <div className="grid grid-cols-2 gap-2">
-              {playerPokemon.moves.map((move) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+            {MONSTERS.map((monster) => {
+              const color = ELEMENT_COLORS[monster.element];
+              return (
                 <button
-                  key={move.name}
-                  onClick={() => executeMove(move)}
-                  className="relative flex items-center gap-2 px-3 py-3 rounded-xl border-2 font-bold text-white transition-all hover:scale-105 active:scale-95 text-sm"
+                  key={monster.id}
+                  onClick={() => selectMonster(monster)}
+                  className="group relative bg-card border border-border rounded-xl p-3 md:p-4 hover:border-primary/60 hover:bg-primary/5 transition-all active:scale-95 touch-manipulation"
+                  style={{ minHeight: '120px' }}
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <div
+                      className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-2xl md:text-3xl"
+                      style={{ background: `${color}22` }}
+                    >
+                      {elementEmoji[monster.element]}
+                    </div>
+                    <div className="text-center">
+                      <p className="font-bold text-xs md:text-sm text-foreground leading-tight">
+                        {monster.name}
+                      </p>
+                      <p className="text-[10px] md:text-xs text-muted-foreground capitalize">
+                        {monster.element}
+                      </p>
+                      {monster.ninjaRank && (
+                        <p className="text-[10px] text-primary/80 font-medium mt-0.5">
+                          {monster.ninjaRank}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Result Phase
+  if (phase === 'result') {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="text-center max-w-sm w-full">
+          <div className="text-6xl mb-4">{result === 'win' ? '🏆' : '💀'}</div>
+          <h2 className="text-2xl md:text-3xl font-bold mb-2 text-primary">
+            {result === 'win' ? 'VICTORY!' : 'DEFEATED'}
+          </h2>
+          <p className="text-muted-foreground mb-6 text-sm md:text-base">
+            {result === 'win' ? 'Your ninja prevails!' : 'Train harder and return!'}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button
+              onClick={() => setPhase('select')}
+              className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-bold text-sm md:text-base min-h-[48px] touch-manipulation"
+            >
+              Battle Again
+            </button>
+            <button
+              onClick={() => navigate({ to: '/game' })}
+              className="px-6 py-3 bg-card border border-border text-foreground rounded-xl font-bold text-sm md:text-base min-h-[48px] touch-manipulation"
+            >
+              Return Home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Battle Phase
+  return (
+    <div className="min-h-screen bg-background overflow-x-hidden">
+      {/* Battle Arena */}
+      <div className="relative w-full overflow-hidden" style={{ minHeight: '280px', maxHeight: '45vh' }}>
+        <img
+          src="/assets/generated/battle-bg-gym.dim_1200x600.png"
+          alt="Battle Arena"
+          className="absolute inset-0 w-full h-full object-cover opacity-40"
+        />
+        <div
+          className="relative z-10 flex flex-col h-full px-3 py-3 md:px-6 md:py-4"
+          style={{ minHeight: '280px' }}
+        >
+          {/* Opponent Section */}
+          <div className="flex items-start justify-between mb-2">
+            <div className="flex-1 max-w-[55%]">
+              {opponentMonster && (
+                <HealthBar
+                  name={opponentMonster.name}
+                  current={opponentMonster.hp}
+                  max={opponentMonster.maxHp}
+                  element={opponentMonster.element}
+                  isEnemy
+                />
+              )}
+            </div>
+            {/* Opponent Sprite */}
+            <div className="shrink-0" style={{ minWidth: '64px', minHeight: '64px' }}>
+              {opponentMonster && (
+                <NinjaBattleSprite
+                  pokemon={{
+                    name: opponentMonster.name,
+                    element: opponentMonster.element,
+                    sprite: opponentMonster.sprite,
+                    color: ELEMENT_COLORS[opponentMonster.element],
+                  }}
+                  isPlayer={false}
+                  isAttacking={animState.show && !animState.fromPlayer}
+                  isDodging={false}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Player Section */}
+          <div className="flex items-end justify-between mt-auto">
+            {/* Player Sprite */}
+            <div className="shrink-0" style={{ minWidth: '64px', minHeight: '64px' }}>
+              {playerMonster && (
+                <PokemonBattleSprite
+                  pokemon={{
+                    name: playerMonster.name,
+                    element: playerMonster.element,
+                    sprite: playerMonster.sprite,
+                    color: ELEMENT_COLORS[playerMonster.element],
+                  }}
+                  isPlayer={true}
+                  isAttacking={animState.show && animState.fromPlayer}
+                  isDodging={!isPlayerTurn && animState.show && !animState.fromPlayer}
+                />
+              )}
+            </div>
+            <div className="flex-1 max-w-[55%] flex justify-end">
+              {playerMonster && (
+                <HealthBar
+                  name={playerMonster.name}
+                  current={playerMonster.hp}
+                  max={playerMonster.maxHp}
+                  element={playerMonster.element}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Attack Animation Overlay */}
+        {animState.show && (
+          <AttackAnimation
+            element={animState.element}
+            fromPlayer={animState.fromPlayer}
+          />
+        )}
+      </div>
+
+      {/* Battle Controls */}
+      <div className="px-3 py-3 md:px-6 md:py-4 max-w-2xl mx-auto">
+        {/* Battle Log */}
+        <div
+          ref={logRef}
+          className="bg-card/80 border border-border rounded-xl p-3 mb-3 h-20 md:h-24 overflow-y-auto"
+        >
+          {battleLog.map((log, i) => (
+            <p key={i} className="text-xs text-foreground/80 leading-relaxed">
+              {log}
+            </p>
+          ))}
+        </div>
+
+        {/* Move Buttons — 2-column grid on mobile, 4-column on desktop */}
+        {isPlayerTurn && !isAnimating && playerMonster && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-3">
+            {playerMonster.moves.map((move, i) => {
+              const moveColor = ELEMENT_COLORS[move.element];
+              return (
+                <button
+                  key={i}
+                  onClick={() => executeMove(move, true)}
+                  disabled={isAnimating}
+                  className="relative flex flex-col items-center justify-center rounded-xl border border-border bg-card hover:bg-primary/10 hover:border-primary/50 active:scale-95 transition-all touch-manipulation disabled:opacity-50"
                   style={{
-                    background: move.color + '22',
-                    borderColor: move.color + '88',
-                    boxShadow: `0 0 8px ${move.color}33`,
+                    minHeight: '56px',
+                    padding: '10px 8px',
+                    borderLeft: `3px solid ${moveColor}`,
                   }}
                 >
-                  <span className="text-xl">{move.emoji}</span>
-                  <div className="text-left">
-                    <div className="font-anime text-sm leading-tight">{move.name}</div>
-                    <div className="text-white/50 text-xs">PWR {move.power}</div>
-                  </div>
-                  {move.effect && (
-                    <div
-                      className="absolute top-1 right-1 text-xs px-1 rounded font-bold"
-                      style={{ background: move.color + '44', color: move.color }}
-                    >
-                      {move.effect === 'boostAttack' ? '↑ATK' :
-                       move.effect === 'boostDefense' ? '↑DEF' :
-                       move.effect === 'boostSpeed' ? '↑SPD' :
-                       move.effect === 'paralyze' ? 'PAR' : 'CNF'}
-                    </div>
-                  )}
+                  <span className="text-xs font-bold text-foreground text-center leading-tight">
+                    {move.name}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground mt-0.5">PWR {move.power}</span>
                 </button>
-              ))}
+              );
+            })}
+          </div>
+        )}
+
+        {!isPlayerTurn && (
+          <div className="flex items-center justify-center h-14 mb-3">
+            <div className="flex items-center gap-2 text-muted-foreground text-sm">
+              <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              Opponent is thinking...
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Dodge hint bar (replaces dodge button) */}
-          {!battleOver && (
-            <div className="w-full flex items-center justify-center gap-2 bg-black/30 border border-yellow-400/20 rounded-xl px-3 py-2">
-              <Move className="w-4 h-4 text-yellow-400/70" />
-              <span className="text-yellow-400/70 text-xs font-bold">
-                Drag your Pokémon to dodge incoming attacks
-              </span>
-            </div>
-          )}
+        {/* Strategy Input */}
+        <StrategyInput
+          value={strategy}
+          onChange={setStrategy}
+          onSubmit={(s) => addLog(`📜 Strategy: ${s}`)}
+          disabled={isAnimating || !isPlayerTurn}
+        />
 
-          {/* Strategy input toggle */}
-          {!battleOver && (
-            <button
-              onClick={() => setShowStrategy((v) => !v)}
-              className="w-full text-electric-yellow/70 text-xs font-bold py-1 hover:text-electric-yellow transition-colors"
-            >
-              {showStrategy ? '▲ Hide Strategy' : '▼ Type Strategy'}
-            </button>
-          )}
-
-          {showStrategy && !battleOver && (
-            <StrategyInput onStrategy={handleStrategy} disabled={battleOver} />
-          )}
-        </div>
+        {/* Flee Button */}
+        <button
+          onClick={() => setPhase('select')}
+          className="w-full mt-2 py-2 text-xs text-muted-foreground hover:text-foreground border border-border/40 rounded-lg transition-colors min-h-[40px] touch-manipulation"
+        >
+          🏃 Flee Battle
+        </button>
       </div>
     </div>
   );
