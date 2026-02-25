@@ -1,277 +1,42 @@
 {
   "kind": "build_request",
-  "title": "Ash's Pokemon Journey RPG — Anime-Style Real-Time Battle Game",
-  "projectName": "Ash's Pokemon Journey",
-  "priority": "high",
+  "title": "Fix dodge mechanic to use Pokemon repositioning instead of button press",
+  "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Implement a Professor Oak introduction screen that greets the player, explains the world of Pokemon, and introduces Ash as the player's trainer name. Oak's appearance should be modeled after the anime version (white lab coat, gray hair). After the intro, transition to the starter Pokemon selection screen.",
+      "id": "REQ-17",
+      "text": "Replace the dodge button/input control in the battle screen with a drag-to-reposition mechanic. The player must physically drag or move their Pokemon sprite to a new position on the battle field to dodge incoming opponent attacks. There should be no dedicated 'Dodge' button — dodging is achieved purely by repositioning the Pokemon away from the path of the incoming move.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-last"
         ],
         "quotes": [
-          "make it look like professor oak with this link https://bulbapedia.bulbagarden.net/wiki/Professor_Oak_(anime)"
+          "you move your pokemon to dodge not push a button"
         ]
       },
       "acceptanceCriteria": [
-        "Professor Oak character appears on the intro screen with anime-accurate visual styling",
-        "Trainer name is pre-set to 'Ash'",
-        "Intro screen transitions to Pokemon starter selection after completion"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Build an animated Pokemon starter selection screen where each Pokemon appears alive and moving (idle animation loops). Pikachu must be included as the featured starter. All displayed Pokemon should feel dynamic and real, not static sprites.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "make the pokemon in choose your starter pokemon like they are alive moving"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Each starter Pokemon has a continuous idle animation (bounce, sway, or glow)",
-        "Pikachu is shown as a selectable starter option",
-        "Selecting a Pokemon triggers a confirmation animation before proceeding to the game"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Define Pikachu as the strongest available Pokemon with stats: ATK 100, DEF 45, SPD 40. Assign Pikachu four moves with the following on-use stat effects: Electro Web (power +45 to electric attacks), Electro Ball (power +45), Iron Tail (DEF +25 for duration of move), Quick Attack (SPD +30 for duration). Pikachu must outperform all other Pokemon in battle.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "make Pikachu stronger than all them it faster/has l massive defensive ,very strong attack power 100 and def 45 and SPD 40",
-          "Pikachu moves are electro web and electro ball increasing 45 and iron tail increasing defensive by 25 and quick attack increasing the SPD by 30"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Pikachu stats stored as ATK=100, DEF=45, SPD=40 in backend",
-        "All four moves (Electro Web, Electro Ball, Iron Tail, Quick Attack) are defined with correct stat boost values",
-        "Pikachu's combined stat total exceeds all other Pokemon in the game's roster"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Implement a real-time anime-style battle system (no turn-based mechanics). Players can use any move at any time. Players can dodge opponent moves by repositioning their Pokemon on screen. When two opposing moves collide simultaneously, the stronger move destroys the weaker one; moves of equal power cancel each other out. Battles must feel dynamic and cinematic like the Pokemon anime movies and Master Journeys series.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "moves can be used at any time there is no turns and you can dodge moves by moving",
-          "when your opponent and your used the same move at the same time the stronger attack will destroy the weaker one and sometime cancel each other out"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Move buttons are always active — no 'wait for turn' logic",
-        "Player can tap/swipe to reposition Pokemon and dodge incoming moves",
-        "Move collision detection resolves with correct win/lose/cancel outcomes based on power comparison",
-        "Battle animations play fluidly with no static pauses between actions"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Add a strategy text input field during battles where the player can type strategies (e.g., 'use Quick Attack to circle opponent', 'use Iron Tail to counter Ice Beam'). The battle AI should read and respond to strategy inputs, adjusting the opponent's behavior or unlocking special combo animations based on the typed strategy.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "you can make a strategies when battleing to win",
-          "you type the strategies in the text"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A text input field is accessible during battle",
-        "Recognized strategy keywords trigger corresponding battle behaviors or animations",
-        "Strategy input is stored per battle for replay/review"
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Build a story campaign mode structured across three arcs: Johto Journeys, Master Journeys, and Ultimate Journeys. Each arc follows Ash's anime journey with episodic battles against different Pokemon and trainers. The final story climax of each arc features Ash challenging the league champion with high drama, matching the emotional intensity of the anime.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "the story end like the episodes of pokemon master when ash challenges the loen and the drama",
-          "the story is the same as the pokemon miove like master journeys pokemon,Johto jorneys pokemon, and ultimate jorneys"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Three story arcs are accessible from a campaign map screen",
-        "Each arc contains multiple episodic battles with unique opponent Pokemon",
-        "Final arc battle features dramatic cinematic sequences for Ash vs. the champion",
-        "Story progression is saved to backend per player"
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "text": "Implement a gym battle system where the player earns badges by defeating gym leaders. Gym leaders must have strong, diverse Pokemon teams and reference battles from the anime gym episode list. Each gym leader should have a unique battle style and powerful moves. Display earned badges on the trainer profile screen.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "you get a badge by battling gyms they are strong very",
-          "make the gym battle like this https://www.reddit.com/r/pokemonanime/comments/ymndeu/gym_battle_other_important_battles_episode_list/"
-        ]
-      },
-      "acceptanceCriteria": [
-        "At least 8 gym leaders with unique teams are defined in the backend",
-        "Defeating a gym leader awards a badge saved to the player's profile",
-        "Badge collection is displayed on the trainer card/profile screen",
-        "Gym battles are noticeably harder than regular wild/story battles"
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "text": "Add Team Rocket random encounter events during the overworld/story progression. Team Rocket (Jessie, James, and Meowth) appear with their classic introduction dialogue and 'blast off' ending animation when defeated. These encounters should feel comedic and dramatic like the anime's classic moments.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "Team Rocket Moments Playlist",
-          "Classic Blast Off Clips (Team Rocket)",
-          "https://www.youtube.com/watch?v=xY7zzKTslFA the same as this"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Team Rocket encounter events trigger randomly during story/overworld navigation",
-        "Team Rocket's intro speech displays with character portraits",
-        "Defeating Team Rocket plays a 'blasting off' animation and sound effect",
-        "Team Rocket's Pokemon (e.g., Arbok, Weezing) are unique to their encounters"
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "text": "Implement an evolution items system. Include Water Stone, Fire Stone, Grass Stone, Electric Stone, and other standard evolution stones. Players can collect stones during gameplay and apply them to eligible Pokemon to trigger evolution. Evolution must be optional — the player chooses when and whether to evolve.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "some items make pokemon evovle like water stone and fire stone,grass stone.electric stone and the others",
-          "you can evolve you pokemon if you want to"
-        ]
-      },
-      "acceptanceCriteria": [
-        "At least 5 evolution stone types are defined in the backend item registry",
-        "Applying a stone to a compatible Pokemon triggers evolution with a cinematic animation",
-        "Evolution is never forced — player must confirm before evolving",
-        "Evolved Pokemon have improved stats stored in backend"
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "text": "Every battle in the game must feature a different opponent Pokemon with unique moves, animations, and behavior patterns. No two consecutive battles should reuse the same opponent. Battles must animate like the official Pokemon anime clips, with fluid character movements, expressive attack effects, and dynamic camera angles.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "every battles is different different pokemon",
-          "make the battles like this and every battles is different",
-          "the animation need to be the same as pokemon miove in masterjorney make the pokemon seem real and moving in the battle"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Battle opponent pool contains at least 30 distinct Pokemon with unique move sets",
-        "Battle opponent selection algorithm avoids repeating the same Pokemon consecutively",
-        "Attack animations use particle effects, flash, and motion blur to feel cinematic",
-        "Pokemon models/sprites move dynamically during battle (not static)"
-      ]
-    },
-    {
-      "id": "REQ-11",
-      "text": "Store all game state server-side: player profile (trainer name = Ash), Pokemon roster, badges earned, story arc progress, inventory (evolution stones), and battle history. Provide stable persistence so progress is saved across sessions.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "the more players there are the college and dramatic the game"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Player profile with all fields is stored in stable backend state",
-        "Badge collection, story progress, and inventory persist across page reloads",
-        "Battle history stores last 20 battles with opponent and outcome",
-        "Multiple players can have independent profiles"
-      ]
-    },
-    {
-      "id": "REQ-12",
-      "text": "Design a bold, vibrant visual theme inspired by the Pokemon anime aesthetic: bright saturated colors (yellows, reds, blues), dynamic battle scene backgrounds resembling anime environments (forests, gyms, stadiums), expressive typography, and energy-filled UI elements. The entire app should feel like a living anime world, not a typical mobile game UI.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "make the battles the same as the movies like animation like make it real",
-          "make it look like pokemon miove in masterjorney"
-        ]
-      },
-      "acceptanceCriteria": [
-        "App color palette uses saturated anime-inspired colors (yellow, red, electric blue)",
-        "Battle backgrounds are illustrated scene environments, not plain colors",
-        "Typography is bold and energetic throughout",
-        "All screens maintain visual consistency with the anime theme"
+        "No 'Dodge' button or dodge-keybind is present in the battle UI.",
+        "The player's Pokemon sprite is draggable (touch drag on mobile, click-drag on desktop) to any position within the player's side of the battle field.",
+        "When the player drags their Pokemon away from the path of an incoming opponent attack projectile, the attack misses and deals no damage.",
+        "When the player does NOT reposition their Pokemon out of the path of an incoming attack, the attack connects and deals damage normally.",
+        "Repositioning feels responsive and immediate — the Pokemon sprite follows the drag in real time with no noticeable lag.",
+        "The dodge detection uses positional overlap between the incoming attack projectile and the Pokemon sprite's current position to determine hit or miss.",
+        "The mechanic works consistently on both mobile (touch) and desktop (mouse) inputs."
       ]
     }
   ],
   "constraints": [
-    "Trainer name is permanently set to 'Ash' — player cannot rename their trainer",
-    "Pikachu's base stats must be ATK=100, DEF=45, SPD=40 and must be the strongest Pokemon in the game",
-    "Battle system must be real-time — no turn-based mechanics allowed",
-    "Evolution must always be player-confirmed — never auto-triggered",
-    "Do not embed or stream YouTube videos directly — animate battles with original React Three Fiber / CSS animations inspired by the anime style"
+    "Do not modify any files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui.",
+    "The real-time, non-turn-based battle architecture must be preserved — do not revert to turn-based mechanics."
   ],
   "nonGoals": [
-    "Actual YouTube video playback inside the app",
-    "Play Store submission pipeline (out of scope for this build)",
-    "Real-time multiplayer networking or live PvP battles",
-    "Officially licensed Pokemon assets (original illustrated assets only)",
-    "Chat or messaging between players",
-    "GPS or location-based features"
+    "Adding any new moves, Pokemon, or story content.",
+    "Changing any other battle controls beyond the dodge mechanic.",
+    "Backend changes — this is a frontend-only interaction change."
   ],
   "imageRequirements": {
-    "required": [
-      "Ash Ketchum full-body anime-style trainer illustration in iconic blue jacket, red cap, and fingerless gloves (ash-trainer.dim_300x400.png)",
-      "Pikachu animated-style illustration, cute and expressive with electric sparks, front-facing (pikachu-battle.dim_256x256.png)",
-      "Professor Oak anime-style portrait in white lab coat, friendly expression, gray hair (professor-oak.dim_300x400.png)",
-      "Team Rocket trio (Jessie, James, Meowth) anime-style group illustration with 'R' logo backdrop (team-rocket.dim_400x300.png)",
-      "Pokemon battle arena background — anime outdoor stadium with crowd and bright sky (battle-bg-stadium.dim_1200x600.png)",
-      "Pokemon gym interior battle background — dark dramatic gym arena with spotlights (battle-bg-gym.dim_1200x600.png)",
-      "Forest battle background — lush green anime forest clearing (battle-bg-forest.dim_1200x600.png)",
-      "Pikachu using Electro Ball — action pose with glowing electric orb (pikachu-electroball.dim_256x256.png)",
-      "Pikachu using Iron Tail — tail glowing metallic silver mid-strike (pikachu-irontail.dim_256x256.png)",
-      "Pikachu using Quick Attack — motion-blur speed dash pose (pikachu-quickattack.dim_256x256.png)",
-      "Collection of 5 evolution stone icons: Water Stone, Fire Stone, Grass Stone, Electric Stone, Moon Stone (evolution-stones.dim_512x128.png)",
-      "Badge collection display panel — 8 circular gym badges in different colors and designs on a dark background (badges-panel.dim_512x128.png)",
-      "Pikachu idle/starter selection cute pose with sparkles (pikachu-starter.dim_256x256.png)",
-      "App logo — 'Ash's Pokemon Journey' in bold anime-style lettering with lightning bolt accent (app-logo.dim_600x200.png)"
-    ],
+    "required": [],
     "edits": []
   }
 }

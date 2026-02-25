@@ -7,7 +7,7 @@ import AttackAnimation from '../components/AttackAnimation';
 import StrategyInput from '../components/StrategyInput';
 import { useCreateBattleLog, useNotifyBattleResult } from '../hooks/useQueries';
 import { BattleResult } from '../backend';
-import { ArrowLeft, ChevronUp, ChevronDown } from 'lucide-react';
+import { ArrowLeft, ChevronUp, ChevronDown, Move } from 'lucide-react';
 
 type AnimState = 'idle' | 'attack' | 'hit' | 'faint' | 'dodge';
 
@@ -57,20 +57,20 @@ export default function Battle() {
   const [activeAttacks, setActiveAttacks] = useState<ActiveAttack[]>([]);
   const [battleLog, setBattleLog] = useState<string[]>([
     `A wild ${OPPONENT_POKEMON[opponentIndex].name} appeared!`,
-    'Go, Pikachu!',
+    'Go, Pikachu! Drag to dodge incoming attacks!',
   ]);
   const [battleOver, setBattleOver] = useState(false);
   const [winner, setWinner] = useState<'player' | 'opponent' | null>(null);
   const [playerPos, setPlayerPos] = useState({ x: 0, y: 0 });
-  const [isDodging, setIsDodging] = useState(false);
   const [tempBoosts, setTempBoosts] = useState({ attack: 0, defense: 0, speed: 0 });
   const [showStrategy, setShowStrategy] = useState(false);
   const [showLog, setShowLog] = useState(false);
+  const [showDodgeHint, setShowDodgeHint] = useState(true);
 
   const attackIdRef = useRef(0);
   const opponentTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const battleOverRef = useRef(false);
-  const isDodgingRef = useRef(false);
+  const playerPosRef = useRef(playerPos);
   const tempBoostsRef = useRef(tempBoosts);
 
   const createBattleLogMutation = useCreateBattleLog();
@@ -78,11 +78,25 @@ export default function Battle() {
 
   // Keep refs in sync
   useEffect(() => { battleOverRef.current = battleOver; }, [battleOver]);
-  useEffect(() => { isDodgingRef.current = isDodging; }, [isDodging]);
+  useEffect(() => {
+    playerPosRef.current = playerPos;
+  }, [playerPos]);
   useEffect(() => { tempBoostsRef.current = tempBoosts; }, [tempBoosts]);
+
+  // Hide dodge hint after 5 seconds
+  useEffect(() => {
+    const t = setTimeout(() => setShowDodgeHint(false), 5000);
+    return () => clearTimeout(t);
+  }, []);
 
   const addLog = useCallback((msg: string) => {
     setBattleLog((prev) => [msg, ...prev].slice(0, 10));
+  }, []);
+
+  // Handle player position change from drag
+  const handlePlayerPositionChange = useCallback((pos: { x: number; y: number }) => {
+    setPlayerPos(pos);
+    playerPosRef.current = pos;
   }, []);
 
   // executeMove — renamed from useMove to avoid react-hooks/rules-of-hooks false positive
@@ -130,20 +144,6 @@ export default function Battle() {
     }, 700);
   }, [playerPokemon, opponentPokemon, addLog]);
 
-  const handleDodge = useCallback(() => {
-    if (battleOverRef.current || isDodgingRef.current) return;
-    setIsDodging(true);
-    setPlayerAnim('dodge');
-    const dir = Math.random() > 0.5 ? 50 : -50;
-    setPlayerPos({ x: dir, y: -15 });
-    addLog(`${playerPokemon.name} dodged!`);
-    setTimeout(() => {
-      setPlayerPos({ x: 0, y: 0 });
-      setIsDodging(false);
-      setPlayerAnim('idle');
-    }, 600);
-  }, [playerPokemon.name, addLog]);
-
   // Opponent AI
   useEffect(() => {
     const scheduleOpponentAttack = () => {
@@ -161,28 +161,8 @@ export default function Battle() {
         setTimeout(() => {
           if (battleOverRef.current) return;
           setOpponentAnim('idle');
-
-          if (!isDodgingRef.current) {
-            const def = playerPokemon.defense + tempBoostsRef.current.defense;
-            const dmg = Math.max(1, Math.floor(move.power * 0.4) - Math.floor(def * 0.2));
-            setPlayerHp((prev) => {
-              const next = Math.max(0, prev - dmg);
-              if (next === 0) {
-                battleOverRef.current = true;
-                setBattleOver(true);
-                setWinner('opponent');
-                setPlayerAnim('faint');
-              } else {
-                setPlayerAnim('hit');
-                setTimeout(() => setPlayerAnim('idle'), 500);
-              }
-              return next;
-            });
-            addLog(`${playerPokemon.name} took ${dmg} damage!`);
-          } else {
-            addLog(`${playerPokemon.name} dodged the attack!`);
-          }
-
+          // Damage is handled by AttackAnimation's onComplete callback
+          // which passes whether the attack was dodged
           if (!battleOverRef.current) scheduleOpponentAttack();
         }, 1200);
       }, delay);
@@ -207,9 +187,6 @@ export default function Battle() {
   }, [battleOver, winner]);
 
   const handleStrategy = useCallback((strategy: string, keywords: string[]) => {
-    if (keywords.includes('dodge') || keywords.includes('circle') || keywords.includes('quick attack')) {
-      handleDodge();
-    }
     if (keywords.includes('iron tail') || keywords.includes('counter')) {
       const ironTail = playerPokemon.moves.find((m) => m.name === 'Iron Tail');
       if (ironTail) executeMove(ironTail);
@@ -218,11 +195,38 @@ export default function Battle() {
       const electroBall = playerPokemon.moves.find((m) => m.name === 'Electro Ball');
       if (electroBall) executeMove(electroBall);
     }
-  }, [handleDodge, executeMove, playerPokemon.moves]);
+  }, [executeMove, playerPokemon.moves]);
 
-  const removeAttack = (id: number) => {
-    setActiveAttacks((prev) => prev.filter((a) => a.id !== id));
-  };
+  // Handle attack completion — apply damage if not dodged
+  const handleAttackComplete = useCallback((attackId: number, move: LocalMove, direction: 'left' | 'right', dodged?: boolean) => {
+    setActiveAttacks((prev) => prev.filter((a) => a.id !== attackId));
+
+    // Only apply damage for opponent attacks (direction: 'left') that weren't dodged
+    if (direction === 'left' && !battleOverRef.current) {
+      if (!dodged) {
+        const def = playerPokemon.defense + tempBoostsRef.current.defense;
+        const dmg = Math.max(1, Math.floor(move.power * 0.4) - Math.floor(def * 0.2));
+        setPlayerHp((prev) => {
+          const next = Math.max(0, prev - dmg);
+          if (next === 0) {
+            battleOverRef.current = true;
+            setBattleOver(true);
+            setWinner('opponent');
+            setPlayerAnim('faint');
+          } else {
+            setPlayerAnim('hit');
+            setTimeout(() => setPlayerAnim('idle'), 500);
+          }
+          return next;
+        });
+        addLog(`${playerPokemon.name} took damage!`);
+      } else {
+        addLog(`${playerPokemon.name} dodged the attack!`);
+        setPlayerAnim('dodge');
+        setTimeout(() => setPlayerAnim('idle'), 400);
+      }
+    }
+  }, [playerPokemon, addLog]);
 
   const bgImage = bgMap[bgTypeParam] || bgMap.forest;
 
@@ -242,6 +246,14 @@ export default function Battle() {
       >
         <ArrowLeft className="w-5 h-5" />
       </button>
+
+      {/* Dodge hint */}
+      {showDodgeHint && !battleOver && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-black/80 border border-yellow-400/50 text-yellow-300 text-xs font-bold px-4 py-2 rounded-full flex items-center gap-2 animate-pulse">
+          <Move className="w-3 h-3" />
+          Drag your Pokémon to dodge attacks!
+        </div>
+      )}
 
       {/* Battle arena */}
       <div className="relative z-10 flex-1 flex flex-col max-w-2xl mx-auto w-full">
@@ -274,7 +286,8 @@ export default function Battle() {
               moveColor={atk.move.color}
               moveEmoji={atk.move.emoji}
               direction={atk.direction}
-              onComplete={() => removeAttack(atk.id)}
+              playerPosition={atk.direction === 'left' ? playerPosRef.current : undefined}
+              onComplete={(dodged) => handleAttackComplete(atk.id, atk.move, atk.direction, dodged)}
             />
           ))}
 
@@ -290,15 +303,15 @@ export default function Battle() {
           {/* VS indicator */}
           <div className="text-white/30 font-anime text-2xl">VS</div>
 
-          {/* Player Pokemon */}
-          <div
-            className="slide-in-left transition-transform duration-300"
-            style={{ transform: `translate(${playerPos.x}px, ${playerPos.y}px)` }}
-          >
+          {/* Player Pokemon — draggable to dodge */}
+          <div className="slide-in-left">
             <PokemonBattleSprite
               pokemon={playerPokemon}
               side="player"
               animState={playerAnim}
+              position={playerPos}
+              isDraggable={!battleOver}
+              onPositionChange={handlePlayerPositionChange}
             />
           </div>
         </div>
@@ -409,15 +422,14 @@ export default function Battle() {
             </div>
           )}
 
-          {/* Dodge button */}
+          {/* Dodge hint bar (replaces dodge button) */}
           {!battleOver && (
-            <button
-              onClick={handleDodge}
-              disabled={isDodging}
-              className="w-full bg-electric-blue/20 border-2 border-electric-blue/50 text-white font-anime text-lg py-2 rounded-xl hover:bg-electric-blue/30 transition-colors disabled:opacity-50 anime-btn"
-            >
-              💨 DODGE!
-            </button>
+            <div className="w-full flex items-center justify-center gap-2 bg-black/30 border border-yellow-400/20 rounded-xl px-3 py-2">
+              <Move className="w-4 h-4 text-yellow-400/70" />
+              <span className="text-yellow-400/70 text-xs font-bold">
+                Drag your Pokémon to dodge incoming attacks
+              </span>
+            </div>
           )}
 
           {/* Strategy input toggle */}

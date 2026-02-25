@@ -1,139 +1,50 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-25T00:46:24.666Z",
-  "summary": "The diff implements a substantial portion of the requested Pokemon RPG game, covering most requirements including the Professor Oak intro, starter selection, real-time battle system, story campaign, gym battles, Team Rocket encounters, evolution system, backend persistence, and anime visual theme. However, several specific acceptance criteria and features have gaps or are only partially implemented.",
+  "generatedAt": "2026-02-25T01:14:41.472Z",
+  "summary": "The diff implements REQ-17 by replacing the dodge button with a drag-to-reposition mechanic. PokemonBattleSprite.tsx gains full mouse and touch drag support with boundary constraints. AttackAnimation.tsx checks positional distance at impact time to determine hit/miss. Battle.tsx wires player position state into both components. The implementation covers most acceptance criteria, but the dodge detection approach uses distance from center rather than projectile-sprite overlap, and drag bounds are not dynamically constrained to the player's side of the battlefield.",
   "missing_requirements": [
     {
-      "id": "REQ-4",
-      "requirement": "Move collision detection resolves with correct win/lose/cancel outcomes based on power comparison when two opposing moves collide simultaneously",
-      "reason": "The Battle.tsx implements real-time move execution and dodge mechanics, but there is no evidence of projectile collision detection between opposing moves mid-flight. The system applies damage directly rather than detecting when a player move and opponent move physically collide and comparing their power values.",
+      "id": "REQ-17",
+      "requirement": "The dodge detection uses positional overlap between the incoming attack projectile and the Pokemon sprite's current position to determine hit or miss.",
+      "reason": "AttackAnimation.tsx uses a simple Euclidean distance from center (dist >= DODGE_THRESHOLD of 45px) rather than actual positional overlap between the projectile bounding box and the Pokemon sprite's current position. This does not satisfy the AC specifying overlap-based collision detection.",
       "evidence": [
-        "frontend/src/pages/Battle.tsx",
         "frontend/src/components/AttackAnimation.tsx"
       ]
     },
     {
-      "id": "REQ-5",
-      "requirement": "Strategy input is stored per battle for replay/review in the backend",
-      "reason": "StrategyInput.tsx handles keyword parsing and triggers UI responses, but there is no evidence that strategy text is persisted to the backend per battle. The backend main.mo and useQueries.ts do not show a strategy storage endpoint.",
+      "id": "REQ-17",
+      "requirement": "The player's Pokemon sprite is draggable to any position within the player's side of the battle field.",
+      "reason": "The drag bounds are hardcoded as static pixel offsets ({ minX: -120, maxX: 120, minY: -100, maxY: 60 }) with no evidence they are dynamically computed or constrained to the player's actual side of the rendered battlefield layout.",
       "evidence": [
-        "frontend/src/components/StrategyInput.tsx",
-        "backend/main.mo",
-        "frontend/src/hooks/useQueries.ts"
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "requirement": "Final arc battle features dramatic cinematic sequences for Ash vs. the champion",
-      "reason": "A StoryCampaign page is referenced in App.tsx and routes exist, but the file was omitted from the diff. There is no evidence of a championship cinematic sequence being implemented.",
-      "evidence": [
-        "frontend/src/App.tsx"
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "requirement": "Gym battles are noticeably harder than regular wild/story battles",
-      "reason": "GymBattles.tsx routes the player to the standard /battle page with bgType=gym but uses the same OPPONENT_POKEMON pool offset by gym id. There is no evidence of gym-specific difficulty scaling, increased HP pools, or stronger move sets compared to wild encounters.",
-      "evidence": [
-        "frontend/src/pages/GymBattles.tsx",
-        "frontend/src/data/pokemonData.ts"
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "requirement": "Defeating Team Rocket plays a blasting off sound effect",
-      "reason": "TeamRocketEncounter.tsx implements a blast-off CSS animation visually, but there is no sound effect triggered on blast off. The requirement explicitly mentions a sound effect.",
-      "evidence": [
-        "frontend/src/components/TeamRocketEncounter.tsx"
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "requirement": "Battle opponent pool contains at least 30 distinct Pokemon with unique move sets",
-      "reason": "pokemonData.ts is truncated and the full OPPONENT_POKEMON array count is not visible in the diff. The 30-Pokemon minimum cannot be confirmed.",
-      "evidence": [
-        "frontend/src/data/pokemonData.ts"
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "requirement": "Attack animations use particle effects, flash, and motion blur to feel cinematic with dynamic camera angles",
-      "reason": "AttackAnimation.tsx uses emoji-based projectiles and a simple screen flash overlay. There is no React Three Fiber usage, genuine particle systems, or dynamic camera angle changes as requested in the build constraints.",
-      "evidence": [
-        "frontend/src/components/AttackAnimation.tsx",
-        "frontend/src/components/PokemonBattleSprite.tsx"
-      ]
-    },
-    {
-      "id": "REQ-11",
-      "requirement": "Battle history stores last 20 battles with opponent and outcome",
-      "reason": "useQueries.ts shows createBattleLog and getLog hooks, but the backend main.mo is truncated and does not clearly show a capped 20-battle history. The getLog return type is string[] which may not store structured opponent and outcome data.",
-      "evidence": [
-        "backend/main.mo",
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/src/components/PokemonBattleSprite.tsx",
+        "frontend/src/pages/Battle.tsx"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Internet Identity (ICP) authentication login system with a dedicated LoginPage and blockchain-based actor calls",
-      "reason": "The build request does not mention Internet Computer, ICP, Internet Identity, or any blockchain-based authentication. The diff includes a full InternetIdentityProvider, useInternetIdentity hook, LoginPage route, and actor-based backend calls that were never requested.",
+      "description": "A 'Drag to dodge' hint UI element that auto-hides after 5 seconds via showDodgeHint state.",
+      "reason": "The BuildRequest does not mention any onboarding hint or tooltip for the drag mechanic. This was added in Battle.tsx without being requested.",
       "evidence": [
-        "frontend/src/hooks/useInternetIdentity.ts",
-        "frontend/src/hooks/useActor.ts",
-        "frontend/src/App.tsx"
+        "frontend/src/pages/Battle.tsx"
       ]
     },
     {
-      "description": "Caffeine.ai attribution footer link embedded in the Layout",
-      "reason": "The build request does not request any third-party attribution or external promotional links. The Layout.tsx includes a hardcoded Caffeine.ai referral link in the footer.",
+      "description": "A dashed drag-hint ring visual indicator rendered on the player's Pokemon sprite.",
+      "reason": "The BuildRequest does not specify any visual ring or outline on the draggable sprite. The file summary mentions a 'dashed drag-hint ring' which was not requested.",
       "evidence": [
-        "frontend/src/components/Layout.tsx"
-      ]
-    },
-    {
-      "description": "Access control and admin permission system in the backend",
-      "reason": "The build request makes no mention of an admin role, access control layers, or permission systems. The backend includes MixinAuthorization, AccessControl, and admin token initialization logic.",
-      "evidence": [
-        "backend/main.mo"
+        "frontend/src/components/PokemonBattleSprite.tsx",
+        "frontend-file-summaries.txt"
       ]
     }
   ],
-  "confidence": 0.72,
+  "confidence": 0.78,
   "changed_files": [
-    "all_files_summary.json",
-    "backend/main.mo",
     "frontend-file-summaries.txt",
-    "frontend/index.css",
-    "frontend/index.html",
-    "frontend/src/App.tsx",
-    "frontend/src/components/AnimatedPokemon.tsx",
     "frontend/src/components/AttackAnimation.tsx",
-    "frontend/src/components/BadgeDisplay.tsx",
-    "frontend/src/components/EvolutionModal.tsx",
-    "frontend/src/components/HealthBar.tsx",
-    "frontend/src/components/Layout.tsx",
     "frontend/src/components/PokemonBattleSprite.tsx",
-    "frontend/src/components/StrategyInput.tsx",
-    "frontend/src/components/TeamRocketEncounter.tsx",
-    "frontend/src/data/pokemonData.ts",
-    "frontend/src/hooks/useActor.ts",
-    "frontend/src/hooks/useInternetIdentity.ts",
-    "frontend/src/hooks/useQueries.ts",
-    "frontend/src/index.css",
-    "frontend/src/main.tsx",
     "frontend/src/pages/Battle.tsx",
-    "frontend/src/pages/GameHome.tsx",
-    "frontend/src/pages/GymBattles.tsx",
-    "frontend/src/pages/LoginPage.tsx",
-    "frontend/src/pages/PokemonRoster.tsx",
-    "frontend/src/pages/ProfessorOakIntro.tsx",
-    "frontend/src/pages/StarterSelection.tsx",
-    "frontend/src/pages/StoryCampaign.tsx",
-    "frontend/src/pages/TrainerProfile.tsx",
-    "frontend/src/utils/urlParams.ts",
-    "frontend/tailwind.config.js",
     "project_state.json"
   ]
 }

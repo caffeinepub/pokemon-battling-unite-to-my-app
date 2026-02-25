@@ -1,16 +1,17 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
+  "projectStateVersion": 7,
   "summary": "A Pokemon-style mobile RPG game inspired by Ash Ketchum's journey. Player is Ash with Pikachu as starter (ATK 100, DEF 45, SPD 40). Features real-time anime-style battles (no turns), dodge mechanics, move clash system, gym battles for badges, Team Rocket encounters, story following Master Journeys/Johto Journeys/Ultimate Journeys arcs, evolution items (stones), animated Pokemon selection screen, and Professor Oak intro. Target: Play Store release.",
   "architectural_notes": [
     "Real-time battle engine: no turn system, moves fire on demand, dodge via movement input",
     "Move clash system: stronger move destroys weaker; equal-strength moves can cancel each other",
     "Pikachu stats: ATK 100, DEF 45, SPD 40; Electro Ball +45 ATK, Iron Tail +25 DEF, Quick Attack +30 SPD",
-    "Target platform: Android Play Store release"
+    "Target platform: Android Play Store release",
+    "Z-Moves: one-time per battle super move requiring Z-Crystal; Mega Evolution: requires Mega Stone + Key Stone; Gigantamax: lasts a few turns with G-Max move",
+    "Dodge mechanic: player physically moves/drags their Pokemon on screen to dodge — no dedicated dodge button"
   ],
   "known_issues": [],
   "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Ash Ketchum full-body anime-style trainer illustration in iconic blue jacket, red cap, and fingerless gloves (ash-trainer.dim_300x400.png)\n- Pikachu animated-style illustration, cute and expressive with electric sparks, front-facing (pikachu-battle.dim_256x256.png)\n- Professor Oak anime-style portrait in white lab coat, friendly expression, gray hair (professor-oak.dim_300x400.png)\n- Team Rocket trio (Jessie, James, Meowth) anime-style group illustration with 'R' logo backdrop (team-rocket.dim_400x300.png)\n- Pokemon battle arena background — anime outdoor stadium with crowd and bright sky (battle-bg-stadium.dim_1200x600.png)\n- Pokemon gym interior battle background — dark dramatic gym arena with spotlights (battle-bg-gym.dim_1200x600.png)\n- Forest battle background — lush green anime forest clearing (battle-bg-forest.dim_1200x600.png)\n- Pikachu using Electro Ball — action pose with glowing electric orb (pikachu-electroball.dim_256x256.png)\n- Pikachu using Iron Tail — tail glowing metallic silver mid-strike (pikachu-irontail.dim_256x256.png)\n- Pikachu using Quick Attack — motion-blur speed dash pose (pikachu-quickattack.dim_256x256.png)\n- Collection of 5 evolution stone icons: Water Stone, Fire Stone, Grass Stone, Electric Stone, Moon Stone (evolution-stones.dim_512x128.png)\n- Badge collection display panel — 8 circular gym badges in different colors and designs on a dark background (badges-panel.dim_512x128.png)\n- Pikachu idle/starter selection cute pose with sparkles (pikachu-starter.dim_256x256.png)\n- App logo — 'Ash's Pokemon Journey' in bold anime-style lettering with lightning bolt accent (app-logo.dim_600x200.png)",
   "existing_features": [
     {
       "id": "feature-implement-a-professor-oak-introduction-screen-that-greets-the-player-explains-the-world-of-pokemon-and-introduces-ash-as-the-player-s-trainer-name-oak-s-appearance-should-be-modeled-after-the-anime-version-white-lab-coat-gray-hair-after-the-intro-transition-to-the-starter-pokemon-selection-screen",
@@ -91,6 +92,38 @@
         "REQ-12"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-a-new-sun-moon-story-campaign-arc-covering-three-seasons-season-20-sun-moon-sm001-sm046-alola-region-season-21-ultra-adventures-sm047-sm095-and-season-22-ultra-legends-sm096-sm146-this-arc-should-appear-alongside-the-existing-johto-journeys-master-journeys-and-ultimate-journeys-arcs-in-the-story-campaign-screen",
+      "title": "Add a new 'Sun & Moon' story campaign arc covering three seasons: Season 20 — Sun & Moon (SM001–SM046, Alola region), Season 21 — Ultra Adventures (SM047–SM095), and Season 22 — Ultra Legends (SM096–SM146). This arc should appear alongside the existing Johto Journeys, Master Journeys, and Ultimate Journeys arcs in the story campaign screen.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-for-each-sun-moon-episode-displayed-in-the-story-campaign-show-a-watch-episode-link-button-sm001-links-directly-to-https-www-youtube-com-watch-v-tfxv6i9u1z0-all-other-episodes-sm002-sm146-link-to-the-corresponding-pok-mon-tv-search-url-in-the-format-https-watch-pokemon-com-search-query-smxxx-e-g-sm002-https-watch-pokemon-com-search-query-sm002-links-must-open-in-a-new-browser-tab",
+      "title": "For each Sun & Moon episode displayed in the story campaign, show a 'Watch Episode' link button. SM001 links directly to https://www.youtube.com/watch?v=TFxv6I9U1Z0. All other episodes (SM002–SM146) link to the corresponding Pokémon TV search URL in the format https://watch.pokemon.com/search?query=SMxxx (e.g., SM002 → https://watch.pokemon.com/search?query=SM002). Links must open in a new browser tab.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-alola-themed-battle-opponents-for-the-sun-moon-story-arc-each-episode-battle-should-feature-a-pokemon-native-to-the-alola-region-e-g-rowlet-litten-popplio-rockruff-togedemaru-bewear-komala-mimikyu-turtonator-wishiwashi-no-two-consecutive-episode-battles-should-reuse-the-same-opponent-pokemon-battle-backgrounds-should-reflect-alola-environments-tropical-beach-lush-jungle-volcanic-terrain-aether-paradise",
+      "title": "Add Alola-themed battle opponents for the Sun & Moon story arc. Each episode battle should feature a Pokemon native to the Alola region (e.g., Rowlet, Litten, Popplio, Rockruff, Togedemaru, Bewear, Komala, Mimikyu, Turtonator, Wishiwashi). No two consecutive episode battles should reuse the same opponent Pokemon. Battle backgrounds should reflect Alola environments (tropical beach, lush jungle, volcanic terrain, Aether Paradise).",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-dodge-button-input-control-in-the-battle-screen-with-a-drag-to-reposition-mechanic-the-player-must-physically-drag-or-move-their-pokemon-sprite-to-a-new-position-on-the-battle-field-to-dodge-incoming-opponent-attacks-there-should-be-no-dedicated-dodge-button-dodging-is-achieved-purely-by-repositioning-the-pokemon-away-from-the-path-of-the-incoming-move",
+      "title": "Replace the dodge button/input control in the battle screen with a drag-to-reposition mechanic. The player must physically drag or move their Pokemon sprite to a new position on the battle field to dodge incoming opponent attacks. There should be no dedicated 'Dodge' button — dodging is achieved purely by repositioning the Pokemon away from the path of the incoming move.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -161,6 +194,38 @@
       "summary": "Store all game state server-side: player profile (trainer name = Ash), Pokemon roster, badges earned, story arc progress, inventory (evolution stones), and battle history. Provide stable persistence so progress is saved across sessions.",
       "reqIds": [
         "REQ-11"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Add Z-Moves system: one-time super moves per battle requiring matching Z-Crystal held by Pokemon",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Add Mega Evolution system: temporary transformation requiring Mega Stone on Pokemon and Key Stone for trainer, boosting stats during battle",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-23",
+      "summary": "Add Gigantamax mechanic: Pokemon grows huge, changes appearance, uses unique G-Max move, lasts a few turns per battle",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Incorporate Sun & Moon anime story arcs (SM001–SM146) including Alola, Ultra Adventures, and Ultra Legends seasons as additional story content",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Update the backend story arc data model to support the Sun & Moon arc with its three sub-seasons and 146 episodes. Track per-episode completion status and current episode progress within the Sun & Moon arc separately from existing arcs.",
+      "reqIds": [
+        "REQ-16"
       ],
       "status": "pending"
     }

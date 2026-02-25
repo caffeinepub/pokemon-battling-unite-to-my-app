@@ -1,315 +1,41 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-25T00:46:24.670Z",
+  "generatedAt": "2026-02-25T01:14:41.475Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 12,
-    "implemented": 10,
+    "total": 1,
+    "implemented": 1,
     "items": [
       {
-        "id": "REQ-1",
-        "summary": "Implement a Professor Oak introduction screen that greets the player, explains the world of Pokemon, and introduces Ash as the player's trainer name. Oak's appearance should be modeled after the anime version (white lab coat, gray hair). After the intro, transition to the starter Pokemon selection screen.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/ProfessorOakIntro.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/ProfessorOakIntro.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-10",
-        "summary": "Every battle in the game must feature a different opponent Pokemon with unique moves, animations, and behavior patterns. No two consecutive battles should reuse the same opponent. Battles must animate like the official Pokemon anime clips, with fluid character movements, expressive attack effects, and dynamic camera angles.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/PokemonBattleSprite.tsx",
-          "frontend/src/components/AttackAnimation.tsx",
-          "frontend/src/hooks/useOpponentPool.ts",
-          "frontend/src/pages/Battle.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/PokemonBattleSprite.tsx",
-          "frontend/src/components/AttackAnimation.tsx",
-          "frontend/src/pages/Battle.tsx"
-        ]
-      },
-      {
-        "id": "REQ-11",
-        "summary": "Store all game state server-side: player profile (trainer name = Ash), Pokemon roster, badges earned, story arc progress, inventory (evolution stones), and battle history. Provide stable persistence so progress is saved across sessions.",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-12",
-        "summary": "Design a bold, vibrant visual theme inspired by the Pokemon anime aesthetic: bright saturated colors (yellows, reds, blues), dynamic battle scene backgrounds resembling anime environments (forests, gyms, stadiums), expressive typography, and energy-filled UI elements. The entire app should feel like a living anime world, not a typical mobile game UI.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/index.css",
-          "frontend/tailwind.config.js",
-          "frontend/src/components/Layout.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/index.css",
-          "frontend/tailwind.config.js",
-          "frontend/src/components/Layout.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-2",
-        "summary": "Build an animated Pokemon starter selection screen where each Pokemon appears alive and moving (idle animation loops). Pikachu must be included as the featured starter. All displayed Pokemon should feel dynamic and real, not static sprites.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/StarterSelection.tsx",
-          "frontend/src/components/AnimatedPokemon.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/StarterSelection.tsx",
-          "frontend/src/components/AnimatedPokemon.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-3",
-        "summary": "Define Pikachu as the strongest available Pokemon with stats: ATK 100, DEF 45, SPD 40. Assign Pikachu four moves with the following on-use stat effects: Electro Web (power +45 to electric attacks), Electro Ball (power +45), Iron Tail (DEF +25 for duration of move), Quick Attack (SPD +30 for duration). Pikachu must outperform all other Pokemon in battle.",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-4",
-        "summary": "Implement a real-time anime-style battle system (no turn-based mechanics). Players can use any move at any time. Players can dodge opponent moves by repositioning their Pokemon on screen. When two opposing moves collide simultaneously, the stronger move destroys the weaker one; moves of equal power cancel each other out. Battles must feel dynamic and cinematic like the Pokemon anime movies and Master Journeys series.",
+        "id": "REQ-17",
+        "summary": "Replace the dodge button/input control in the battle screen with a drag-to-reposition mechanic. The player must physically drag or move their Pokemon sprite to a new position on the battle field to dodge incoming opponent attacks. There should be no dedicated 'Dodge' button — dodging is achieved purely by repositioning the Pokemon away from the path of the incoming move.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/pages/Battle.tsx",
-          "frontend/src/components/BattleArena.tsx",
-          "frontend/src/components/MoveCollision.ts",
-          "frontend/src/hooks/useBattleState.ts",
-          "frontend/src/App.tsx"
+          "frontend/src/components/PokemonBattleSprite.tsx",
+          "frontend/src/components/AttackAnimation.tsx"
         ],
         "matchedFiles": [
           "frontend/src/pages/Battle.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-5",
-        "summary": "Add a strategy text input field during battles where the player can type strategies (e.g., 'use Quick Attack to circle opponent', 'use Iron Tail to counter Ice Beam'). The battle AI should read and respond to strategy inputs, adjusting the opponent's behavior or unlocking special combo animations based on the typed strategy.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/StrategyInput.tsx",
-          "frontend/src/pages/Battle.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/StrategyInput.tsx",
-          "frontend/src/pages/Battle.tsx"
-        ]
-      },
-      {
-        "id": "REQ-6",
-        "summary": "Build a story campaign mode structured across three arcs: Johto Journeys, Master Journeys, and Ultimate Journeys. Each arc follows Ash's anime journey with episodic battles against different Pokemon and trainers. The final story climax of each arc features Ash challenging the league champion with high drama, matching the emotional intensity of the anime.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/StoryCampaign.tsx",
-          "frontend/src/components/StoryArcCard.tsx",
-          "frontend/src/components/EpisodeList.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/StoryCampaign.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-7",
-        "summary": "Implement a gym battle system where the player earns badges by defeating gym leaders. Gym leaders must have strong, diverse Pokemon teams and reference battles from the anime gym episode list. Each gym leader should have a unique battle style and powerful moves. Display earned badges on the trainer profile screen.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/GymBattles.tsx",
-          "frontend/src/components/BadgeDisplay.tsx",
-          "frontend/src/pages/TrainerProfile.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/GymBattles.tsx",
-          "frontend/src/components/BadgeDisplay.tsx",
-          "frontend/src/pages/TrainerProfile.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-8",
-        "summary": "Add Team Rocket random encounter events during the overworld/story progression. Team Rocket (Jessie, James, and Meowth) appear with their classic introduction dialogue and 'blast off' ending animation when defeated. These encounters should feel comedic and dramatic like the anime's classic moments.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/TeamRocketEncounter.tsx",
-          "frontend/src/hooks/useRandomEncounters.ts",
-          "frontend/src/pages/StoryCampaign.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/TeamRocketEncounter.tsx",
-          "frontend/src/pages/StoryCampaign.tsx"
-        ]
-      },
-      {
-        "id": "REQ-9",
-        "summary": "Implement an evolution items system. Include Water Stone, Fire Stone, Grass Stone, Electric Stone, and other standard evolution stones. Players can collect stones during gameplay and apply them to eligible Pokemon to trigger evolution. Evolution must be optional — the player chooses when and whether to evolve.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/PokemonRoster.tsx",
-          "frontend/src/components/EvolutionModal.tsx",
-          "frontend/src/components/InventoryDisplay.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/PokemonRoster.tsx",
-          "frontend/src/components/EvolutionModal.tsx",
-          "frontend/src/App.tsx"
+          "frontend/src/components/PokemonBattleSprite.tsx",
+          "frontend/src/components/AttackAnimation.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/authorization/MixinAuthorization.mo",
-    "backend/authorization/access-control.mo",
-    "backend/blob-storage/Mixin.mo",
-    "backend/blob-storage/Storage.mo",
-    "backend/main.mo",
     "build-request.json",
-    "build-template/Dockerfile",
-    "build-template/LICENSE",
     "build-template/README.md",
-    "build-template/deploy.sh",
-    "build-template/icp.yaml",
-    "build-template/package.json",
-    "build-template/pnpm-lock.yaml",
-    "build-template/pnpm-workspace.yaml",
-    "build-template/scripts/prune-unused-images.js",
-    "build-template/scripts/resize-images.js",
-    "build-template/src/backend/canister.yaml",
-    "build-template/src/backend/system-idl/aaaaa-aa.did",
-    "build-template/src/frontend/canister.yaml",
-    "build-template/src/frontend/components.json",
-    "build-template/src/frontend/env.json",
-    "build-template/src/frontend/eslint-rules/no-bigint-in-query-keys.js",
-    "build-template/src/frontend/eslint-rules/require-internet-identity-provider.js",
-    "build-template/src/frontend/eslint.config.js",
-    "build-template/src/frontend/package.json",
-    "build-template/src/frontend/postcss.config.js",
-    "build-template/src/frontend/src/components/ui/accordion.tsx",
-    "build-template/src/frontend/src/components/ui/alert-dialog.tsx",
-    "build-template/src/frontend/src/components/ui/alert.tsx",
-    "build-template/src/frontend/src/components/ui/aspect-ratio.tsx",
-    "build-template/src/frontend/src/components/ui/avatar.tsx",
-    "build-template/src/frontend/src/components/ui/badge.tsx",
-    "build-template/src/frontend/src/components/ui/breadcrumb.tsx",
-    "build-template/src/frontend/src/components/ui/button.tsx",
-    "build-template/src/frontend/src/components/ui/calendar.tsx",
-    "build-template/src/frontend/src/components/ui/card.tsx",
-    "build-template/src/frontend/src/components/ui/carousel.tsx",
-    "build-template/src/frontend/src/components/ui/chart.tsx",
-    "build-template/src/frontend/src/components/ui/checkbox.tsx",
-    "build-template/src/frontend/src/components/ui/collapsible.tsx",
-    "build-template/src/frontend/src/components/ui/command.tsx",
-    "build-template/src/frontend/src/components/ui/context-menu.tsx",
-    "build-template/src/frontend/src/components/ui/dialog.tsx",
-    "build-template/src/frontend/src/components/ui/drawer.tsx",
-    "build-template/src/frontend/src/components/ui/dropdown-menu.tsx",
-    "build-template/src/frontend/src/components/ui/form.tsx",
-    "build-template/src/frontend/src/components/ui/hover-card.tsx",
-    "build-template/src/frontend/src/components/ui/input-otp.tsx",
-    "build-template/src/frontend/src/components/ui/input.tsx",
-    "build-template/src/frontend/src/components/ui/label.tsx",
-    "build-template/src/frontend/src/components/ui/menubar.tsx",
-    "build-template/src/frontend/src/components/ui/navigation-menu.tsx",
-    "build-template/src/frontend/src/components/ui/pagination.tsx",
-    "build-template/src/frontend/src/components/ui/popover.tsx",
-    "build-template/src/frontend/src/components/ui/progress.tsx",
-    "build-template/src/frontend/src/components/ui/radio-group.tsx",
-    "build-template/src/frontend/src/components/ui/resizable.tsx",
-    "build-template/src/frontend/src/components/ui/scroll-area.tsx",
-    "build-template/src/frontend/src/components/ui/select.tsx",
-    "build-template/src/frontend/src/components/ui/separator.tsx",
-    "build-template/src/frontend/src/components/ui/sheet.tsx",
-    "build-template/src/frontend/src/components/ui/sidebar.tsx",
-    "build-template/src/frontend/src/components/ui/skeleton.tsx",
-    "build-template/src/frontend/src/components/ui/slider.tsx",
-    "build-template/src/frontend/src/components/ui/sonner.tsx",
-    "build-template/src/frontend/src/components/ui/switch.tsx",
-    "build-template/src/frontend/src/components/ui/table.tsx",
-    "build-template/src/frontend/src/components/ui/tabs.tsx",
-    "build-template/src/frontend/src/components/ui/textarea.tsx",
-    "build-template/src/frontend/src/components/ui/toggle-group.tsx",
-    "build-template/src/frontend/src/components/ui/toggle.tsx",
-    "build-template/src/frontend/src/components/ui/tooltip.tsx",
-    "build-template/src/frontend/src/hooks/use-mobile.tsx",
-    "build-template/src/frontend/src/lib/utils.ts",
-    "build-template/src/frontend/tsconfig.json",
-    "build-template/src/frontend/vite.config.js",
-    "build-template/tsconfig.json",
-    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/index.css",
-    "frontend/index.html",
-    "frontend/public/assets/generated/app-logo.dim_600x200.png",
-    "frontend/public/assets/generated/ash-trainer.dim_300x400.png",
-    "frontend/public/assets/generated/badges-panel.dim_512x128.png",
-    "frontend/public/assets/generated/battle-bg-forest.dim_1200x600.png",
-    "frontend/public/assets/generated/battle-bg-gym.dim_1200x600.png",
-    "frontend/public/assets/generated/battle-bg-stadium.dim_1200x600.png",
-    "frontend/public/assets/generated/evolution-stones.dim_512x128.png",
-    "frontend/public/assets/generated/pikachu-battle.dim_256x256.png",
-    "frontend/public/assets/generated/pikachu-electroball.dim_256x256.png",
-    "frontend/public/assets/generated/pikachu-irontail.dim_256x256.png",
-    "frontend/public/assets/generated/pikachu-quickattack.dim_256x256.png",
-    "frontend/public/assets/generated/pikachu-starter.dim_256x256.png",
-    "frontend/public/assets/generated/professor-oak.dim_300x400.png",
-    "frontend/public/assets/generated/team-rocket.dim_400x300.png",
-    "frontend/src/App.tsx",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
-    "frontend/src/components/AnimatedPokemon.tsx",
     "frontend/src/components/AttackAnimation.tsx",
-    "frontend/src/components/BadgeDisplay.tsx",
-    "frontend/src/components/EvolutionModal.tsx",
-    "frontend/src/components/HealthBar.tsx",
-    "frontend/src/components/Layout.tsx",
     "frontend/src/components/PokemonBattleSprite.tsx",
-    "frontend/src/components/StrategyInput.tsx",
-    "frontend/src/components/TeamRocketEncounter.tsx",
-    "frontend/src/config.ts",
-    "frontend/src/data/pokemonData.ts",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
-    "frontend/src/hooks/useActor.ts",
-    "frontend/src/hooks/useInternetIdentity.ts",
-    "frontend/src/hooks/useQueries.ts",
-    "frontend/src/index.css",
-    "frontend/src/main.tsx",
     "frontend/src/pages/Battle.tsx",
-    "frontend/src/pages/GameHome.tsx",
-    "frontend/src/pages/GymBattles.tsx",
-    "frontend/src/pages/LoginPage.tsx",
-    "frontend/src/pages/PokemonRoster.tsx",
-    "frontend/src/pages/ProfessorOakIntro.tsx",
-    "frontend/src/pages/StarterSelection.tsx",
-    "frontend/src/pages/StoryCampaign.tsx",
-    "frontend/src/pages/TrainerProfile.tsx",
-    "frontend/src/ui-summary.json",
-    "frontend/src/utils/StorageClient.ts",
-    "frontend/src/utils/urlParams.ts",
-    "frontend/tailwind.config.js",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",
