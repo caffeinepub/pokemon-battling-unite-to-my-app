@@ -1,0 +1,222 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-implement-a-professor-oak-introduction-screen-that-greets-the-player-explains-the-world-of-pokemon-and-introduces-ash-as-the-player-s-trainer-name-oak-s-appearance-should-be-modeled-after-the-anime-version-white-lab-coat-gray-hair-after-the-intro-transition-to-the-starter-pokemon-selection-screen",
+      "featureTitle": "Implement a Professor Oak introduction screen that greets the player, explains the world of Pokemon, and introduces Ash as the player's trainer name. Oak's appearance should be modeled after the anime version (white lab coat, gray hair). After the intro, transition to the starter Pokemon selection screen.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/pages/ProfessorOakIntro.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-build-an-animated-pokemon-starter-selection-screen-where-each-pokemon-appears-alive-and-moving-idle-animation-loops-pikachu-must-be-included-as-the-featured-starter-all-displayed-pokemon-should-feel-dynamic-and-real-not-static-sprites",
+      "featureTitle": "Build an animated Pokemon starter selection screen where each Pokemon appears alive and moving (idle animation loops). Pikachu must be included as the featured starter. All displayed Pokemon should feel dynamic and real, not static sprites.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/AnimatedPokemon.tsx",
+        "frontend/src/pages/StarterSelection.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-a-real-time-anime-style-battle-system-no-turn-based-mechanics-players-can-use-any-move-at-any-time-players-can-dodge-opponent-moves-by-repositioning-their-pokemon-on-screen-when-two-opposing-moves-collide-simultaneously-the-stronger-move-destroys-the-weaker-one-moves-of-equal-power-cancel-each-other-out-battles-must-feel-dynamic-and-cinematic-like-the-pokemon-anime-movies-and-master-journeys-series",
+      "featureTitle": "Implement a real-time anime-style battle system (no turn-based mechanics). Players can use any move at any time. Players can dodge opponent moves by repositioning their Pokemon on screen. When two opposing moves collide simultaneously, the stronger move destroys the weaker one; moves of equal power cancel each other out. Battles must feel dynamic and cinematic like the Pokemon anime movies and Master Journeys series.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/pages/Battle.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-strategy-text-input-field-during-battles-where-the-player-can-type-strategies-e-g-use-quick-attack-to-circle-opponent-use-iron-tail-to-counter-ice-beam-the-battle-ai-should-read-and-respond-to-strategy-inputs-adjusting-the-opponent-s-behavior-or-unlocking-special-combo-animations-based-on-the-typed-strategy",
+      "featureTitle": "Add a strategy text input field during battles where the player can type strategies (e.g., 'use Quick Attack to circle opponent', 'use Iron Tail to counter Ice Beam'). The battle AI should read and respond to strategy inputs, adjusting the opponent's behavior or unlocking special combo animations based on the typed strategy.",
+      "files": [
+        "frontend/src/components/StrategyInput.tsx",
+        "frontend/src/pages/Battle.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-build-a-story-campaign-mode-structured-across-three-arcs-johto-journeys-master-journeys-and-ultimate-journeys-each-arc-follows-ash-s-anime-journey-with-episodic-battles-against-different-pokemon-and-trainers-the-final-story-climax-of-each-arc-features-ash-challenging-the-league-champion-with-high-drama-matching-the-emotional-intensity-of-the-anime",
+      "featureTitle": "Build a story campaign mode structured across three arcs: Johto Journeys, Master Journeys, and Ultimate Journeys. Each arc follows Ash's anime journey with episodic battles against different Pokemon and trainers. The final story climax of each arc features Ash challenging the league champion with high drama, matching the emotional intensity of the anime.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/pages/StoryCampaign.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-a-gym-battle-system-where-the-player-earns-badges-by-defeating-gym-leaders-gym-leaders-must-have-strong-diverse-pokemon-teams-and-reference-battles-from-the-anime-gym-episode-list-each-gym-leader-should-have-a-unique-battle-style-and-powerful-moves-display-earned-badges-on-the-trainer-profile-screen",
+      "featureTitle": "Implement a gym battle system where the player earns badges by defeating gym leaders. Gym leaders must have strong, diverse Pokemon teams and reference battles from the anime gym episode list. Each gym leader should have a unique battle style and powerful moves. Display earned badges on the trainer profile screen.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/BadgeDisplay.tsx",
+        "frontend/src/pages/GymBattles.tsx",
+        "frontend/src/pages/TrainerProfile.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-team-rocket-random-encounter-events-during-the-overworld-story-progression-team-rocket-jessie-james-and-meowth-appear-with-their-classic-introduction-dialogue-and-blast-off-ending-animation-when-defeated-these-encounters-should-feel-comedic-and-dramatic-like-the-anime-s-classic-moments",
+      "featureTitle": "Add Team Rocket random encounter events during the overworld/story progression. Team Rocket (Jessie, James, and Meowth) appear with their classic introduction dialogue and 'blast off' ending animation when defeated. These encounters should feel comedic and dramatic like the anime's classic moments.",
+      "files": [
+        "frontend/src/components/TeamRocketEncounter.tsx",
+        "frontend/src/pages/StoryCampaign.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-8"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-an-evolution-items-system-include-water-stone-fire-stone-grass-stone-electric-stone-and-other-standard-evolution-stones-players-can-collect-stones-during-gameplay-and-apply-them-to-eligible-pokemon-to-trigger-evolution-evolution-must-be-optional-the-player-chooses-when-and-whether-to-evolve",
+      "featureTitle": "Implement an evolution items system. Include Water Stone, Fire Stone, Grass Stone, Electric Stone, and other standard evolution stones. Players can collect stones during gameplay and apply them to eligible Pokemon to trigger evolution. Evolution must be optional — the player chooses when and whether to evolve.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/EvolutionModal.tsx",
+        "frontend/src/pages/PokemonRoster.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-9"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-every-battle-in-the-game-must-feature-a-different-opponent-pokemon-with-unique-moves-animations-and-behavior-patterns-no-two-consecutive-battles-should-reuse-the-same-opponent-battles-must-animate-like-the-official-pokemon-anime-clips-with-fluid-character-movements-expressive-attack-effects-and-dynamic-camera-angles",
+      "featureTitle": "Every battle in the game must feature a different opponent Pokemon with unique moves, animations, and behavior patterns. No two consecutive battles should reuse the same opponent. Battles must animate like the official Pokemon anime clips, with fluid character movements, expressive attack effects, and dynamic camera angles.",
+      "files": [
+        "frontend/src/components/AttackAnimation.tsx",
+        "frontend/src/components/PokemonBattleSprite.tsx",
+        "frontend/src/pages/Battle.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-10"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-design-a-bold-vibrant-visual-theme-inspired-by-the-pokemon-anime-aesthetic-bright-saturated-colors-yellows-reds-blues-dynamic-battle-scene-backgrounds-resembling-anime-environments-forests-gyms-stadiums-expressive-typography-and-energy-filled-ui-elements-the-entire-app-should-feel-like-a-living-anime-world-not-a-typical-mobile-game-ui",
+      "featureTitle": "Design a bold, vibrant visual theme inspired by the Pokemon anime aesthetic: bright saturated colors (yellows, reds, blues), dynamic battle scene backgrounds resembling anime environments (forests, gyms, stadiums), expressive typography, and energy-filled UI elements. The entire app should feel like a living anime world, not a typical mobile game UI.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/Layout.tsx",
+        "frontend/src/index.css",
+        "frontend/tailwind.config.js"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-12"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

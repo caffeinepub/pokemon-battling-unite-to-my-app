@@ -1,0 +1,11 @@
+{
+  "frontend/src/App.tsx": "Main application entry point that sets up TanStack Router with all routes (login, intro, starter-selection, game, battle, story, gyms, roster, profile) wrapped in the Layout component.",
+  "frontend/src/pages/LoginPage.tsx": "Login/landing page with animated background, Pikachu display, and Internet Identity login button; redirects authenticated users to intro or game based on profile existence.",
+  "frontend/src/pages/GameHome.tsx": "Main game hub showing trainer info, partner Pokemon, quick battle options, navigation cards, and random Team Rocket encounter trigger.",
+  "frontend/src/pages/Battle.tsx": "Real-time anime-style battle screen with renamed `executeMove` (was `useMove`) to fix react-hooks/rules-of-hooks errors, opponent AI, dodge mechanic, attack animations, strategy input, and battle result persistence.",
+  "frontend/src/pages/StoryCampaign.tsx": "Story campaign with three arcs, episodic battles, progress tracking, and cinematic finale; updated `flex-shrink-0` to `shrink-0` for Tailwind v3.",
+  "frontend/src/pages/GymBattles.tsx": "Gym battle selection screen with 8 gym leaders, badge display, challenge modal, and Elite Four unlock; updated `flex-shrink-0` to `shrink-0` for Tailwind v3.",
+  "frontend/src/pages/PokemonRoster.tsx": "Pokemon roster management page with stats, moves, evolution stones, and evolution modal; updated `flex-shrink-0` to `shrink-0` for Tailwind v3.",
+  "frontend/src/pages/TrainerProfile.tsx": "Trainer profile card displaying Ash's stats, partner Pokemon, badge collection, battle history, and achievements.",
+  "frontend/src/components/StrategyInput.tsx": "Strategy text input component for battle screen; fixed `placeholder-white/40` to `placeholder:text-white/40` for Tailwind v3 compatibility."
+}

@@ -1,0 +1,309 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    /* Anime Pokemon Theme - Light */
+    --background: 0.97 0.02 85;
+    --foreground: 0.15 0.05 260;
+    --card: 1 0 0;
+    --card-foreground: 0.15 0.05 260;
+    --popover: 1 0 0;
+    --popover-foreground: 0.15 0.05 260;
+    --primary: 0.82 0.18 85;
+    --primary-foreground: 0.15 0.05 260;
+    --secondary: 0.92 0.08 260;
+    --secondary-foreground: 0.15 0.05 260;
+    --muted: 0.94 0.02 85;
+    --muted-foreground: 0.45 0.05 260;
+    --accent: 0.65 0.22 25;
+    --accent-foreground: 1 0 0;
+    --destructive: 0.62 0.25 25;
+    --destructive-foreground: 1 0 0;
+    --border: 0.88 0.04 85;
+    --input: 0.88 0.04 85;
+    --ring: 0.82 0.18 85;
+    --chart-1: 0.82 0.18 85;
+    --chart-2: 0.65 0.22 25;
+    --chart-3: 0.55 0.2 260;
+    --chart-4: 0.7 0.2 145;
+    --chart-5: 0.75 0.18 310;
+    --sidebar: 0.15 0.05 260;
+    --sidebar-foreground: 1 0 0;
+    --sidebar-primary: 0.82 0.18 85;
+    --sidebar-primary-foreground: 0.15 0.05 260;
+    --sidebar-accent: 0.25 0.08 260;
+    --sidebar-accent-foreground: 1 0 0;
+    --sidebar-border: 0.3 0.08 260;
+    --sidebar-ring: 0.82 0.18 85;
+  }
+
+  .dark {
+    --background: 0.12 0.04 260;
+    --foreground: 0.97 0.02 85;
+    --card: 0.18 0.05 260;
+    --card-foreground: 0.97 0.02 85;
+    --popover: 0.18 0.05 260;
+    --popover-foreground: 0.97 0.02 85;
+    --primary: 0.82 0.18 85;
+    --primary-foreground: 0.12 0.04 260;
+    --secondary: 0.25 0.08 260;
+    --secondary-foreground: 0.97 0.02 85;
+    --muted: 0.22 0.05 260;
+    --muted-foreground: 0.65 0.05 260;
+    --accent: 0.65 0.22 25;
+    --accent-foreground: 1 0 0;
+    --destructive: 0.62 0.25 25;
+    --destructive-foreground: 1 0 0;
+    --border: 1 0 0 / 10%;
+    --input: 1 0 0 / 15%;
+    --ring: 0.82 0.18 85;
+    --chart-1: 0.82 0.18 85;
+    --chart-2: 0.65 0.22 25;
+    --chart-3: 0.55 0.2 260;
+    --chart-4: 0.7 0.2 145;
+    --chart-5: 0.75 0.18 310;
+    --sidebar: 0.1 0.04 260;
+    --sidebar-foreground: 0.97 0.02 85;
+    --sidebar-primary: 0.82 0.18 85;
+    --sidebar-primary-foreground: 0.12 0.04 260;
+    --sidebar-accent: 0.2 0.06 260;
+    --sidebar-accent-foreground: 0.97 0.02 85;
+    --sidebar-border: 1 0 0 / 10%;
+    --sidebar-ring: 0.82 0.18 85;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Nunito', sans-serif;
+  }
+}
+
+@layer utilities {
+  .font-anime {
+    font-family: 'Bangers', cursive;
+    letter-spacing: 0.05em;
+  }
+
+  .text-shadow-glow {
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+  }
+
+  .anime-card {
+    @apply rounded-xl border-2 border-electric-yellow/30 bg-card shadow-lg;
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.15), 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .anime-btn {
+    @apply font-anime tracking-wider uppercase transition-all duration-150 active:scale-95;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  }
+
+  .electric-glow {
+    box-shadow: 0 0 15px #FFD700, 0 0 30px #FFD70066;
+  }
+
+  .battle-bg-overlay {
+    background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.7) 100%);
+  }
+
+  .hp-bar-green {
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+  }
+
+  .hp-bar-yellow {
+    background: linear-gradient(90deg, #eab308, #facc15);
+  }
+
+  .hp-bar-red {
+    background: linear-gradient(90deg, #ef4444, #f87171);
+  }
+
+  .pokemon-idle {
+    animation: pokemonIdle 2s ease-in-out infinite;
+  }
+
+  .pokemon-bounce {
+    animation: pokemonBounce 1.5s ease-in-out infinite;
+  }
+
+  .pokemon-float {
+    animation: pokemonFloat 3s ease-in-out infinite;
+  }
+
+  .sparkle-anim {
+    animation: sparkle 1.5s ease-in-out infinite;
+  }
+
+  .screen-flash {
+    animation: screenFlash 0.3s ease-out;
+  }
+
+  .blast-off {
+    animation: blastOff 1.5s ease-in forwards;
+  }
+
+  .evolution-glow {
+    animation: evolutionGlow 0.5s ease-in-out infinite alternate;
+  }
+
+  .slide-in-left {
+    animation: slideInLeft 0.5s ease-out;
+  }
+
+  .slide-in-right {
+    animation: slideInRight 0.5s ease-out;
+  }
+
+  .fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .shake {
+    animation: shake 0.4s ease-in-out;
+  }
+
+  .pulse-electric {
+    animation: pulseElectric 1s ease-in-out infinite;
+  }
+}
+
+@keyframes pokemonIdle {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-4px) rotate(-1deg); }
+  75% { transform: translateY(-2px) rotate(1deg); }
+}
+
+@keyframes pokemonBounce {
+  0%, 100% { transform: translateY(0px) scaleY(1); }
+  40% { transform: translateY(-12px) scaleY(1.05); }
+  60% { transform: translateY(-8px) scaleY(0.98); }
+}
+
+@keyframes pokemonFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { opacity: 0.6; transform: scale(1.2) rotate(180deg); }
+}
+
+@keyframes screenFlash {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; background: white; }
+  100% { opacity: 1; }
+}
+
+@keyframes blastOff {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  50% { transform: translate(20px, -50px) rotate(15deg); opacity: 0.8; }
+  100% { transform: translate(100px, -300px) rotate(45deg); opacity: 0; }
+}
+
+@keyframes evolutionGlow {
+  0% { filter: brightness(1) saturate(1); box-shadow: 0 0 10px #fff; }
+  100% { filter: brightness(1.5) saturate(2); box-shadow: 0 0 40px #fff, 0 0 80px #FFD700; }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+
+@keyframes pulseElectric {
+  0%, 100% { box-shadow: 0 0 5px #FFD700, 0 0 10px #FFD700; }
+  50% { box-shadow: 0 0 20px #FFD700, 0 0 40px #FFD700, 0 0 60px #FFD70066; }
+}
+
+@keyframes electricSpark {
+  0% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.5) rotate(180deg); }
+  100% { opacity: 0; transform: scale(0) rotate(360deg); }
+}
+
+@keyframes attackFly {
+  from { transform: translateX(0) scale(1); opacity: 1; }
+  to { transform: translateX(var(--fly-distance, 300px)) scale(0.5); opacity: 0; }
+}
+
+@keyframes impactExplosion {
+  0% { transform: scale(0); opacity: 1; }
+  50% { transform: scale(2); opacity: 0.8; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+@keyframes typewriterCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes dialogSlideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes starTwinkle {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  50% { transform: scale(0.5) rotate(180deg); opacity: 0.3; }
+}
+
+@keyframes healthDrain {
+  from { width: var(--from-width); }
+  to { width: var(--to-width); }
+}
+
+.attack-fly {
+  animation: attackFly 0.6s ease-in forwards;
+}
+
+.impact-explosion {
+  animation: impactExplosion 0.5s ease-out forwards;
+}
+
+.star-twinkle {
+  animation: starTwinkle 0.8s ease-in-out infinite;
+}
+
+.dialog-slide-in {
+  animation: dialogSlideIn 0.3s ease-out;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: oklch(0.15 0.05 260);
+}
+::-webkit-scrollbar-thumb {
+  background: oklch(0.82 0.18 85);
+  border-radius: 3px;
+}

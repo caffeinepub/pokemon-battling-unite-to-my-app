@@ -1,0 +1,299 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Ash's Pokemon Journey RPG — Anime-Style Real-Time Battle Game (Frontend)",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Professor Oak introduction screen with anime-accurate styling and transition to starter selection",
+      "acceptanceCriteria": [
+        "Professor Oak character appears on the intro screen with anime-accurate visual styling",
+        "Trainer name is pre-set to 'Ash'",
+        "Intro screen transitions to Pokemon starter selection after completion"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/ProfessorOakIntro.tsx",
+          "operation": "create",
+          "description": "Create Professor Oak introduction screen component that displays the generated professor-oak.dim_300x400.png image from frontend/public/assets/generated/professor-oak.dim_300x400.png, renders Oak's greeting dialogue explaining the Pokemon world, displays 'Ash' as the trainer name, and includes a 'Begin Journey' button that transitions to the starter selection screen. Use anime-inspired styling with vibrant colors and bold typography."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add route for /intro pointing to ProfessorOakIntro component and set it as the initial route. Wire navigation from intro completion to /starter-selection."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Animated Pokemon starter selection screen with idle animations and Pikachu as featured starter",
+      "acceptanceCriteria": [
+        "Each starter Pokemon has a continuous idle animation (bounce, sway, or glow)",
+        "Pikachu is shown as a selectable starter option",
+        "Selecting a Pokemon triggers a confirmation animation before proceeding to the game"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/StarterSelection.tsx",
+          "operation": "create",
+          "description": "Create starter selection screen with animated Pokemon cards for Pikachu (using frontend/public/assets/generated/pikachu-starter.dim_256x256.png) and other starters. Implement CSS keyframe animations for idle loops (bounce/float/glow effects). Display Pokemon with animated sparkles and energy effects. On selection, play a confirmation animation and transition to the main game view. Fetch starter options from backend.getPokemon()."
+        },
+        {
+          "path": "frontend/src/components/AnimatedPokemon.tsx",
+          "operation": "create",
+          "description": "Create reusable component for displaying Pokemon with idle animation loops. Support bounce, sway, glow, and sparkle effects using CSS animations. Accept image source, animation type, and size as props."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add route for /starter-selection pointing to StarterSelection component. Wire navigation from starter selection completion to /game."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Real-time anime-style battle system with no turns, dodging, and move collision mechanics",
+      "acceptanceCriteria": [
+        "Move buttons are always active — no 'wait for turn' logic",
+        "Player can tap/swipe to reposition Pokemon and dodge incoming moves",
+        "Move collision detection resolves with correct win/lose/cancel outcomes based on power comparison",
+        "Battle animations play fluidly with no static pauses between actions"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Battle.tsx",
+          "operation": "create",
+          "description": "Create real-time battle screen with anime-style UI. Display player Pokemon and opponent Pokemon with health bars. Render move buttons that are always active (no turn waiting). Implement drag/swipe controls for repositioning Pokemon to dodge attacks. Use generated battle backgrounds (frontend/public/assets/generated/battle-bg-stadium.dim_1200x600.png, battle-bg-gym.dim_1200x600.png, battle-bg-forest.dim_1200x600.png). Fetch battle state from backend.getBattlePokemonQuery() and backend.getOpponent(). Display Pikachu using generated action images (pikachu-electroball.dim_256x256.png, pikachu-irontail.dim_256x256.png, pikachu-quickattack.dim_256x256.png) during corresponding moves."
+        },
+        {
+          "path": "frontend/src/components/BattleArena.tsx",
+          "operation": "create",
+          "description": "Create battle arena component that renders Pokemon positions, background environment, and ongoing attack animations. Handle Pokemon repositioning via drag/touch events. Display cinematic particle effects for attacks (electric sparks, energy beams, impact flashes) using CSS animations and canvas rendering."
+        },
+        {
+          "path": "frontend/src/components/MoveCollision.ts",
+          "operation": "create",
+          "description": "Implement move collision detection logic. Compare attack power values when two moves are used simultaneously. Resolve outcomes: stronger move destroys weaker, equal power cancels both. Return collision result and trigger corresponding animations."
+        },
+        {
+          "path": "frontend/src/hooks/useBattleState.ts",
+          "operation": "create",
+          "description": "Create custom hook for managing real-time battle state. Track player Pokemon position, opponent Pokemon position, active moves in flight, health values, and collision events. Fetch initial state from backend and update UI reactively."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add route for /battle pointing to Battle component. Wire navigation from story/gym/wild encounters to /battle."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Strategy text input during battles with AI response and combo animation unlocks",
+      "acceptanceCriteria": [
+        "A text input field is accessible during battle",
+        "Recognized strategy keywords trigger corresponding battle behaviors or animations",
+        "Strategy input is stored per battle for replay/review"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/StrategyInput.tsx",
+          "operation": "create",
+          "description": "Create strategy text input component displayed during battle. Render a text field for typing strategies. On submit, send strategy text to backend.getStrategyResponse() and display AI response. Highlight recognized keywords (e.g., 'Quick Attack', 'circle', 'Iron Tail', 'counter') and trigger special combo animations when detected. Store strategy inputs in battle history."
+        },
+        {
+          "path": "frontend/src/pages/Battle.tsx",
+          "operation": "modify",
+          "description": "Integrate StrategyInput component into battle UI. Position it as an overlay or sidebar. Display strategy AI responses and unlock combo animations based on keywords."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Story campaign mode with three arcs (Johto, Master, Ultimate Journeys) and episodic battles",
+      "acceptanceCriteria": [
+        "Three story arcs are accessible from a campaign map screen",
+        "Each arc contains multiple episodic battles with unique opponent Pokemon",
+        "Final arc battle features dramatic cinematic sequences for Ash vs. the champion",
+        "Story progression is saved to backend per player"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/StoryCampaign.tsx",
+          "operation": "create",
+          "description": "Create story campaign map screen displaying three arcs: Johto Journeys, Master Journeys, Ultimate Journeys. Render arc cards with progress indicators. Fetch arc data from backend.getStoryArc(). On arc selection, display episodic battle list. Wire navigation to battle screen for each episode. Show dramatic cinematic intro/outro sequences for champion battles using animated text overlays and transition effects."
+        },
+        {
+          "path": "frontend/src/components/StoryArcCard.tsx",
+          "operation": "create",
+          "description": "Create story arc card component displaying arc name, description, progress bar, and episode count. Use anime-style bold typography and vibrant background gradients. Include 'Start Arc' or 'Continue' button."
+        },
+        {
+          "path": "frontend/src/components/EpisodeList.tsx",
+          "operation": "create",
+          "description": "Create episode list component displaying all episodes within a story arc. Show episode titles, opponent previews, and completion status. Wire navigation to battle screen on episode selection."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add route for /story pointing to StoryCampaign component. Add route for /story/:arcId pointing to arc detail view. Wire navigation from main menu to /story."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Gym battle system with badge collection and display on trainer profile",
+      "acceptanceCriteria": [
+        "At least 8 gym leaders with unique teams are defined in the backend",
+        "Defeating a gym leader awards a badge saved to the player's profile",
+        "Badge collection is displayed on the trainer card/profile screen",
+        "Gym battles are noticeably harder than regular wild/story battles"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/GymBattles.tsx",
+          "operation": "create",
+          "description": "Create gym battle selection screen displaying 8 gym leader cards with leader names, types, and difficulty indicators. Fetch gym data from backend.challengeGymLeader(). On gym selection, navigate to battle screen with gym-specific background (frontend/public/assets/generated/battle-bg-gym.dim_1200x600.png). Display harder difficulty through UI indicators (skull icons, warning text)."
+        },
+        {
+          "path": "frontend/src/components/BadgeDisplay.tsx",
+          "operation": "create",
+          "description": "Create badge display component showing earned gym badges using the generated frontend/public/assets/generated/badges-panel.dim_512x128.png image. Fetch badge collection from backend.getBadges(). Display badges with earned/unearned states (color vs grayscale). Include badge names and gym leader associations."
+        },
+        {
+          "path": "frontend/src/pages/TrainerProfile.tsx",
+          "operation": "create",
+          "description": "Create trainer profile screen displaying Ash's profile using frontend/public/assets/generated/ash-trainer.dim_300x400.png. Show trainer name, earned badges (using BadgeDisplay component), Pokemon roster, and battle statistics. Fetch profile from backend.getCallerUserProfile() and badges from backend.getBadges()."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add route for /gyms pointing to GymBattles component. Add route for /profile pointing to TrainerProfile component. Wire navigation from main menu to /gyms and /profile."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Team Rocket random encounter events with classic intro dialogue and blast-off animation",
+      "acceptanceCriteria": [
+        "Team Rocket encounter events trigger randomly during story/overworld navigation",
+        "Team Rocket's intro speech displays with character portraits",
+        "Defeating Team Rocket plays a 'blasting off' animation and sound effect",
+        "Team Rocket's Pokemon (e.g., Arbok, Weezing) are unique to their encounters"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/TeamRocketEncounter.tsx",
+          "operation": "create",
+          "description": "Create Team Rocket encounter component that triggers randomly during navigation. Display Team Rocket trio using frontend/public/assets/generated/team-rocket.dim_400x300.png. Show classic introduction dialogue ('Prepare for trouble! Make it double!') with animated text. On victory, play blast-off animation (Pokemon flying off screen with star twinkle effect) and comedic sound effect. Fetch Team Rocket battle data from backend.getOpponent('teamRocket')."
+        },
+        {
+          "path": "frontend/src/hooks/useRandomEncounters.ts",
+          "operation": "create",
+          "description": "Create custom hook for triggering random Team Rocket encounters during overworld navigation. Use random probability (e.g., 10% chance per navigation event). Return encounter trigger state and encounter data."
+        },
+        {
+          "path": "frontend/src/pages/StoryCampaign.tsx",
+          "operation": "modify",
+          "description": "Integrate useRandomEncounters hook into story campaign navigation. Display TeamRocketEncounter modal when encounter triggers. Pause story progression until encounter is resolved."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Evolution items system with optional player-confirmed evolution",
+      "acceptanceCriteria": [
+        "At least 5 evolution stone types are defined in the backend item registry",
+        "Applying a stone to a compatible Pokemon triggers evolution with a cinematic animation",
+        "Evolution is never forced — player must confirm before evolving",
+        "Evolved Pokemon have improved stats stored in backend"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/PokemonRoster.tsx",
+          "operation": "create",
+          "description": "Create Pokemon roster screen displaying player's Pokemon collection. Show Pokemon cards with level, stats, and evolution eligibility. Include 'Evolve' button for eligible Pokemon. Fetch roster from backend.getPokemon(). Display evolution stones using frontend/public/assets/generated/evolution-stones.dim_512x128.png."
+        },
+        {
+          "path": "frontend/src/components/EvolutionModal.tsx",
+          "operation": "create",
+          "description": "Create evolution confirmation modal displaying before/after Pokemon comparison, required evolution stone, and stat improvements. Show 'Confirm Evolution' and 'Cancel' buttons. On confirmation, call backend.evolvePokemon() and play cinematic evolution animation (Pokemon glowing, transforming, stat numbers increasing). Use anime-style sparkle and light effects."
+        },
+        {
+          "path": "frontend/src/components/InventoryDisplay.tsx",
+          "operation": "create",
+          "description": "Create inventory component displaying collected evolution stones. Show stone icons from frontend/public/assets/generated/evolution-stones.dim_512x128.png with quantities. Support drag-and-drop onto Pokemon cards to trigger evolution."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add route for /roster pointing to PokemonRoster component. Wire navigation from main menu to /roster."
+        }
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "summary": "Dynamic battle opponent pool with unique moves and fluid anime-style animations",
+      "acceptanceCriteria": [
+        "Battle opponent pool contains at least 30 distinct Pokemon with unique move sets",
+        "Battle opponent selection algorithm avoids repeating the same Pokemon consecutively",
+        "Attack animations use particle effects, flash, and motion blur to feel cinematic",
+        "Pokemon models/sprites move dynamically during battle (not static)"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/PokemonBattleSprite.tsx",
+          "operation": "create",
+          "description": "Create animated Pokemon battle sprite component with dynamic motion. Implement breathing/idle animations, attack windup/execution animations, damage reaction animations, and victory/defeat poses. Use CSS transforms, keyframes, and transitions for fluid movement. Support multiple animation states (idle, attacking, defending, hit, fainted)."
+        },
+        {
+          "path": "frontend/src/components/AttackAnimation.tsx",
+          "operation": "create",
+          "description": "Create attack animation component rendering cinematic move effects. Support electric sparks (for Pikachu moves), fire blasts, water jets, energy beams, and impact explosions. Use CSS animations, canvas rendering, or SVG for particle effects. Include motion blur, flash effects, and screen shake on impact."
+        },
+        {
+          "path": "frontend/src/hooks/useOpponentPool.ts",
+          "operation": "create",
+          "description": "Create custom hook for managing battle opponent selection. Fetch opponent pool from backend.getPokemon(). Implement algorithm to avoid consecutive repeats (track last 3 opponents). Return unique opponent for each battle."
+        },
+        {
+          "path": "frontend/src/pages/Battle.tsx",
+          "operation": "modify",
+          "description": "Integrate PokemonBattleSprite and AttackAnimation components into battle screen. Use useOpponentPool hook for opponent selection. Ensure all Pokemon sprites are animated and moves are rendered with cinematic effects."
+        }
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "summary": "Bold anime-inspired visual theme with vibrant colors and dynamic UI elements",
+      "acceptanceCriteria": [
+        "App color palette uses saturated anime-inspired colors (yellow, red, electric blue)",
+        "Battle backgrounds are illustrated scene environments, not plain colors",
+        "Typography is bold and energetic throughout",
+        "All screens maintain visual consistency with the anime theme"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Define global anime-inspired theme variables in CSS: vibrant primary colors (electric yellow #FFD700, Pikachu red #FF0000, electric blue #00A1E4), bold typography (increase font weights, use sans-serif with strong presence), high contrast UI elements, and energetic gradient backgrounds. Add utility classes for anime-style buttons, cards, and overlays with glow effects and sharp borders."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Extend Tailwind theme with custom anime color palette: electric-yellow, pikachu-red, electric-blue, anime-orange, and anime-purple. Configure custom font families with bold weights. Add custom animation keyframes for UI elements (pulse, glow, bounce). Ensure all generated backgrounds (battle-bg-stadium.dim_1200x600.png, battle-bg-gym.dim_1200x600.png, battle-bg-forest.dim_1200x600.png) are used as background images in appropriate battle contexts."
+        },
+        {
+          "path": "frontend/src/components/Layout.tsx",
+          "operation": "create",
+          "description": "Create global layout component wrapping all pages. Include anime-style header with app logo (frontend/public/assets/generated/app-logo.dim_600x200.png), navigation menu with bold typography and vibrant buttons, and footer. Apply consistent anime theme styling across all child pages. Use authorization component guards to ensure user is logged in before accessing game content."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wrap all routes with Layout component to ensure consistent anime theme across the application. Set up main navigation structure and wire all created pages."
+        }
+      ]
+    }
+  ]
+}
