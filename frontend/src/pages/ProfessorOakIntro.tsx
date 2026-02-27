@@ -89,6 +89,14 @@ export default function ProfessorOakIntro() {
         avatarUrl: undefined,
         victories: BigInt(0),
         dojoSeals: BigInt(0),
+        crystalInventory: {
+          flame: BigInt(0),
+          tide: BigInt(0),
+          gale: BigInt(0),
+          thunder: BigInt(0),
+          terra: BigInt(0),
+          void: BigInt(0),
+        },
       });
       navigate({ to: '/starter-selection' });
     } catch (err) {

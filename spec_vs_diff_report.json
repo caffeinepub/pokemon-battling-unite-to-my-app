@@ -1,45 +1,58 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-25T19:36:14.967Z",
-  "summary": "The diff only modifies project_state.json (a metadata/state tracking file) and adds no source code files. None of the four requirements (REQ-49, REQ-50, REQ-51, REQ-52) are implemented — no TSX, CSS, SVG, or asset files were added or modified. All acceptance criteria across all four requirements are unmet.",
+  "generatedAt": "2026-02-26T01:30:38.032Z",
+  "summary": "The diff implements substantial portions of REQ-71, REQ-72, and REQ-73. AttackAnimation.tsx has been rewritten with element-specific projectile animations using requestAnimationFrame and canvas. Battle.tsx includes 3-phase animation, element-colored move buttons, cooldown overlays, and screen shake. NinjaBattleSprite.tsx adds charge glow support. Several specific sub-requirements need closer examination for completeness.",
   "missing_requirements": [
     {
-      "id": "REQ-49",
-      "requirement": "Redesign all game visuals to blend dark anime, pixel art, and sumi-e ink brush styles across all game screens including LoginPage, StarterSelection, Battle, GameHome, StoryCampaign, GymBattles, PokemonRoster, GameLore, and TrainerProfile.",
-      "reason": "No frontend source files (TSX, CSS, or assets) were modified or added. The diff only touches project_state.json with no visual changes.",
+      "id": "REQ-71",
+      "requirement": "Wind moves — a spinning crescent-blade gust rendered as a rotating SVG arc or CSS-rotated element, with swirling leaf/air particles in its wake and a slashing impact effect",
+      "reason": "The AttackAnimation.tsx diff is truncated and only shows fire and lightning implementations in detail. Wind crescent blade rendering is mentioned in the file summary but cannot be confirmed as fully implemented with spinning rotation, leaf/air particles in wake, and slashing impact effect.",
       "evidence": [
-        "project_state.json"
+        "frontend/src/components/AttackAnimation.tsx"
       ]
     },
     {
-      "id": "REQ-50",
-      "requirement": "Update NinjaBattleSprite.tsx and AnimatedPokemon.tsx with pixel-art rendering (image-rendering: pixelated), step-based idle animations, anime attack motion trails, and element-specific aura glows for all 6 monsters.",
-      "reason": "Neither NinjaBattleSprite.tsx nor AnimatedPokemon.tsx nor any CSS/style files were modified or added.",
+      "id": "REQ-71",
+      "requirement": "Earth moves — a jagged rock-shard projectile with dust cloud scatter particles trailing behind it and a ground-crack shockwave ring on impact",
+      "reason": "File summary mentions jagged rock polygon and earth cracks but the diff is truncated and full implementation details including dust cloud scatter particles trailing and ground-crack shockwave ring cannot be fully verified.",
       "evidence": [
-        "project_state.json"
+        "frontend/src/components/AttackAnimation.tsx"
       ]
     },
     {
-      "id": "REQ-51",
-      "requirement": "Add brushstroke/ink-style decorative borders, SVG dividers, and Bangers font ink-texture headers to GameLore.tsx, StoryCampaign.tsx, GymBattles.tsx, and GameHome.tsx.",
-      "reason": "None of the listed TSX files or any SVG/CSS assets were modified or added in the diff.",
+      "id": "REQ-72",
+      "requirement": "Screen shake triggers at the moment of impact — heavier for player hit, lighter for opponent hit",
+      "reason": "index.css shows screenShakeHeavy/screenShakeLight keyframes exist. Battle.tsx diff is truncated so it cannot be confirmed that the shake is applied with correct differentiation at the exact moment of impact callback.",
       "evidence": [
-        "project_state.json"
-      ]
-    },
-    {
-      "id": "REQ-52",
-      "requirement": "Update Battle.tsx with 6 element-specific multi-layer anime battle backgrounds, atmospheric particle effects (embers, mist, leaves, lightning, shadow orbs, dust), and speed-line overlays during attacks.",
-      "reason": "Battle.tsx was not modified. No CSS keyframe animations, SVG overlays, or particle effect components were added.",
-      "evidence": [
-        "project_state.json"
+        "frontend/src/pages/Battle.tsx",
+        "frontend/src/index.css"
       ]
     }
   ],
-  "hallucinated_features": [],
-  "confidence": 0.97,
+  "hallucinated_features": [
+    {
+      "description": "NinjaBattleSprite component with element badge emoji display added as a new file",
+      "reason": "The build request does not mention creating or modifying NinjaBattleSprite.tsx or adding element badge emojis to the sprite component. The request only specifies charge glow behavior in the context of Battle.tsx and AttackAnimation.tsx.",
+      "evidence": [
+        "frontend/src/components/NinjaBattleSprite.tsx"
+      ]
+    },
+    {
+      "description": "MOVE_COOLDOWN_MS set to a fixed 2500ms duration for all moves",
+      "reason": "REQ-73 specifies a cooldown overlay that depletes over the cooldown period but does not specify a fixed 2500ms value. This specific hardcoded duration was not requested in the build spec.",
+      "evidence": [
+        "frontend/src/pages/Battle.tsx"
+      ]
+    }
+  ],
+  "confidence": 0.62,
   "changed_files": [
+    "frontend-file-summaries.txt",
+    "frontend/src/components/AttackAnimation.tsx",
+    "frontend/src/components/NinjaBattleSprite.tsx",
+    "frontend/src/index.css",
+    "frontend/src/pages/Battle.tsx",
     "project_state.json"
   ]
 }

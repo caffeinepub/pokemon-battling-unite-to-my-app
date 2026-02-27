@@ -1,88 +1,111 @@
-import React from 'react';
-
-interface SpriteMonster {
-  name: string;
-  element?: string;
-  sprite?: string;
-  color?: string;
-}
+import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 
 interface NinjaBattleSpriteProps {
-  pokemon?: SpriteMonster;
-  isPlayer: boolean;
+  imagePath: string;
+  element: string;
   isAttacking?: boolean;
   isDodging?: boolean;
+  isHit?: boolean;
+  isCharging?: boolean;
+  flipX?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  showDangerGlow?: boolean;
 }
 
-const elementEmoji: Record<string, string> = {
-  fire: '🔥',
-  water: '💧',
-  earth: '🪨',
-  wind: '💨',
-  lightning: '⚡',
-  dark: '🌑',
+export interface NinjaBattleSpriteHandle {
+  triggerCharge: () => void;
+}
+
+const ELEMENT_GLOW: Record<string, string> = {
+  fire:      '0 0 30px 12px rgba(255,106,0,0.85)',
+  water:     '0 0 30px 12px rgba(0,180,255,0.85)',
+  earth:     '0 0 30px 12px rgba(139,94,60,0.85)',
+  wind:      '0 0 30px 12px rgba(168,230,207,0.85)',
+  lightning: '0 0 30px 12px rgba(255,230,0,0.85)',
+  shadow:    '0 0 30px 12px rgba(124,58,237,0.85)',
 };
 
-export default function NinjaBattleSprite({
-  pokemon,
-  isPlayer,
-  isAttacking = false,
-  isDodging = false,
-}: NinjaBattleSpriteProps) {
-  if (!pokemon) return null;
+const ELEMENT_BADGE: Record<string, string> = {
+  fire:      '🔥',
+  water:     '💧',
+  earth:     '🪨',
+  wind:      '🌪️',
+  lightning: '⚡',
+  shadow:    '🌑',
+};
 
-  const sprite = pokemon.sprite || '';
-  const color = pokemon.color || '#ef4444';
-  const name = pokemon.name || 'Unknown';
-  const element = pokemon.element || 'fire';
+const SIZE_CLASSES: Record<string, string> = {
+  sm: 'w-20 h-20',
+  md: 'w-28 h-28',
+  lg: 'w-36 h-36',
+};
 
-  const translateX = isAttacking ? (isPlayer ? 20 : -20) : isDodging ? (isPlayer ? -25 : 25) : 0;
-  const translateY = isDodging ? -10 : 0;
+const NinjaBattleSprite = forwardRef<NinjaBattleSpriteHandle, NinjaBattleSpriteProps>(
+  (
+    {
+      imagePath,
+      element,
+      isAttacking = false,
+      isDodging = false,
+      isHit = false,
+      isCharging = false,
+      flipX = false,
+      size = 'lg',
+      showDangerGlow = false,
+    },
+    ref
+  ) => {
+    const [internalCharging, setInternalCharging] = useState(false);
 
-  return (
-    <div
-      className="relative flex items-center justify-center select-none"
-      style={{
-        width: '72px',
-        height: '72px',
-        minWidth: '64px',
-        minHeight: '64px',
-        transform: `translate(${translateX}px, ${translateY}px)`,
-        transition: 'transform 0.3s ease',
-        willChange: 'transform',
-      }}
-    >
-      {/* Glow aura */}
-      <div
-        className="absolute inset-0 rounded-full opacity-30 blur-md"
-        style={{ background: color, willChange: 'opacity' }}
-      />
+    useImperativeHandle(ref, () => ({
+      triggerCharge: () => {
+        setInternalCharging(true);
+        setTimeout(() => setInternalCharging(false), 200);
+      },
+    }));
 
-      {/* Sprite or emoji fallback */}
-      {sprite ? (
-        <img
-          src={sprite}
-          alt={name}
-          className="relative z-10 w-14 h-14 object-contain"
-          style={{ filter: `drop-shadow(0 0 6px ${color})`, imageRendering: 'pixelated' }}
-          draggable={false}
-        />
-      ) : (
+    const charging = isCharging || internalCharging;
+
+    let animClass = '';
+    if (isHit) animClass = 'hit-recoil-left';
+    else if (isAttacking) animClass = 'ninja-attack-lunge';
+    else if (isDodging) animClass = 'ninja-dodge';
+
+    const glowStyle: React.CSSProperties = {};
+    if (charging) {
+      glowStyle.boxShadow = ELEMENT_GLOW[element] || ELEMENT_GLOW.fire;
+      glowStyle.filter = 'brightness(1.6) saturate(1.4)';
+      glowStyle.transition = 'box-shadow 0.05s, filter 0.05s';
+    } else if (showDangerGlow) {
+      glowStyle.boxShadow = '0 0 20px 8px rgba(255,50,50,0.7)';
+      glowStyle.filter = 'brightness(1.1)';
+    }
+
+    return (
+      <div className={`relative inline-block ${SIZE_CLASSES[size]}`}>
         <div
-          className="relative z-10 w-14 h-14 rounded-full flex items-center justify-center text-3xl"
-          style={{ background: `${color}33`, border: `2px solid ${color}66` }}
+          className={`w-full h-full rounded-xl overflow-hidden ${animClass}`}
+          style={{
+            transform: flipX ? 'scaleX(-1)' : undefined,
+            ...glowStyle,
+          }}
         >
-          {elementEmoji[element] || '🥷'}
+          <img
+            src={imagePath}
+            alt={element}
+            className="w-full h-full object-contain"
+            draggable={false}
+          />
         </div>
-      )}
-
-      {/* Element badge */}
-      <div
-        className="absolute -bottom-1 -right-1 z-20 w-5 h-5 rounded-full flex items-center justify-center text-[10px] border"
-        style={{ background: `${color}22`, borderColor: `${color}88` }}
-      >
-        {elementEmoji[element] || '🥷'}
+        {/* Element badge */}
+        <div className="absolute -bottom-1 -right-1 text-lg leading-none select-none">
+          {ELEMENT_BADGE[element] || '✨'}
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+);
+
+NinjaBattleSprite.displayName = 'NinjaBattleSprite';
+
+export default NinjaBattleSprite;

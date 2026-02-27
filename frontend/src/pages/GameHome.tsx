@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import { useGetCallerUserProfile } from '../hooks/useQueries';
-import { Swords, BookOpen, Building2, Users, User, ScrollText } from 'lucide-react';
+import { useGetCallerUserProfile, useGetTotalPlayers, useRecordPlayerLogin } from '../hooks/useQueries';
+import { Swords, BookOpen, Building2, Users, User, ScrollText, ShoppingBag } from 'lucide-react';
+import ShareButton from '../components/ShareButton';
 
 // Detect mobile once at module level
 const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
@@ -42,6 +43,14 @@ const navCards = [
     emoji: '🥷',
   },
   {
+    path: '/shop',
+    label: 'Crystal Shop',
+    description: 'Buy elemental crystals',
+    icon: ShoppingBag,
+    color: '#a855f7',
+    emoji: '💎',
+  },
+  {
     path: '/lore',
     label: 'Game Lore',
     description: 'Discover the world',
@@ -63,8 +72,29 @@ export default function GameHome() {
   const navigate = useNavigate();
   const { identity } = useInternetIdentity();
   const { data: userProfile } = useGetCallerUserProfile();
+  const { data: totalPlayers, isLoading: playersLoading } = useGetTotalPlayers();
+  const recordLogin = useRecordPlayerLogin();
+  const loginRecordedRef = useRef(false);
 
-  void identity;
+  // Record player login once per session
+  useEffect(() => {
+    if (identity && !loginRecordedRef.current) {
+      const sessionKey = `loginRecorded_${identity.getPrincipal().toString()}`;
+      if (!sessionStorage.getItem(sessionKey)) {
+        loginRecordedRef.current = true;
+        recordLogin.mutate(undefined, {
+          onSuccess: () => {
+            sessionStorage.setItem(sessionKey, '1');
+          },
+          onError: () => {
+            loginRecordedRef.current = false;
+          },
+        });
+      } else {
+        loginRecordedRef.current = true;
+      }
+    }
+  }, [identity]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const particles = useMemo(
     () =>
@@ -104,7 +134,7 @@ export default function GameHome() {
 
       <div className="relative z-10 max-w-2xl mx-auto px-3 py-4 md:px-6 md:py-8">
         {/* Profile Header */}
-        <div className="flex items-center gap-3 mb-6 p-3 md:p-4 bg-card/80 border border-border rounded-2xl backdrop-blur-sm">
+        <div className="flex items-center gap-3 mb-4 p-3 md:p-4 bg-card/80 border border-border rounded-2xl backdrop-blur-sm">
           <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary/20 flex items-center justify-center text-2xl shrink-0">
             🥷
           </div>
@@ -120,6 +150,46 @@ export default function GameHome() {
             <p className="text-xs text-muted-foreground">Seals</p>
             <p className="text-lg font-bold text-primary">{Number(userProfile?.dojoSeals || 0)}</p>
           </div>
+        </div>
+
+        {/* Total Ninjas Joined Counter */}
+        <div className="mb-4 p-3 md:p-4 bg-card/80 border border-primary/30 rounded-2xl backdrop-blur-sm relative overflow-hidden">
+          {/* Glow accent */}
+          <div
+            className="absolute inset-0 pointer-events-none rounded-2xl"
+            style={{
+              background: 'radial-gradient(ellipse at 50% 0%, oklch(0.55 0.22 280 / 0.15) 0%, transparent 70%)',
+            }}
+            aria-hidden="true"
+          />
+          <div className="relative flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xl md:text-2xl">🌍</span>
+              <div>
+                <p className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-widest font-semibold">
+                  Total Ninjas Joined
+                </p>
+                <p className="text-[10px] text-muted-foreground/60">Unique warriors across all clans</p>
+              </div>
+            </div>
+            <div className="shrink-0 text-right">
+              {playersLoading ? (
+                <div className="w-16 h-8 bg-primary/10 rounded-lg animate-pulse" />
+              ) : (
+                <p
+                  className="text-2xl md:text-3xl font-black text-primary tracking-wider"
+                  style={{ fontFamily: "'Bangers', cursive", letterSpacing: '0.05em' }}
+                >
+                  {Number(totalPlayers ?? 0).toLocaleString()}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Share This Game Button */}
+        <div className="mb-5">
+          <ShareButton />
         </div>
 
         {/* Navigation Cards — 2 columns on mobile */}

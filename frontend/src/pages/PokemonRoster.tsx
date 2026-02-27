@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import { useGetCallerUserProfile, useGetMonsters } from '../hooks/useQueries';
+import { useGetCallerUserProfile, useGetMonsters, useGetCrystalInventory } from '../hooks/useQueries';
 import { MONSTERS, ELEMENT_COLORS, ElementType } from '../data/monsterData';
 
 const elementEmoji: Record<ElementType, string> = {
@@ -12,15 +12,39 @@ const elementEmoji: Record<ElementType, string> = {
   shadow: '🌑',
 };
 
+// Map backend crystal keys to display info
+const CRYSTAL_DISPLAY: Array<{
+  key: string;
+  label: string;
+  emoji: string;
+  color: string;
+}> = [
+  { key: 'flame', label: 'Flame', emoji: '🔥', color: '#ef4444' },
+  { key: 'tide', label: 'Tide', emoji: '💧', color: '#3b82f6' },
+  { key: 'gale', label: 'Gale', emoji: '💨', color: '#06b6d4' },
+  { key: 'thunder', label: 'Thunder', emoji: '⚡', color: '#eab308' },
+  { key: 'terra', label: 'Terra', emoji: '🪨', color: '#78716c' },
+  { key: 'void', label: 'Void', emoji: '🌑', color: '#a855f7' },
+];
+
 export default function PokemonRoster() {
   const { identity } = useInternetIdentity();
   const { data: userProfile } = useGetCallerUserProfile();
   const { data: userMonsters } = useGetMonsters();
+  const { data: crystalInventory, isLoading: crystalsLoading } = useGetCrystalInventory();
   const [selectedMonster, setSelectedMonster] = useState<string | null>(null);
 
   void userMonsters;
 
   const displayMonsters = MONSTERS;
+
+  // Build a map from crystal key -> quantity
+  const crystalMap: Record<string, number> = {};
+  if (crystalInventory) {
+    for (const [key, qty] of crystalInventory) {
+      crystalMap[key] = Number(qty);
+    }
+  }
 
   if (!identity) {
     return (
@@ -45,29 +69,51 @@ export default function PokemonRoster() {
 
         {/* Crystal Inventory */}
         <div className="bg-card border border-border rounded-2xl p-3 md:p-4 mb-4 md:mb-6">
-          <h2 className="text-sm font-bold text-foreground mb-2">💎 Crystal Inventory</h2>
-          <div className="flex flex-wrap gap-2">
-            {(
-              [
-                'Fire Crystal',
-                'Water Crystal',
-                'Earth Crystal',
-                'Wind Crystal',
-                'Lightning Crystal',
-                'Shadow Crystal',
-              ] as const
-            ).map((crystal) => (
-              <div
-                key={crystal}
-                className="flex items-center gap-1 px-2 py-1 bg-background border border-border rounded-lg text-xs text-muted-foreground"
-              >
-                <span>💎</span>
-                <span className="hidden sm:inline">{crystal}</span>
-                <span className="sm:hidden">{crystal.split(' ')[0]}</span>
-                <span className="text-primary font-bold">×0</span>
-              </div>
-            ))}
-          </div>
+          <h2 className="text-sm font-bold text-foreground mb-3">💎 Crystal Inventory</h2>
+          {crystalsLoading ? (
+            <div className="flex gap-2 flex-wrap">
+              {CRYSTAL_DISPLAY.map((c) => (
+                <div key={c.key} className="w-24 h-8 bg-primary/10 rounded-lg animate-pulse" />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {CRYSTAL_DISPLAY.map((crystal) => {
+                const qty = crystalMap[crystal.key] ?? 0;
+                const hasAny = qty > 0;
+                return (
+                  <div
+                    key={crystal.key}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all"
+                    style={{
+                      background: hasAny ? `${crystal.color}15` : 'transparent',
+                      borderColor: hasAny ? `${crystal.color}50` : 'rgba(255,255,255,0.08)',
+                      color: hasAny ? crystal.color : undefined,
+                      boxShadow: hasAny ? `0 0 8px ${crystal.color}30` : 'none',
+                    }}
+                  >
+                    <span>{crystal.emoji}</span>
+                    <span className="hidden sm:inline text-muted-foreground" style={hasAny ? { color: crystal.color } : {}}>
+                      {crystal.label}
+                    </span>
+                    <span
+                      className="font-black"
+                      style={{ color: hasAny ? crystal.color : undefined }}
+                    >
+                      ×{qty}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          <p className="text-[10px] text-muted-foreground mt-2">
+            Visit the{' '}
+            <a href="/shop" className="text-primary hover:underline font-medium">
+              Crystal Shop
+            </a>{' '}
+            to purchase crystals for evolution.
+          </p>
         </div>
 
         {/* Monster Grid */}

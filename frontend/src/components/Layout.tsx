@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from '@tanstack/react-router';
-import { Home, Swords, Building2, Users, User, ScrollText, Menu, X } from 'lucide-react';
+import { Home, Swords, Building2, Users, User, ScrollText, Menu, X, ShoppingBag } from 'lucide-react';
 
 const navItems = [
   { path: '/game', label: 'Home', icon: Home },
   { path: '/battle', label: 'Battle', icon: Swords },
   { path: '/gyms', label: 'Dojos', icon: Building2 },
   { path: '/roster', label: 'Roster', icon: Users },
+  { path: '/shop', label: '💎 Shop', icon: ShoppingBag },
   { path: '/lore', label: 'Lore', icon: ScrollText },
   { path: '/profile', label: 'Profile', icon: User },
 ];
@@ -16,6 +17,7 @@ const mobileBottomNav = [
   { path: '/battle', label: 'Battle', icon: Swords },
   { path: '/gyms', label: 'Dojos', icon: Building2 },
   { path: '/roster', label: 'Roster', icon: Users },
+  { path: '/shop', label: 'Shop', icon: ShoppingBag },
   { path: '/profile', label: 'Profile', icon: User },
 ];
 

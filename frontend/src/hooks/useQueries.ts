@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { UserProfile } from '../backend';
+import type { UserProfile, ShoppingItem, StripeConfiguration } from '../backend';
 
 // ── User Profile ──────────────────────────────────────────────────────────
 
@@ -207,4 +207,104 @@ export function useGetMonsterXP(monsterId: string): MonsterXPData {
   const stored = sessionStorage.getItem('monsterXPData');
   const xpMap: Record<string, MonsterXPData> = stored ? JSON.parse(stored) : {};
   return xpMap[monsterId] ?? { monsterId, level: 1, xp: 0 };
+}
+
+// ── Player Counter ────────────────────────────────────────────────────────
+
+export function useGetTotalPlayers() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<bigint>({
+    queryKey: ['totalPlayers'],
+    queryFn: async () => {
+      if (!actor) return BigInt(0);
+      return actor.getTotalPlayers();
+    },
+    enabled: !!actor && !isFetching,
+    staleTime: 60000, // 1 minute
+  });
+}
+
+export function useRecordPlayerLogin() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.recordPlayerLogin();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['totalPlayers'] });
+    },
+  });
+}
+
+// ── Crystal Inventory ─────────────────────────────────────────────────────
+
+export function useGetCrystalInventory() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Array<[string, bigint]>>({
+    queryKey: ['crystalInventory'],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getCrystalInventory();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+// ── Stripe ────────────────────────────────────────────────────────────────
+
+export type CheckoutSession = {
+  id: string;
+  url: string;
+};
+
+export function useCreateCheckoutSession() {
+  const { actor } = useActor();
+
+  return useMutation({
+    mutationFn: async (items: ShoppingItem[]): Promise<CheckoutSession> => {
+      if (!actor) throw new Error('Actor not available');
+      const baseUrl = `${window.location.protocol}//${window.location.host}`;
+      const successUrl = `${baseUrl}/payment-success`;
+      const cancelUrl = `${baseUrl}/payment-failure`;
+      const result = await actor.createCheckoutSession(items, successUrl, cancelUrl);
+      const session = JSON.parse(result) as CheckoutSession;
+      if (!session?.url) {
+        throw new Error('Stripe session missing url');
+      }
+      return session;
+    },
+  });
+}
+
+export function useIsStripeConfigured() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<boolean>({
+    queryKey: ['stripeConfigured'],
+    queryFn: async () => {
+      if (!actor) return false;
+      return actor.isStripeConfigured();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useSetStripeConfiguration() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (config: StripeConfiguration) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.setStripeConfiguration(config);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['stripeConfigured'] });
+    },
+  });
 }

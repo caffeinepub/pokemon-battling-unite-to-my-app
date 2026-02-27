@@ -1,13 +1,12 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 27,
+  "projectStateVersion": 37,
   "summary": "A fresh original monster-battling RPG game called 'Elites Monsters Battling' with elemental ninja theme. Player builds and battles with elemental ninja monsters. Real-time anime-style battles with dodge mechanics and move clashes. Moving away from Pokemon IP to avoid legal issues.",
   "architectural_notes": [
     "Project pivoted away from Pokemon IP to original monster-battling RPG to avoid copyright/trademark issues"
   ],
   "known_issues": [],
   "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Pixel-art style ninja monster sprite sheet for Emberfang — dark silhouette ninja figure with fire-red clan markings, crouching idle pose, 4-frame horizontal strip on transparent background (emberfang-sprite.dim_256x64.png)\n- Pixel-art style ninja monster sprite sheet for Tidalstrike — dark silhouette ninja figure with teal/blue clan markings, crouching idle pose, 4-frame horizontal strip on transparent background (tidalstrike-sprite.dim_256x64.png)\n- Pixel-art style ninja monster sprite sheet for Stonefist — dark silhouette ninja figure with brown/gold clan markings, crouching idle pose, 4-frame horizontal strip on transparent background (stonefist-sprite.dim_256x64.png)\n- Pixel-art style ninja monster sprite sheet for Galestep — dark silhouette ninja figure with green clan markings, crouching idle pose, 4-frame horizontal strip on transparent background (galestep-sprite.dim_256x64.png)\n- Pixel-art style ninja monster sprite sheet for Voltclaw — dark silhouette ninja figure with electric-yellow clan markings, crouching idle pose, 4-frame horizontal strip on transparent background (voltclaw-sprite.dim_256x64.png)\n- Pixel-art style ninja monster sprite sheet for Voidshade — dark silhouette ninja figure with deep-purple shadow clan markings, crouching idle pose, 4-frame horizontal strip on transparent background (voidshade-sprite.dim_256x64.png)\n- Sumi-e ink brush horizontal divider stroke — black ink brushstroke on transparent background, wide and thin (brush-divider.dim_800x32.png)\n- Dark anime-style fire dojo battle background — volcanic rocky arena with glowing lava cracks, dark sky, foreground silhouette pillars, anime environmental art style (battle-bg-fire.dim_1280x720.png)\n- Dark anime-style water temple battle background — misty blue waterfall cavern, stone temple pillars, moonlit water reflections, anime environmental art style (battle-bg-water.dim_1280x720.png)\n- Dark anime-style bamboo forest battle background — dense dark green bamboo at night, moonlight filtering through, anime environmental art style (battle-bg-earth.dim_1280x720.png)\n- Dark anime-style storm peak battle background — grey mountain summit with storm clouds and electric lightning arcs, anime environmental art style (battle-bg-storm.dim_1280x720.png)\n- Dark anime-style shadow realm battle background — deep purple void with floating dark energy orbs and shadowy ground fog, anime environmental art style (battle-bg-shadow.dim_1280x720.png)\n- Dark anime-style earth canyon battle background — rust-red rocky canyon walls with dust haze and stone formations, anime environmental art style (battle-bg-wind.dim_1280x720.png)",
   "existing_features": [
     {
       "id": "feature-implement-a-professor-oak-introduction-screen-that-greets-the-player-explains-the-world-of-pokemon-and-introduces-ash-as-the-player-s-trainer-name-oak-s-appearance-should-be-modeled-after-the-anime-version-white-lab-coat-gray-hair-after-the-intro-transition-to-the-starter-pokemon-selection-screen",
@@ -352,6 +351,158 @@
         "REQ-48"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-a-share-this-game-button-inside-the-app-visible-on-the-gamehome-tsx-dashboard-that-copies-the-current-live-url-to-the-clipboard-and-shows-a-brief-confirmation-message-e-g-link-copied-the-button-should-use-the-elemental-ninja-dark-theme-styling-dark-background-glowing-accent-color-consistent-with-the-existing-ui",
+      "title": "Add a 'Share This Game' button inside the app — visible on the GameHome.tsx dashboard — that copies the current live URL to the clipboard and shows a brief confirmation message (e.g., 'Link copied!'). The button should use the elemental ninja dark theme styling (dark background, glowing accent color) consistent with the existing UI.",
+      "reqIds": [
+        "REQ-53"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-gamehome-tsx-add-a-total-ninjas-joined-counter-widget-that-fetches-the-unique-player-count-from-the-backend-using-the-gettotalplayers-query-via-react-query-useactor-displays-the-count-prominently-on-the-home-dashboard-calls-recordplayerlogin-once-per-authenticated-session-to-register-the-current-user-and-updates-the-displayed-number-after-registration-style-the-widget-using-the-elemental-ninja-dark-theme-dark-background-panel-glowing-elemental-accent-color-bangers-font-for-the-number-add-the-corresponding-react-query-hook-to-usequeries-ts",
+      "title": "In GameHome.tsx, add a 'Total Ninjas Joined' counter widget that fetches the unique player count from the backend using the `getTotalPlayers` query (via React Query / useActor), displays the count prominently on the home dashboard, calls `recordPlayerLogin` once per authenticated session to register the current user, and updates the displayed number after registration. Style the widget using the elemental ninja dark theme (dark background panel, glowing elemental accent color, Bangers font for the number). Add the corresponding React Query hook to useQueries.ts.",
+      "reqIds": [
+        "REQ-55"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-new-crystal-shop-page-frontend-src-pages-crystalshop-tsx-where-players-can-purchase-individual-elemental-crystals-flame-crystal-tide-crystal-gale-crystal-thunder-crystal-terra-crystal-and-void-crystal-using-stripe-payments-each-crystal-must-have-a-display-card-showing-its-name-element-icon-emoji-a-brief-description-of-what-it-unlocks-evolving-the-matching-elemental-ninja-monster-and-a-price-in-usd-integrate-stripe-checkout-clicking-buy-for-a-crystal-initiates-a-stripe-payment-session-on-successful-payment-confirmation-the-purchased-crystal-quantity-is-added-to-the-player-s-crystal-inventory-in-the-backend-style-the-shop-with-the-elemental-ninja-dark-theme-dark-background-element-colored-glow-accents-per-crystal-card-bangers-font-for-headers",
+      "title": "Create a new Crystal Shop page (frontend/src/pages/CrystalShop.tsx) where players can purchase individual Elemental Crystals — Flame Crystal, Tide Crystal, Gale Crystal, Thunder Crystal, Terra Crystal, and Void Crystal — using Stripe payments. Each crystal must have a display card showing its name, element icon/emoji, a brief description of what it unlocks (evolving the matching elemental ninja monster), and a price in USD. Integrate Stripe Checkout: clicking 'Buy' for a crystal initiates a Stripe payment session. On successful payment confirmation, the purchased crystal quantity is added to the player's crystal inventory in the backend. Style the shop with the elemental ninja dark theme — dark background, element-colored glow accents per crystal card, Bangers font for headers.",
+      "reqIds": [
+        "REQ-56"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-navigation-entry-for-the-crystal-shop-in-layout-tsx-both-the-desktop-header-nav-and-the-mobile-bottom-navigation-bar-the-link-should-be-labelled-shop-and-route-to-the-shop-path-register-the-new-crystalshop-tsx-page-as-a-route-in-app-tsx-at-the-shop-path-the-route-must-be-protected-only-accessible-to-authenticated-users",
+      "title": "Add a navigation entry for the Crystal Shop in Layout.tsx (both the desktop header nav and the mobile bottom navigation bar). The link should be labelled '💎 Shop' and route to the /shop path. Register the new CrystalShop.tsx page as a route in App.tsx at the /shop path. The route must be protected — only accessible to authenticated users.",
+      "reqIds": [
+        "REQ-58"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-screen-shake-effect-to-battle-tsx-that-triggers-on-every-hit-landed-both-when-the-player-s-monster-is-hit-and-when-the-opponent-s-monster-is-hit-the-shake-must-be-a-css-keyframe-animation-applied-to-the-battle-field-container-with-a-short-duration-300ms-and-decreasing-intensity-the-player-hit-shake-should-feel-heavier-than-the-opponent-hit-shake-to-give-feedback-directionality",
+      "title": "Add a screen-shake effect to Battle.tsx that triggers on every hit landed — both when the player's monster is hit and when the opponent's monster is hit. The shake must be a CSS keyframe animation applied to the battle field container, with a short duration (~300ms) and decreasing intensity. The player hit shake should feel heavier than the opponent hit shake to give feedback directionality.",
+      "reqIds": [
+        "REQ-59"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-attackanimation-tsx-to-render-element-specific-particle-burst-effects-on-impact-when-a-move-projectile-reaches-its-target-emit-8-12-particle-sprites-small-divs-or-svg-circles-that-burst-outward-in-random-directions-and-fade-out-over-500ms-each-element-type-must-use-its-matching-color-from-the-elemental-palette-fire-red-orange-water-blue-teal-earth-brown-gold-wind-green-lightning-yellow-white-shadow-purple-dark-particles-should-use-css-keyframes-for-translate-opacity-fade",
+      "title": "Enhance AttackAnimation.tsx to render element-specific particle burst effects on impact. When a move projectile reaches its target, emit 8–12 particle sprites (small divs or SVG circles) that burst outward in random directions and fade out over ~500ms. Each element type must use its matching color from the elemental palette (fire: red/orange, water: blue/teal, earth: brown/gold, wind: green, lightning: yellow/white, shadow: purple/dark). Particles should use CSS @keyframes for translate + opacity fade.",
+      "reqIds": [
+        "REQ-60"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-dramatic-move-announcement-overlay-in-battle-tsx-that-briefly-displays-the-move-name-in-large-bangers-font-with-an-element-colored-glow-when-a-move-is-executed-the-announcement-text-should-slide-in-from-the-center-of-the-battle-field-hold-for-800ms-then-fade-out-use-a-z-index-layer-above-the-battle-field-but-below-the-ui-controls-the-text-color-and-glow-must-match-the-element-type-of-the-attacking-monster",
+      "title": "Add a dramatic move announcement overlay in Battle.tsx that briefly displays the move name in large Bangers font with an element-colored glow when a move is executed. The announcement text should slide in from the center of the battle field, hold for ~800ms, then fade out. Use a z-index layer above the battle field but below the UI controls. The text color and glow must match the element type of the attacking monster.",
+      "reqIds": [
+        "REQ-61"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-anime-style-speed-lines-to-the-battle-field-background-in-battle-tsx-that-activate-during-attack-animations-speed-lines-should-be-an-svg-or-css-element-rendered-as-radially-emanating-lines-from-the-center-of-the-screen-appearing-briefly-400ms-when-any-move-is-launched-the-speed-lines-layer-must-sit-between-the-background-and-the-sprites-mid-z-index-during-idle-state-the-speed-lines-must-be-invisible",
+      "title": "Add anime-style speed lines to the battle field background in Battle.tsx that activate during attack animations. Speed lines should be an SVG or CSS element rendered as radially emanating lines from the center of the screen, appearing briefly (~400ms) when any move is launched. The speed lines layer must sit between the background and the sprites (mid z-index). During idle state, the speed lines must be invisible.",
+      "reqIds": [
+        "REQ-62"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-elemental-atmospheric-background-effects-to-the-battle-dojo-environments-in-battle-tsx-each-dojo-environment-must-have-an-ambient-animated-overlay-fire-dojo-floating-ember-particles-small-orange-red-circles-drifting-upward-water-temple-mist-fog-particles-faint-blue-translucent-circles-drifting-horizontally-bamboo-forest-falling-leaf-particles-green-teardrop-shapes-storm-peak-periodic-lightning-flash-brief-white-background-flash-every-3-5-seconds-shadow-realm-slow-drifting-dark-shadow-orbs-earth-canyon-rising-dust-motes-faint-brown-particles-implement-using-lightweight-css-keyframe-animations-on-absolutely-positioned-pseudo-elements-or-small-dom-nodes-these-effects-must-match-the-opponent-s-current-element-type-dynamically",
+      "title": "Add elemental atmospheric background effects to the battle dojo environments in Battle.tsx. Each dojo environment must have an ambient animated overlay: Fire Dojo — floating ember particles (small orange/red circles drifting upward); Water Temple — mist/fog particles (faint blue translucent circles drifting horizontally); Bamboo Forest — falling leaf particles (green teardrop shapes); Storm Peak — periodic lightning flash (brief white background flash every 3–5 seconds); Shadow Realm — slow-drifting dark shadow orbs; Earth Canyon — rising dust motes (faint brown particles). Implement using lightweight CSS keyframe animations on absolutely-positioned pseudo-elements or small DOM nodes. These effects must match the opponent's current element type dynamically.",
+      "reqIds": [
+        "REQ-63"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-cinematic-battle-intro-transition-in-battle-tsx-that-plays-once-when-the-battle-screen-first-loads-the-intro-should-1-display-both-monster-names-and-their-element-type-in-large-bangers-font-on-opposite-sides-of-the-screen-with-element-colored-glow-2-have-the-two-monster-sprites-slide-in-from-opposite-sides-toward-the-center-3-show-a-vs-text-flash-in-the-center-with-a-brief-screen-flash-effect-4-then-transition-to-the-normal-battle-layout-after-1-5-seconds-use-css-transitions-and-state-driven-class-toggles-the-intro-must-complete-before-the-player-can-interact-with-move-buttons",
+      "title": "Add a cinematic battle intro transition in Battle.tsx that plays once when the battle screen first loads. The intro should: (1) display both monster names and their element type in large Bangers font on opposite sides of the screen with element-colored glow; (2) have the two monster sprites slide in from opposite sides toward the center; (3) show a 'VS' text flash in the center with a brief screen flash effect; (4) then transition to the normal battle layout after ~1.5 seconds. Use CSS transitions and state-driven class toggles. The intro must complete before the player can interact with move buttons.",
+      "reqIds": [
+        "REQ-64"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-low-health-danger-effect-in-battle-tsx-and-healthbar-tsx-that-activates-when-either-monster-s-hp-drops-below-25-of-maxhp-when-a-monster-is-in-danger-state-the-health-bar-pulses-red-css-animation-on-the-bar-fill-the-monster-sprite-gains-a-red-flickering-glow-and-the-battle-background-darkens-slightly-reduced-brightness-overlay-the-danger-effects-must-deactivate-if-health-is-restored-above-25",
+      "title": "Add a low-health danger effect in Battle.tsx and HealthBar.tsx that activates when either monster's HP drops below 25% of maxHp. When a monster is in danger state: the health bar pulses red (CSS animation on the bar fill), the monster sprite gains a red flickering glow, and the battle background darkens slightly (reduced brightness overlay). The danger effects must deactivate if health is restored above 25%.",
+      "reqIds": [
+        "REQ-65"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-attackanimation-tsx-replace-the-current-basic-projectile-motion-with-distinct-element-specific-attack-animation-types-fire-moves-must-render-a-flaming-projectile-with-trailing-ember-particles-water-moves-must-render-a-wave-beam-with-ripple-trails-earth-moves-must-render-a-rock-shard-projectile-with-dust-scatter-wind-moves-must-render-a-spinning-blade-gust-with-swirl-trail-lightning-moves-must-render-an-instant-electric-bolt-zigzag-line-rather-than-a-slow-projectile-shadow-moves-must-render-a-dark-orb-with-shadow-wisp-trails-each-animation-must-travel-from-the-attacker-s-position-to-the-target-s-position-using-requestanimationframe-respecting-the-existing-arc-trajectory-and-miss-offset-logic-already-in-attackanimation-tsx",
+      "title": "In AttackAnimation.tsx, replace the current basic projectile motion with distinct, element-specific attack animation types. Fire moves must render a flaming projectile with trailing ember particles. Water moves must render a wave/beam with ripple trails. Earth moves must render a rock-shard projectile with dust scatter. Wind moves must render a spinning blade gust with swirl trail. Lightning moves must render an instant electric bolt/zigzag line rather than a slow projectile. Shadow moves must render a dark orb with shadow wisp trails. Each animation must travel from the attacker's position to the target's position using requestAnimationFrame, respecting the existing arc trajectory and miss-offset logic already in AttackAnimation.tsx.",
+      "reqIds": [
+        "REQ-66"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-battle-tsx-add-a-move-execution-flash-effect-on-the-attacking-monster-sprite-at-the-moment-a-move-is-launched-the-flash-must-be-a-brief-bright-glow-burst-100-150ms-using-the-element-s-accent-color-from-the-elemental-palette-applied-as-a-css-box-shadow-or-filter-pulse-on-the-sprite-container-this-gives-the-impression-of-the-monster-charging-up-before-releasing-the-attack",
+      "title": "In Battle.tsx, add a move execution flash effect on the attacking monster sprite at the moment a move is launched. The flash must be a brief bright glow burst (100–150ms) using the element's accent color from the elemental palette, applied as a CSS box-shadow or filter pulse on the sprite container. This gives the impression of the monster 'charging up' before releasing the attack.",
+      "reqIds": [
+        "REQ-67"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-ninjabattlesprite-tsx-and-pokemonbattlesprite-tsx-add-a-hit-reaction-animation-that-plays-on-the-target-monster-sprite-when-it-receives-a-hit-the-hit-reaction-must-include-a-quick-backwards-recoil-translate-sprite-shifts-12-20px-away-from-the-attacker-over-150ms-a-brief-red-tint-flash-red-filter-overlay-or-box-shadow-and-then-a-snap-back-to-the-original-position-this-replaces-or-supplements-any-existing-static-hit-state",
+      "title": "In NinjaBattleSprite.tsx and PokemonBattleSprite.tsx, add a hit-reaction animation that plays on the target monster sprite when it receives a hit. The hit reaction must include: a quick backwards recoil translate (sprite shifts 12–20px away from the attacker) over 150ms, a brief red tint flash (red filter overlay or box-shadow), and then a snap-back to the original position. This replaces or supplements any existing static hit state.",
+      "reqIds": [
+        "REQ-68"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-battle-tsx-add-a-combo-chain-visual-indicator-if-the-player-executes-two-moves-in-quick-succession-within-2-seconds-of-the-previous-move-landing-display-a-combo-text-label-in-bangers-font-with-an-orange-glow-above-the-player-s-monster-sprite-for-700ms-before-fading-out-this-encourages-rapid-offensive-play-and-makes-battles-feel-more-action-oriented",
+      "title": "In Battle.tsx, add a combo/chain visual indicator: if the player executes two moves in quick succession (within 2 seconds of the previous move landing), display a 'COMBO!' text label in Bangers font with an orange glow above the player's monster sprite for ~700ms before fading out. This encourages rapid offensive play and makes battles feel more action-oriented.",
+      "reqIds": [
+        "REQ-69"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-post-battle-results-animation-sequence-in-battle-tsx-when-a-battle-ends-win-or-loss-1-play-a-victory-fanfare-animation-for-a-win-the-player-s-monster-sprite-performs-a-bounce-jump-keyframe-loop-with-a-golden-glow-for-1-5-seconds-2-play-a-defeat-animation-for-a-loss-the-player-s-monster-sprite-fades-to-grey-with-a-slow-slump-downward-translate-over-1-second-after-the-animation-completes-display-the-existing-post-battle-ui-xp-reward-level-up-etc",
+      "title": "Add a post-battle results animation sequence in Battle.tsx. When a battle ends (win or loss): (1) play a victory fanfare animation for a win — the player's monster sprite performs a bounce/jump keyframe loop with a golden glow for 1.5 seconds; (2) play a defeat animation for a loss — the player's monster sprite fades to grey with a slow slump (downward translate) over 1 second. After the animation completes, display the existing post-battle UI (XP reward, level-up, etc.).",
+      "reqIds": [
+        "REQ-70"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-attackanimation-tsx-implement-full-cinematic-move-animation-sequences-for-all-6-element-types-each-animation-must-play-as-a-complete-visually-impressive-sequence-1-fire-moves-a-fireball-shuriken-projectile-with-a-bright-orange-red-core-a-flame-trail-of-4-6-trailing-ember-particles-that-follow-the-projectile-path-and-an-explosive-burst-with-radial-fire-sparks-on-impact-2-water-moves-a-blue-wave-beam-that-stretches-across-the-battle-field-with-ripple-ring-effects-expanding-outward-during-travel-and-a-splash-burst-on-impact-3-earth-moves-a-jagged-rock-shard-projectile-with-dust-cloud-scatter-particles-trailing-behind-it-and-a-ground-crack-shockwave-ring-on-impact-4-wind-moves-a-spinning-crescent-blade-gust-rendered-as-a-rotating-svg-arc-or-css-rotated-element-with-swirling-leaf-air-particles-in-its-wake-and-a-slashing-impact-effect-5-lightning-moves-an-instant-electric-bolt-rendered-as-a-branching-zigzag-svg-polyline-that-flashes-from-attacker-to-target-in-a-single-frame-with-a-secondary-afterglow-fade-out-over-200ms-and-electric-spark-burst-on-impact-6-shadow-moves-a-dark-purple-void-orb-with-wispy-shadow-tendrils-trailing-behind-it-and-a-dark-explosion-with-shadowy-mist-particles-spreading-outward-on-impact-all-animations-must-travel-from-the-attacker-s-screen-position-to-the-target-s-screen-position-using-requestanimationframe-respect-the-existing-arc-trajectory-and-miss-offset-logic-and-call-the-oncomplete-callback-when-finished-animation-durations-should-be-400-800ms-depending-on-element-type-lightning-fastest-earth-water-slower",
+      "title": "In AttackAnimation.tsx, implement full cinematic move animation sequences for all 6 element types. Each animation must play as a complete, visually impressive sequence: (1) Fire moves — a fireball/shuriken projectile with a bright orange-red core, a flame trail of 4–6 trailing ember particles that follow the projectile path, and an explosive burst with radial fire sparks on impact; (2) Water moves — a blue wave beam that stretches across the battle field with ripple ring effects expanding outward during travel and a splash burst on impact; (3) Earth moves — a jagged rock-shard projectile with dust cloud scatter particles trailing behind it and a ground-crack shockwave ring on impact; (4) Wind moves — a spinning crescent-blade gust rendered as a rotating SVG arc or CSS-rotated element, with swirling leaf/air particles in its wake and a slashing impact effect; (5) Lightning moves — an instant electric bolt rendered as a branching zigzag SVG polyline that flashes from attacker to target in a single frame, with a secondary afterglow fade-out over 200ms and electric spark burst on impact; (6) Shadow moves — a dark purple void orb with wispy shadow tendrils trailing behind it and a dark explosion with shadowy mist particles spreading outward on impact. All animations must travel from the attacker's screen position to the target's screen position using requestAnimationFrame, respect the existing arc trajectory and miss-offset logic, and call the onComplete callback when finished. Animation durations should be 400–800ms depending on element type (lightning fastest, earth/water slower).",
+      "reqIds": [
+        "REQ-71"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-battle-tsx-extend-the-move-execution-sequence-so-that-every-player-and-opponent-move-triggers-a-full-3-phase-animation-1-charge-phase-the-attacking-monster-sprite-displays-a-bright-element-colored-glow-burst-box-shadow-pulse-using-the-element-s-accent-color-from-tailwind-config-js-elemental-palette-for-150ms-before-the-projectile-launches-2-travel-phase-the-attackanimation-tsx-projectile-travels-to-the-target-with-element-specific-visuals-per-req-71-3-impact-phase-on-projectile-arrival-play-the-element-specific-impact-particle-burst-from-attackanimation-tsx-and-trigger-a-screen-shake-on-the-battle-field-container-heavier-shake-for-player-being-hit-lighter-for-opponent-being-hit-these-three-phases-must-play-sequentially-before-hp-deduction-and-battle-log-update-occur-so-the-player-can-visually-follow-the-full-attack-sequence",
+      "title": "In Battle.tsx, extend the move execution sequence so that every player and opponent move triggers a full 3-phase animation: (1) Charge phase — the attacking monster sprite displays a bright element-colored glow burst (box-shadow pulse using the element's accent color from tailwind.config.js elemental palette) for 150ms before the projectile launches; (2) Travel phase — the AttackAnimation.tsx projectile travels to the target with element-specific visuals (per REQ-71); (3) Impact phase — on projectile arrival, play the element-specific impact particle burst from AttackAnimation.tsx and trigger a screen shake on the battle field container (heavier shake for player being hit, lighter for opponent being hit). These three phases must play sequentially before HP deduction and battle log update occur, so the player can visually follow the full attack sequence.",
+      "reqIds": [
+        "REQ-72"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-the-move-button-ui-in-battle-tsx-so-that-each-of-the-4-move-buttons-displays-a-small-element-type-color-indicator-and-a-visual-ready-state-when-a-move-is-on-cooldown-recently-used-the-button-must-show-a-brief-cooldown-overlay-a-darkened-fill-that-depletes-over-the-cooldown-period-so-the-player-knows-when-moves-are-available-again-move-buttons-must-animate-with-a-quick-press-scale-effect-css-transform-scale-down-to-0-92-on-active-click-to-give-tactile-feedback-when-tapped-on-mobile-screens-narrower-than-768px-the-move-button-grid-must-remain-in-a-2-2-layout-with-each-button-at-minimum-48-48px-tap-target",
+      "title": "Enhance the move button UI in Battle.tsx so that each of the 4 move buttons displays a small element-type color indicator and a visual 'ready' state. When a move is on cooldown (recently used), the button must show a brief cooldown overlay (a darkened fill that depletes over the cooldown period) so the player knows when moves are available again. Move buttons must animate with a quick press-scale effect (CSS transform scale down to 0.92 on active/click) to give tactile feedback when tapped. On mobile screens narrower than 768px, the move button grid must remain in a 2×2 layout with each button at minimum 48×48px tap target.",
+      "reqIds": [
+        "REQ-73"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -473,6 +624,58 @@
       "reqIds": [
         "REQ-52"
       ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-58",
+      "summary": "Add a 'Share this game' button inside the app so players can easily invite others by sharing the live URL.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-59",
+      "summary": "Add a live player counter on the home screen (GameHome.tsx) showing total unique players who have logged in, stored in the backend canister.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-60",
+      "summary": "Build a Stripe-powered in-game crystal shop where players can purchase Elemental Crystals (Flame, Tide, Gale, Thunder, Terra, Void) using Stripe payments, which can then be used to evolve ninja monsters.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-61",
+      "summary": "In the backend (backend/main.mo), add a unique player counter that records every distinct Internet Identity principal that logs in. Expose two public query/update functions: (1) `recordPlayerLogin(principal)` — called on first authenticated session, records the principal if not already seen, and returns nothing; (2) `getTotalPlayers() : async Nat` — returns the count of all unique principals ever recorded. Store unique principals in a stable data structure so the count survives canister upgrades.",
+      "reqIds": [
+        "REQ-54"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-64",
+      "summary": "In the backend (backend/main.mo), extend the UserProfile data model to include a crystal inventory field — a map or record tracking the quantity of each crystal type owned (Flame, Tide, Gale, Thunder, Terra, Void). Add two backend functions: (1) `addCrystal(crystalType: Text, quantity: Nat)` — adds the specified quantity of the given crystal type to the calling user's inventory; (2) `getCrystalInventory() : async [(Text, Nat)]` — returns the caller's current crystal inventory as a list of (crystalType, quantity) pairs. These replace or supplement any existing crystal/evolution-stone inventory logic.",
+      "reqIds": [
+        "REQ-57"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-65",
+      "summary": "Improve battle screen visual coolness — add dynamic attack animations, screen shake on hits, elemental particle effects, dramatic move announcements, and cinematic battle transitions to make battles feel more exciting and impactful.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-66",
+      "summary": "Make battle moves visually animated and realistic — each move should display a distinct attack animation (projectile, slash, beam, etc.) with elemental visual effects so battles feel cinematic and real.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-67",
+      "summary": "Full animated move sequences for all battle attacks — each move should have a complete, visually impressive animation similar to Pokemon anime move animations (e.g., fireballs flying across screen, water beams, lightning bolts, earth shockwaves) with smooth motion, elemental effects, and impact explosions.",
+      "reqIds": [],
       "status": "pending"
     }
   ],

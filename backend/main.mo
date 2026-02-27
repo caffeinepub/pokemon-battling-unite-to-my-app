@@ -1,14 +1,21 @@
 import Map "mo:core/Map";
 import Nat "mo:core/Nat";
-import Blob "mo:core/Blob";
-import Runtime "mo:core/Runtime";
+import Order "mo:core/Order";
 import Array "mo:core/Array";
+import Blob "mo:core/Blob";
+import Text "mo:core/Text";
+import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
 
+import Iter "mo:core/Iter";
+
 import Storage "blob-storage/Storage";
+import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
 import MixinAuthorization "authorization/MixinAuthorization";
-import MixinStorage "blob-storage/Mixin";
+import OutCall "http-outcalls/outcall";
+import Stripe "stripe/stripe";
+
 
 actor {
   include MixinStorage();
@@ -16,7 +23,7 @@ actor {
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
 
-  // ── Types ─────────────────────────────────────────────────────────────────
+  // ── Types ────────────────────────────────────────────────────────────────
 
   public type UserProfile = {
     ninjaName : Text;
@@ -24,6 +31,16 @@ actor {
     avatarUrl : ?Text;
     victories : Nat;
     dojoSeals : Nat;
+    crystalInventory : CrystalInventory;
+  };
+
+  public type CrystalInventory = {
+    flame : Nat;
+    tide : Nat;
+    gale : Nat;
+    thunder : Nat;
+    terra : Nat;
+    void : Nat;
   };
 
   public type Monster = {
@@ -238,12 +255,18 @@ actor {
 
   type dojoSeal = Text;
 
+  // ── State ────────────────────────────────────────────────────────────────
+
   let battleMonsters = Map.empty<Text, BattleMonster>();
   let battleMonsterPersistent = Map.empty<Text, BattleMonsterPersistent>();
 
-  // ── User Profile ──────────────────────────────────────────────────────────
-
   let userProfiles = Map.empty<Principal, UserProfile>();
+  // Unique player count, uses Principals as keys so each player is only counted once.
+  let uniquePlayers = Map.empty<Principal, ()>();
+
+  var stripeConfiguration : ?Stripe.StripeConfiguration = null;
+
+  // ── User Profile ─────────────────────────────────────────────────────────
 
   public query ({ caller }) func getCallerUserProfile() : async UserProfile {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
@@ -272,7 +295,67 @@ actor {
     userProfiles.add(caller, profile);
   };
 
-  // ── Query endpoints ───────────────────────────────────────────────────────
+  // ── Crystal Inventory ────────────────────────────────────────────────────
+
+  public shared ({ caller }) func addCrystal(crystalType : Text, quantity : Nat) : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only users can add crystals");
+    };
+
+    let profile = switch (userProfiles.get(caller)) {
+      case (?existing) { existing };
+      case (null) { Runtime.trap("User profile not found") };
+    };
+
+    let newInventory = switch (crystalType) {
+      case ("flame") {
+        { profile.crystalInventory with flame = profile.crystalInventory.flame + quantity };
+      };
+      case ("tide") {
+        { profile.crystalInventory with tide = profile.crystalInventory.tide + quantity };
+      };
+      case ("gale") {
+        { profile.crystalInventory with gale = profile.crystalInventory.gale + quantity };
+      };
+      case ("thunder") {
+        { profile.crystalInventory with thunder = profile.crystalInventory.thunder + quantity };
+      };
+      case ("terra") {
+        { profile.crystalInventory with terra = profile.crystalInventory.terra + quantity };
+      };
+      case ("void") {
+        { profile.crystalInventory with void = profile.crystalInventory.void + quantity };
+      };
+      case (_) {
+        Runtime.trap("Invalid crystal type");
+      };
+    };
+
+    let updatedProfile = { profile with crystalInventory = newInventory };
+    userProfiles.add(caller, updatedProfile);
+  };
+
+  public query ({ caller }) func getCrystalInventory() : async [(Text, Nat)] {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only users can view crystal inventory");
+    };
+
+    let profile = switch (userProfiles.get(caller)) {
+      case (?p) { p };
+      case (null) { Runtime.trap("User profile not found") };
+    };
+
+    [
+      ("flame", profile.crystalInventory.flame),
+      ("tide", profile.crystalInventory.tide),
+      ("gale", profile.crystalInventory.gale),
+      ("thunder", profile.crystalInventory.thunder),
+      ("terra", profile.crystalInventory.terra),
+      ("void", profile.crystalInventory.void),
+    ];
+  };
+
+  // ── Pages ────────────────────────────────────────────────────────────────
 
   public query ({ caller }) func getDojoSeals() : async [Text] {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
@@ -314,5 +397,55 @@ actor {
       Runtime.trap("Unauthorized: Only users can view monster DX data");
     };
     null;
+  };
+
+  // ── Player Tracking ──────────────────────────────────────────────────────
+
+  public shared ({ caller }) func recordPlayerLogin() : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only authenticated users can record their login");
+    };
+    switch (uniquePlayers.get(caller)) {
+      case (null) {
+        uniquePlayers.add(caller, ());
+      };
+      case (?_) {};
+    };
+  };
+
+  public query func getTotalPlayers() : async Nat {
+    uniquePlayers.size();
+  };
+
+  // ── Stripe Integration ───────────────────────────────────────────────────
+
+  public query func isStripeConfigured() : async Bool {
+    stripeConfiguration != null;
+  };
+
+  public shared ({ caller }) func setStripeConfiguration(config : Stripe.StripeConfiguration) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can perform this action");
+    };
+    stripeConfiguration := ?config;
+  };
+
+  func getStripeConfiguration() : Stripe.StripeConfiguration {
+    switch (stripeConfiguration) {
+      case (null) { Runtime.trap("Stripe needs to be first configured") };
+      case (?value) { value };
+    };
+  };
+
+  public func getStripeSessionStatus(sessionId : Text) : async Stripe.StripeSessionStatus {
+    await Stripe.getSessionStatus(getStripeConfiguration(), sessionId, transform);
+  };
+
+  public shared ({ caller }) func createCheckoutSession(items : [Stripe.ShoppingItem], successUrl : Text, cancelUrl : Text) : async Text {
+    await Stripe.createCheckoutSession(getStripeConfiguration(), caller, items, successUrl, cancelUrl, transform);
+  };
+
+  public query func transform(input : OutCall.TransformationInput) : async OutCall.TransformationOutput {
+    OutCall.transform(input);
   };
 };

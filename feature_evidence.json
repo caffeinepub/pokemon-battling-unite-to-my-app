@@ -1,4 +1,73 @@
 {
   "kind": "feature_evidence_report",
-  "features": []
+  "features": [
+    {
+      "featureId": "feature-in-attackanimation-tsx-implement-full-cinematic-move-animation-sequences-for-all-6-element-types-each-animation-must-play-as-a-complete-visually-impressive-sequence-1-fire-moves-a-fireball-shuriken-projectile-with-a-bright-orange-red-core-a-flame-trail-of-4-6-trailing-ember-particles-that-follow-the-projectile-path-and-an-explosive-burst-with-radial-fire-sparks-on-impact-2-water-moves-a-blue-wave-beam-that-stretches-across-the-battle-field-with-ripple-ring-effects-expanding-outward-during-travel-and-a-splash-burst-on-impact-3-earth-moves-a-jagged-rock-shard-projectile-with-dust-cloud-scatter-particles-trailing-behind-it-and-a-ground-crack-shockwave-ring-on-impact-4-wind-moves-a-spinning-crescent-blade-gust-rendered-as-a-rotating-svg-arc-or-css-rotated-element-with-swirling-leaf-air-particles-in-its-wake-and-a-slashing-impact-effect-5-lightning-moves-an-instant-electric-bolt-rendered-as-a-branching-zigzag-svg-polyline-that-flashes-from-attacker-to-target-in-a-single-frame-with-a-secondary-afterglow-fade-out-over-200ms-and-electric-spark-burst-on-impact-6-shadow-moves-a-dark-purple-void-orb-with-wispy-shadow-tendrils-trailing-behind-it-and-a-dark-explosion-with-shadowy-mist-particles-spreading-outward-on-impact-all-animations-must-travel-from-the-attacker-s-screen-position-to-the-target-s-screen-position-using-requestanimationframe-respect-the-existing-arc-trajectory-and-miss-offset-logic-and-call-the-oncomplete-callback-when-finished-animation-durations-should-be-400-800ms-depending-on-element-type-lightning-fastest-earth-water-slower",
+      "featureTitle": "In AttackAnimation.tsx, implement full cinematic move animation sequences for all 6 element types. Each animation must play as a complete, visually impressive sequence: (1) Fire moves — a fireball/shuriken projectile with a bright orange-red core, a flame trail of 4–6 trailing ember particles that follow the projectile path, and an explosive burst with radial fire sparks on impact; (2) Water moves — a blue wave beam that stretches across the battle field with ripple ring effects expanding outward during travel and a splash burst on impact; (3) Earth moves — a jagged rock-shard projectile with dust cloud scatter particles trailing behind it and a ground-crack shockwave ring on impact; (4) Wind moves — a spinning crescent-blade gust rendered as a rotating SVG arc or CSS-rotated element, with swirling leaf/air particles in its wake and a slashing impact effect; (5) Lightning moves — an instant electric bolt rendered as a branching zigzag SVG polyline that flashes from attacker to target in a single frame, with a secondary afterglow fade-out over 200ms and electric spark burst on impact; (6) Shadow moves — a dark purple void orb with wispy shadow tendrils trailing behind it and a dark explosion with shadowy mist particles spreading outward on impact. All animations must travel from the attacker's screen position to the target's screen position using requestAnimationFrame, respect the existing arc trajectory and miss-offset logic, and call the onComplete callback when finished. Animation durations should be 400–800ms depending on element type (lightning fastest, earth/water slower).",
+      "files": [
+        "frontend/src/components/AttackAnimation.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "stripe@3.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-71"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-in-battle-tsx-extend-the-move-execution-sequence-so-that-every-player-and-opponent-move-triggers-a-full-3-phase-animation-1-charge-phase-the-attacking-monster-sprite-displays-a-bright-element-colored-glow-burst-box-shadow-pulse-using-the-element-s-accent-color-from-tailwind-config-js-elemental-palette-for-150ms-before-the-projectile-launches-2-travel-phase-the-attackanimation-tsx-projectile-travels-to-the-target-with-element-specific-visuals-per-req-71-3-impact-phase-on-projectile-arrival-play-the-element-specific-impact-particle-burst-from-attackanimation-tsx-and-trigger-a-screen-shake-on-the-battle-field-container-heavier-shake-for-player-being-hit-lighter-for-opponent-being-hit-these-three-phases-must-play-sequentially-before-hp-deduction-and-battle-log-update-occur-so-the-player-can-visually-follow-the-full-attack-sequence",
+      "featureTitle": "In Battle.tsx, extend the move execution sequence so that every player and opponent move triggers a full 3-phase animation: (1) Charge phase — the attacking monster sprite displays a bright element-colored glow burst (box-shadow pulse using the element's accent color from tailwind.config.js elemental palette) for 150ms before the projectile launches; (2) Travel phase — the AttackAnimation.tsx projectile travels to the target with element-specific visuals (per REQ-71); (3) Impact phase — on projectile arrival, play the element-specific impact particle burst from AttackAnimation.tsx and trigger a screen shake on the battle field container (heavier shake for player being hit, lighter for opponent being hit). These three phases must play sequentially before HP deduction and battle log update occur, so the player can visually follow the full attack sequence.",
+      "files": [
+        "frontend/src/components/NinjaBattleSprite.tsx",
+        "frontend/src/index.css",
+        "frontend/src/pages/Battle.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "stripe@3.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-72"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-enhance-the-move-button-ui-in-battle-tsx-so-that-each-of-the-4-move-buttons-displays-a-small-element-type-color-indicator-and-a-visual-ready-state-when-a-move-is-on-cooldown-recently-used-the-button-must-show-a-brief-cooldown-overlay-a-darkened-fill-that-depletes-over-the-cooldown-period-so-the-player-knows-when-moves-are-available-again-move-buttons-must-animate-with-a-quick-press-scale-effect-css-transform-scale-down-to-0-92-on-active-click-to-give-tactile-feedback-when-tapped-on-mobile-screens-narrower-than-768px-the-move-button-grid-must-remain-in-a-2-2-layout-with-each-button-at-minimum-48-48px-tap-target",
+      "featureTitle": "Enhance the move button UI in Battle.tsx so that each of the 4 move buttons displays a small element-type color indicator and a visual 'ready' state. When a move is on cooldown (recently used), the button must show a brief cooldown overlay (a darkened fill that depletes over the cooldown period) so the player knows when moves are available again. Move buttons must animate with a quick press-scale effect (CSS transform scale down to 0.92 on active/click) to give tactile feedback when tapped. On mobile screens narrower than 768px, the move button grid must remain in a 2×2 layout with each button at minimum 48×48px tap target.",
+      "files": [
+        "frontend/src/pages/Battle.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "stripe@3.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-73"
+      ],
+      "confidence": "high"
+    }
+  ]
 }

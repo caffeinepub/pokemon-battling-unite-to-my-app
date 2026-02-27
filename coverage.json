@@ -1,87 +1,63 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-25T19:36:14.971Z",
+  "generatedAt": "2026-02-26T01:30:38.038Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
-    "implemented": 0,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-49",
-        "summary": "Redesign all game visuals to blend three distinct art styles into a unified mixed aesthetic: (1) Dark/edgy anime style inspired by Naruto, Demon Slayer, and Bleach — high-contrast shadowing, dramatic speed lines, bold ink outlines, and intense elemental auras on monster sprites and battle backgrounds; (2) Pixel art animation — retro sprite-based idle and attack animations for all 6 elemental ninja monsters (Emberfang, Tidalstrike, Stonefist, Galestep, Voltclaw, Voidshade) rendered as CSS pixel-art keyframe animations using crisp, blocky movement frames; (3) Painted/ink brush style — traditional Japanese sumi-e brushstroke textures applied to UI panel borders, section dividers, background overlays, and chapter title headers. Apply this blended aesthetic consistently across all game screens: LoginPage, ProfessorOakIntro (Sensei Ryoku intro), StarterSelection, Battle, GameHome, StoryCampaign, GymBattles, PokemonRoster, GameLore, and TrainerProfile.",
-        "status": "missing",
+        "id": "REQ-71",
+        "summary": "In AttackAnimation.tsx, implement full cinematic move animation sequences for all 6 element types. Each animation must play as a complete, visually impressive sequence: (1) Fire moves — a fireball/shuriken projectile with a bright orange-red core, a flame trail of 4–6 trailing ember particles that follow the projectile path, and an explosive burst with radial fire sparks on impact; (2) Water moves — a blue wave beam that stretches across the battle field with ripple ring effects expanding outward during travel and a splash burst on impact; (3) Earth moves — a jagged rock-shard projectile with dust cloud scatter particles trailing behind it and a ground-crack shockwave ring on impact; (4) Wind moves — a spinning crescent-blade gust rendered as a rotating SVG arc or CSS-rotated element, with swirling leaf/air particles in its wake and a slashing impact effect; (5) Lightning moves — an instant electric bolt rendered as a branching zigzag SVG polyline that flashes from attacker to target in a single frame, with a secondary afterglow fade-out over 200ms and electric spark burst on impact; (6) Shadow moves — a dark purple void orb with wispy shadow tendrils trailing behind it and a dark explosion with shadowy mist particles spreading outward on impact. All animations must travel from the attacker's screen position to the target's screen position using requestAnimationFrame, respect the existing arc trajectory and miss-offset logic, and call the onComplete callback when finished. Animation durations should be 400–800ms depending on element type (lightning fastest, earth/water slower).",
+        "status": "implemented",
         "plannedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/pages/StarterSelection.tsx",
-          "frontend/src/pages/Battle.tsx",
-          "frontend/src/components/AttackAnimation.tsx",
-          "frontend/src/components/NinjaBattleSprite.tsx",
-          "frontend/src/components/AnimatedPokemon.tsx",
-          "frontend/src/pages/GameLore.tsx",
-          "frontend/src/pages/StoryCampaign.tsx",
-          "frontend/src/pages/GymBattles.tsx",
-          "frontend/src/pages/GameHome.tsx",
-          "frontend/src/pages/LoginPage.tsx"
+          "frontend/src/components/AttackAnimation.tsx"
         ],
-        "matchedFiles": []
+        "matchedFiles": [
+          "frontend/src/components/AttackAnimation.tsx"
+        ]
       },
       {
-        "id": "REQ-50",
-        "summary": "Update NinjaBattleSprite.tsx and AnimatedPokemon.tsx to apply pixel-art rendering and anime-style motion to all 6 elemental ninja monsters. Each monster's sprite container must use CSS `image-rendering: pixelated` and `image-rendering: crisp-edges`. Idle animations must use multi-frame pixel-art style CSS @keyframes (e.g., 2–4 discrete transform steps with step-timing functions to simulate sprite sheet frames). Attack animations must add anime-style motion blur via CSS filter or translate offset trails. Each monster must have element-specific aura glow using the elemental color palette defined in tailwind.config.js.",
-        "status": "missing",
+        "id": "REQ-72",
+        "summary": "In Battle.tsx, extend the move execution sequence so that every player and opponent move triggers a full 3-phase animation: (1) Charge phase — the attacking monster sprite displays a bright element-colored glow burst (box-shadow pulse using the element's accent color from tailwind.config.js elemental palette) for 150ms before the projectile launches; (2) Travel phase — the AttackAnimation.tsx projectile travels to the target with element-specific visuals (per REQ-71); (3) Impact phase — on projectile arrival, play the element-specific impact particle burst from AttackAnimation.tsx and trigger a screen shake on the battle field container (heavier shake for player being hit, lighter for opponent being hit). These three phases must play sequentially before HP deduction and battle log update occur, so the player can visually follow the full attack sequence.",
+        "status": "implemented",
         "plannedFiles": [
           "frontend/src/components/NinjaBattleSprite.tsx",
-          "frontend/src/components/AnimatedPokemon.tsx",
-          "frontend/src/index.css"
-        ],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-51",
-        "summary": "Add brushstroke/ink-style decorative borders and dividers to the UI panels across GameLore.tsx, StoryCampaign.tsx, GymBattles.tsx, and GameHome.tsx. Implement these using SVG inline brushstroke shapes or CSS clip-path/border-image techniques that evoke traditional Japanese sumi-e painting. Arc title headers and chapter section titles must use the Bangers font with a subtle ink-texture text-shadow effect. Section separators between content blocks should use a horizontal brushstroke SVG line rather than a plain hr element.",
-        "status": "missing",
-        "plannedFiles": [
-          "frontend/src/pages/GameLore.tsx",
-          "frontend/src/pages/StoryCampaign.tsx",
-          "frontend/src/pages/GymBattles.tsx",
-          "frontend/src/pages/GameHome.tsx",
-          "frontend/src/index.css"
-        ],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-52",
-        "summary": "Update battle screen backgrounds in Battle.tsx to use anime-style illustrated environment art rendered via CSS gradients, layered pseudo-elements, and SVG overlays. Each of the 6 dojo environments (fire dojo, water temple, bamboo forest, storm peak, shadow realm, earth canyon) must include: a multi-layer parallax-style background with at least 2 depth layers (foreground silhouette + background sky/terrain), anime-style atmospheric effects (e.g., falling embers for fire, mist particles for water, falling leaves for bamboo, lightning flashes for storm, floating shadows for shadow realm, dust motes for earth), and speed-line overlay elements that activate during attack animations. Background visuals must match the opponent's element type dynamically.",
-        "status": "missing",
-        "plannedFiles": [
           "frontend/src/pages/Battle.tsx",
           "frontend/src/index.css"
         ],
-        "matchedFiles": []
+        "matchedFiles": [
+          "frontend/src/components/NinjaBattleSprite.tsx",
+          "frontend/src/pages/Battle.tsx",
+          "frontend/src/index.css"
+        ]
+      },
+      {
+        "id": "REQ-73",
+        "summary": "Enhance the move button UI in Battle.tsx so that each of the 4 move buttons displays a small element-type color indicator and a visual 'ready' state. When a move is on cooldown (recently used), the button must show a brief cooldown overlay (a darkened fill that depletes over the cooldown period) so the player knows when moves are available again. Move buttons must animate with a quick press-scale effect (CSS transform scale down to 0.92 on active/click) to give tactile feedback when tapped. On mobile screens narrower than 768px, the move button grid must remain in a 2×2 layout with each button at minimum 48×48px tap target.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/Battle.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/Battle.tsx"
+        ]
       }
     ]
   },
   "changedFiles": [
     "build-request.json",
     "feature_evidence.json",
+    "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/public/assets/generated/battle-bg-earth.dim_1280x720.png",
-    "frontend/public/assets/generated/battle-bg-fire.dim_1280x720.png",
-    "frontend/public/assets/generated/battle-bg-shadow.dim_1280x720.png",
-    "frontend/public/assets/generated/battle-bg-storm.dim_1280x720.png",
-    "frontend/public/assets/generated/battle-bg-water.dim_1280x720.png",
-    "frontend/public/assets/generated/battle-bg-wind.dim_1280x720.png",
-    "frontend/public/assets/generated/brush-divider.dim_800x32.png",
-    "frontend/public/assets/generated/emberfang-sprite.dim_256x64.png",
-    "frontend/public/assets/generated/galestep-sprite.dim_256x64.png",
-    "frontend/public/assets/generated/stonefist-sprite.dim_256x64.png",
-    "frontend/public/assets/generated/tidalstrike-sprite.dim_256x64.png",
-    "frontend/public/assets/generated/voidshade-sprite.dim_256x64.png",
-    "frontend/public/assets/generated/voltclaw-sprite.dim_256x64.png",
+    "frontend/src/components/AttackAnimation.tsx",
+    "frontend/src/components/NinjaBattleSprite.tsx",
+    "frontend/src/index.css",
+    "frontend/src/pages/Battle.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

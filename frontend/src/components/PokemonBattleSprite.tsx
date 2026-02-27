@@ -1,175 +1,149 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-
-interface SpriteMonster {
-  name: string;
-  element?: string;
-  sprite?: string;
-  color?: string;
-}
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 
 interface PokemonBattleSpriteProps {
-  pokemon?: SpriteMonster;
-  isPlayer: boolean;
-  isAttacking?: boolean;
-  isDodging?: boolean;
+  monsterImage: string;
+  monsterName: string;
+  element: string;
+  onDodgeChange?: (offset: { x: number; y: number }) => void;
+  isDanger?: boolean;
+  isHit?: boolean;
 }
 
-const elementEmoji: Record<string, string> = {
+const ELEMENT_COLORS: Record<string, string> = {
+  fire: '#ff6a00',
+  water: '#1e90ff',
+  earth: '#8b5e3c',
+  wind: '#64ffda',
+  lightning: '#ffe620',
+  shadow: '#9b30ff',
+};
+
+const ELEMENT_EMOJIS: Record<string, string> = {
   fire: '🔥',
   water: '💧',
   earth: '🪨',
-  wind: '💨',
+  wind: '🌪️',
   lightning: '⚡',
-  dark: '🌑',
+  shadow: '🌑',
 };
 
 export default function PokemonBattleSprite({
-  pokemon,
-  isPlayer,
-  isAttacking = false,
-  isDodging = false,
+  monsterImage,
+  monsterName,
+  element,
+  onDodgeChange,
+  isDanger = false,
+  isHit = false,
 }: PokemonBattleSpriteProps) {
+  const elementKey = element.toLowerCase();
+  const elementColor = ELEMENT_COLORS[elementKey] || '#ff6a00';
+  const elementEmoji = ELEMENT_EMOJIS[elementKey] || '⚡';
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isDraggingRef = useRef(false);
+  const startPosRef = useRef({ x: 0, y: 0 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStart = useRef<{ x: number; y: number } | null>(null);
-  const spriteRef = useRef<HTMLDivElement>(null);
+  const [isDodging, setIsDodging] = useState(false);
 
-  const sprite = pokemon?.sprite || '';
-  const color = pokemon?.color || '#eab308';
-  const name = pokemon?.name || 'Unknown';
-  const element = pokemon?.element || 'lightning';
+  const DODGE_THRESHOLD = 20;
 
-  // Reset drag when dodging ends
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    isDraggingRef.current = true;
+    startPosRef.current = { x: e.clientX, y: e.clientY };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  }, []);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDraggingRef.current) return;
+    const dx = e.clientX - startPosRef.current.x;
+    const dy = e.clientY - startPosRef.current.y;
+    setDragOffset({ x: dx, y: dy });
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const dodging = dist > DODGE_THRESHOLD;
+    setIsDodging(dodging);
+    if (onDodgeChange) onDodgeChange({ x: dx, y: dy });
+  }, [onDodgeChange]);
+
+  const handlePointerUp = useCallback(() => {
+    isDraggingRef.current = false;
+    setDragOffset({ x: 0, y: 0 });
+    setIsDodging(false);
+    if (onDodgeChange) onDodgeChange({ x: 0, y: 0 });
+  }, [onDodgeChange]);
+
+  // Reset drag on hit
   useEffect(() => {
-    if (!isDodging && !isDragging) {
+    if (isHit) {
+      isDraggingRef.current = false;
       setDragOffset({ x: 0, y: 0 });
+      setIsDodging(false);
     }
-  }, [isDodging, isDragging]);
-
-  // Mouse drag handlers
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (!isPlayer) return;
-    e.preventDefault();
-    setIsDragging(true);
-    dragStart.current = { x: e.clientX - dragOffset.x, y: e.clientY - dragOffset.y };
-  }, [isPlayer, dragOffset]);
-
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!isDragging || !dragStart.current) return;
-    const newX = Math.max(-60, Math.min(60, e.clientX - dragStart.current.x));
-    const newY = Math.max(-60, Math.min(60, e.clientY - dragStart.current.y));
-    setDragOffset({ x: newX, y: newY });
-  }, [isDragging]);
-
-  const handleMouseUp = useCallback(() => {
-    if (!isDragging) return;
-    setIsDragging(false);
-    dragStart.current = null;
-    setDragOffset({ x: 0, y: 0 });
-  }, [isDragging]);
-
-  // Touch drag handlers
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (!isPlayer) return;
-    e.preventDefault(); // prevent scroll
-    const touch = e.touches[0];
-    setIsDragging(true);
-    dragStart.current = { x: touch.clientX - dragOffset.x, y: touch.clientY - dragOffset.y };
-  }, [isPlayer, dragOffset]);
-
-  const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (!isDragging || !dragStart.current) return;
-    e.preventDefault(); // prevent scroll during drag
-    const touch = e.touches[0];
-    const newX = Math.max(-60, Math.min(60, touch.clientX - dragStart.current.x));
-    const newY = Math.max(-60, Math.min(60, touch.clientY - dragStart.current.y));
-    setDragOffset({ x: newX, y: newY });
-  }, [isDragging]);
-
-  const handleTouchEnd = useCallback(() => {
-    if (!isDragging) return;
-    setIsDragging(false);
-    dragStart.current = null;
-    setDragOffset({ x: 0, y: 0 });
-  }, [isDragging]);
-
-  // Attach global mouse/touch listeners
-  useEffect(() => {
-    if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-      window.addEventListener('touchmove', handleTouchMove, { passive: false });
-      window.addEventListener('touchend', handleTouchEnd);
-    }
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
-
-  if (!pokemon) return null;
-
-  const translateX = dragOffset.x + (isAttacking ? (isPlayer ? 20 : -20) : 0) + (isDodging ? (isPlayer ? -25 : 25) : 0);
-  const translateY = dragOffset.y + (isDodging ? -10 : 0);
+  }, [isHit]);
 
   return (
-    <div
-      ref={spriteRef}
-      onMouseDown={handleMouseDown}
-      onTouchStart={handleTouchStart}
-      className={`relative flex items-center justify-center select-none ${isPlayer ? 'cursor-grab active:cursor-grabbing' : ''}`}
-      style={{
-        width: '72px',
-        height: '72px',
-        minWidth: '64px',
-        minHeight: '64px',
-        transform: `translate(${translateX}px, ${translateY}px)`,
-        transition: isDragging ? 'none' : 'transform 0.3s ease',
-        willChange: 'transform',
-        touchAction: 'none',
-        userSelect: 'none',
-      }}
-    >
-      {/* Glow aura */}
-      <div
-        className="absolute inset-0 rounded-full opacity-30 blur-md"
-        style={{ background: color, willChange: 'opacity' }}
-      />
-
-      {/* Sprite or emoji fallback */}
-      {sprite ? (
-        <img
-          src={sprite}
-          alt={name}
-          className="relative z-10 w-14 h-14 object-contain"
-          style={{ filter: `drop-shadow(0 0 6px ${color})`, imageRendering: 'pixelated' }}
-          draggable={false}
-        />
-      ) : (
-        <div
-          className="relative z-10 w-14 h-14 rounded-full flex items-center justify-center text-3xl"
-          style={{ background: `${color}33`, border: `2px solid ${color}66` }}
-        >
-          {elementEmoji[element] || '🥷'}
-        </div>
-      )}
-
+    <div className="relative flex flex-col items-center select-none">
       {/* Element badge */}
       <div
-        className="absolute -bottom-1 -right-1 z-20 w-5 h-5 rounded-full flex items-center justify-center text-[10px] border"
-        style={{ background: `${color}22`, borderColor: `${color}88` }}
+        className="absolute -top-2 -left-2 z-10 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold shadow-lg border-2 border-black/30"
+        style={{ backgroundColor: elementColor }}
       >
-        {elementEmoji[element] || '🥷'}
+        {elementEmoji}
       </div>
 
-      {/* Drag hint for player */}
-      {isPlayer && !isDragging && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] text-muted-foreground whitespace-nowrap opacity-60">
-          drag to dodge
+      {/* Dodge indicator */}
+      {isDodging && (
+        <div
+          className="absolute -top-8 left-1/2 -translate-x-1/2 text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap z-20"
+          style={{
+            backgroundColor: elementColor,
+            color: '#000',
+            fontFamily: 'Bangers, cursive',
+            fontSize: '0.85rem',
+            boxShadow: `0 0 8px ${elementColor}`,
+          }}
+        >
+          DODGE!
         </div>
       )}
+
+      {/* Draggable sprite */}
+      <div
+        ref={containerRef}
+        className={`relative cursor-grab active:cursor-grabbing touch-none ${isDanger ? 'danger-sprite' : ''} ${isHit ? 'hit-recoil-right' : ''}`}
+        style={{
+          transform: `translate(${dragOffset.x}px, ${dragOffset.y}px)`,
+          transition: isDraggingRef.current ? 'none' : 'transform 0.3s ease-out',
+          willChange: 'transform',
+        }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+      >
+        <img
+          src={monsterImage}
+          alt={monsterName}
+          className="w-28 h-28 object-contain"
+          style={{
+            imageRendering: 'pixelated',
+            filter: `drop-shadow(0 0 8px ${elementColor}88)`,
+          }}
+          draggable={false}
+        />
+      </div>
+
+      {/* Name label */}
+      <div
+        className="mt-1 text-xs font-bold tracking-wider uppercase"
+        style={{ color: elementColor, fontFamily: 'Bangers, cursive', letterSpacing: '0.1em' }}
+      >
+        {monsterName}
+      </div>
+
+      {/* Drag hint */}
+      <div className="text-xs text-muted-foreground mt-0.5 opacity-60">
+        drag to dodge
+      </div>
     </div>
   );
 }

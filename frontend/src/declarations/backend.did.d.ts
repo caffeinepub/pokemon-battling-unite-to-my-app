@@ -11,6 +11,14 @@ import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
 export type Blob = Uint8Array;
+export interface CrystalInventory {
+  'flame' : bigint,
+  'terra' : bigint,
+  'thunder' : bigint,
+  'gale' : bigint,
+  'tide' : bigint,
+  'void' : bigint,
+}
 export type ElementalMastery = { 'ice' : string } |
   { 'magnetizer' : string } |
   { 'magmarizer' : string } |
@@ -67,13 +75,38 @@ export interface NinjaTechnique {
   'effect' : [] | [TechniqueEffect],
   'power' : bigint,
 }
+export interface ShoppingItem {
+  'productName' : string,
+  'currency' : string,
+  'quantity' : bigint,
+  'priceInCents' : bigint,
+  'productDescription' : string,
+}
+export interface StripeConfiguration {
+  'allowedCountries' : Array<string>,
+  'secretKey' : string,
+}
+export type StripeSessionStatus = {
+    'completed' : { 'userPrincipal' : [] | [string], 'response' : string }
+  } |
+  { 'failed' : { 'error' : string } };
 export type TechniqueEffect = { 'boostSpeed' : null } |
   { 'paralyzeOpponent' : null } |
   { 'confuseOpponent' : null } |
   { 'boostDefense' : null } |
   { 'boostAttack' : null };
+export interface TransformationInput {
+  'context' : Uint8Array,
+  'response' : http_request_result,
+}
+export interface TransformationOutput {
+  'status' : bigint,
+  'body' : Uint8Array,
+  'headers' : Array<http_header>,
+}
 export interface UserProfile {
   'victories' : bigint,
+  'crystalInventory' : CrystalInventory,
   'ninjaName' : string,
   'avatarUrl' : [] | [string],
   'dojoSeals' : bigint,
@@ -93,6 +126,12 @@ export interface _CaffeineStorageRefillResult {
   'success' : [] | [boolean],
   'topped_up_amount' : [] | [bigint],
 }
+export interface http_header { 'value' : string, 'name' : string }
+export interface http_request_result {
+  'status' : bigint,
+  'body' : Uint8Array,
+  'headers' : Array<http_header>,
+}
 export interface _SERVICE {
   '_caffeineStorageBlobIsLive' : ActorMethod<[Uint8Array], boolean>,
   '_caffeineStorageBlobsToDelete' : ActorMethod<[], Array<Uint8Array>>,
@@ -110,18 +149,30 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'addCrystal' : ActorMethod<[string, bigint], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'createCheckoutSession' : ActorMethod<
+    [Array<ShoppingItem>, string, string],
+    string
+  >,
   'getCallerUserProfile' : ActorMethod<[], UserProfile>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getCrystalInventory' : ActorMethod<[], Array<[string, bigint]>>,
   'getDojoSeals' : ActorMethod<[], Array<string>>,
   'getLog' : ActorMethod<[], Array<string>>,
   'getMonsterDXData' : ActorMethod<[string], [] | [Monster]>,
   'getMonsters' : ActorMethod<[], Array<Monster>>,
   'getOpponent' : ActorMethod<[string], string>,
+  'getStripeSessionStatus' : ActorMethod<[string], StripeSessionStatus>,
+  'getTotalPlayers' : ActorMethod<[], bigint>,
   'getUltimateMonsters' : ActorMethod<[], Array<MonsterUltimate>>,
   'getUserProfile' : ActorMethod<[Principal], UserProfile>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'isStripeConfigured' : ActorMethod<[], boolean>,
+  'recordPlayerLogin' : ActorMethod<[], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'setStripeConfiguration' : ActorMethod<[StripeConfiguration], undefined>,
+  'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

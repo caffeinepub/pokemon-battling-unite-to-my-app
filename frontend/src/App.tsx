@@ -12,6 +12,9 @@ import TrainerProfile from './pages/TrainerProfile';
 import ProfessorOakIntro from './pages/ProfessorOakIntro';
 import StarterSelection from './pages/StarterSelection';
 import GameLore from './pages/GameLore';
+import CrystalShop from './pages/CrystalShop';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentFailure from './pages/PaymentFailure';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,6 +40,9 @@ const gymsRoute = createRoute({ getParentRoute: () => rootRoute, path: '/gyms', 
 const rosterRoute = createRoute({ getParentRoute: () => rootRoute, path: '/roster', component: PokemonRoster });
 const profileRoute = createRoute({ getParentRoute: () => rootRoute, path: '/profile', component: TrainerProfile });
 const loreRoute = createRoute({ getParentRoute: () => rootRoute, path: '/lore', component: GameLore });
+const shopRoute = createRoute({ getParentRoute: () => rootRoute, path: '/shop', component: CrystalShop });
+const paymentSuccessRoute = createRoute({ getParentRoute: () => rootRoute, path: '/payment-success', component: PaymentSuccess });
+const paymentFailureRoute = createRoute({ getParentRoute: () => rootRoute, path: '/payment-failure', component: PaymentFailure });
 
 const routeTree = rootRoute.addChildren([
   loginRoute,
@@ -49,6 +55,9 @@ const routeTree = rootRoute.addChildren([
   rosterRoute,
   profileRoute,
   loreRoute,
+  shopRoute,
+  paymentSuccessRoute,
+  paymentFailureRoute,
 ]);
 
 const router = createRouter({ routeTree });

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,207 +12,252 @@
     --card-foreground: oklch(0.95 0.01 260);
     --popover: oklch(0.16 0.025 260);
     --popover-foreground: oklch(0.95 0.01 260);
-    --primary: oklch(0.78 0.18 85);
+    --primary: oklch(0.72 0.19 35);
     --primary-foreground: oklch(0.12 0.02 260);
     --secondary: oklch(0.22 0.03 260);
     --secondary-foreground: oklch(0.85 0.01 260);
-    --muted: oklch(0.20 0.025 260);
+    --muted: oklch(0.20 0.02 260);
     --muted-foreground: oklch(0.60 0.02 260);
-    --accent: oklch(0.22 0.04 260);
-    --accent-foreground: oklch(0.95 0.01 260);
+    --accent: oklch(0.65 0.22 290);
+    --accent-foreground: oklch(0.98 0.005 260);
     --destructive: oklch(0.55 0.22 25);
-    --destructive-foreground: oklch(0.95 0.01 260);
-    --border: oklch(0.25 0.03 260);
-    --input: oklch(0.20 0.025 260);
-    --ring: oklch(0.78 0.18 85);
+    --destructive-foreground: oklch(0.98 0.005 260);
+    --border: oklch(0.28 0.03 260);
+    --input: oklch(0.20 0.02 260);
+    --ring: oklch(0.72 0.19 35);
     --radius: 0.75rem;
-    --success: oklch(0.65 0.18 145);
-    --warning: oklch(0.78 0.18 85);
+
+    /* Elemental palette */
+    --ember: oklch(0.68 0.22 35);
+    --tide: oklch(0.65 0.18 220);
+    --terra: oklch(0.55 0.12 55);
+    --gale: oklch(0.78 0.14 155);
+    --thunder: oklch(0.88 0.20 95);
+    --void: oklch(0.55 0.22 290);
   }
 
+  .light {
+    --background: oklch(0.97 0.005 260);
+    --foreground: oklch(0.15 0.02 260);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.15 0.02 260);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.15 0.02 260);
+    --primary: oklch(0.60 0.19 35);
+    --primary-foreground: oklch(0.98 0.005 260);
+    --secondary: oklch(0.92 0.01 260);
+    --secondary-foreground: oklch(0.20 0.02 260);
+    --muted: oklch(0.94 0.01 260);
+    --muted-foreground: oklch(0.50 0.02 260);
+    --accent: oklch(0.55 0.22 290);
+    --accent-foreground: oklch(0.98 0.005 260);
+    --destructive: oklch(0.50 0.22 25);
+    --destructive-foreground: oklch(0.98 0.005 260);
+    --border: oklch(0.88 0.01 260);
+    --input: oklch(0.92 0.01 260);
+    --ring: oklch(0.60 0.19 35);
+  }
+}
+
+@layer base {
   * {
     @apply border-border;
-    box-sizing: border-box;
   }
-
-  html {
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-  }
-
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    font-family: 'Rajdhani', sans-serif;
   }
-
-  /* Prevent horizontal overflow globally */
-  #root {
-    overflow-x: hidden;
-    max-width: 100vw;
+  h1, h2, h3 {
+    font-family: 'Bangers', cursive;
+    letter-spacing: 0.05em;
   }
 }
 
-/* ── Scrollbar hide utility ── */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+/* ── Electricity / Battle Animations ─────────────────────────────────── */
+
+@keyframes electricPulse {
+  0%, 100% { opacity: 1; stroke-width: 2; }
+  50% { opacity: 0.4; stroke-width: 1; }
 }
 
-/* ── Touch optimization ── */
-.touch-manipulation {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* ── Electricity / Battle Animations ── */
 @keyframes boltFlicker {
-  0%, 100% { opacity: 0.8; }
-  25% { opacity: 0.3; }
-  50% { opacity: 1; }
-  75% { opacity: 0.5; }
+  0%, 100% { opacity: 1; }
+  25% { opacity: 0.6; }
+  50% { opacity: 0.9; }
+  75% { opacity: 0.3; }
 }
 
-@keyframes sparkPop {
-  0% { transform: scale(0) rotate(0deg); opacity: 1; }
-  100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
+@keyframes floatBolt {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(3deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
 }
 
-@keyframes electricAura {
-  0%, 100% { transform: scale(1); opacity: 0.15; }
-  50% { transform: scale(1.05); opacity: 0.3; }
+/* ── Sprite Animations ────────────────────────────────────────────────── */
+
+@keyframes attackFlash {
+  0%   { filter: brightness(1) saturate(1); box-shadow: none; }
+  30%  { filter: brightness(2.2) saturate(2); box-shadow: 0 0 40px 16px var(--flash-color, #ff6a00); }
+  60%  { filter: brightness(1.5) saturate(1.5); }
+  100% { filter: brightness(1) saturate(1); box-shadow: none; }
 }
 
-@keyframes cornerSpark {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.3); }
+@keyframes hitRecoilLeft {
+  0%   { transform: translateX(0) scaleX(-1); filter: brightness(1); }
+  20%  { transform: translateX(-18px) scaleX(-1); filter: brightness(2) saturate(0) sepia(1) hue-rotate(-20deg); }
+  50%  { transform: translateX(8px) scaleX(-1); filter: brightness(1.5); }
+  100% { transform: translateX(0) scaleX(-1); filter: brightness(1); }
 }
 
-@keyframes floatSpark {
-  0% { transform: translateY(0) scale(1); opacity: 0.8; }
-  100% { transform: translateY(-20px) scale(0.5); opacity: 0; }
+@keyframes hitRecoilRight {
+  0%   { transform: translateX(0); filter: brightness(1); }
+  20%  { transform: translateX(18px); filter: brightness(2) saturate(0) sepia(1) hue-rotate(-20deg); }
+  50%  { transform: translateX(-8px); filter: brightness(1.5); }
+  100% { transform: translateX(0); filter: brightness(1); }
 }
 
-@keyframes pikachuElectric {
-  0%, 100% { transform: translateY(0) rotate(-2deg); filter: brightness(1); }
-  25% { transform: translateY(-4px) rotate(2deg); filter: brightness(1.2); }
-  50% { transform: translateY(-2px) rotate(-1deg); filter: brightness(1.1); }
-  75% { transform: translateY(-6px) rotate(1deg); filter: brightness(1.3); }
+@keyframes comboAppear {
+  0%   { transform: scale(0.4) rotate(-8deg); opacity: 0; }
+  40%  { transform: scale(1.3) rotate(4deg); opacity: 1; }
+  70%  { transform: scale(0.95) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
-@keyframes ashJourneyPulse {
-  0%, 100% { text-shadow: 0 0 10px oklch(0.78 0.18 85 / 0.5); }
-  50% { text-shadow: 0 0 20px oklch(0.78 0.18 85 / 0.9), 0 0 40px oklch(0.78 0.18 85 / 0.4); }
+@keyframes victoryBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  20%  { transform: translateY(-30px) scale(1.1); filter: brightness(1.4) drop-shadow(0 0 20px gold); }
+  40%  { transform: translateY(-10px) scale(1.05); }
+  60%  { transform: translateY(-20px) scale(1.08); }
+  80%  { transform: translateY(-5px) scale(1.02); }
 }
 
-@keyframes floatParticle {
-  0% { transform: translateY(0) scale(1); opacity: 0.2; }
-  50% { transform: translateY(-15px) scale(1.1); opacity: 0.35; }
-  100% { transform: translateY(0) scale(1); opacity: 0.2; }
+@keyframes defeatSlump {
+  0%   { transform: translateY(0) rotate(0deg); filter: grayscale(0); }
+  30%  { transform: translateY(10px) rotate(-8deg); filter: grayscale(0.5); }
+  60%  { transform: translateY(20px) rotate(-15deg); filter: grayscale(0.8); }
+  100% { transform: translateY(25px) rotate(-20deg); filter: grayscale(1) brightness(0.6); }
 }
 
 @keyframes ninjaFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
 }
 
-@keyframes attackSlash {
-  0% { transform: translateX(0) scaleX(1); opacity: 1; }
-  50% { transform: translateX(30px) scaleX(1.2); opacity: 0.8; }
-  100% { transform: translateX(0) scaleX(1); opacity: 1; }
+@keyframes ninjaAttackLunge {
+  0%   { transform: translateX(0) scaleX(1); }
+  30%  { transform: translateX(20px) scaleX(1.08); }
+  60%  { transform: translateX(-8px) scaleX(0.96); }
+  100% { transform: translateX(0) scaleX(1); }
 }
 
-/* ── Animation classes ── */
-.animate-bolt-flicker {
-  animation: boltFlicker 0.15s ease-in-out infinite;
+@keyframes ninjaDodge {
+  0%   { transform: translateY(0) rotate(0deg); }
+  40%  { transform: translateY(-20px) rotate(-10deg); }
+  100% { transform: translateY(0) rotate(0deg); }
 }
 
-.animate-spark-pop {
-  animation: sparkPop 0.5s ease-out forwards;
+@keyframes dangerHealthBar {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
 }
 
-.animate-electric-aura {
-  animation: electricAura 1.5s ease-in-out infinite;
+/* ── Screen Shake ─────────────────────────────────────────────────────── */
+
+@keyframes screenShakeHeavy {
+  0%   { transform: translate(0, 0); }
+  10%  { transform: translate(-8px, 4px); }
+  20%  { transform: translate(8px, -4px); }
+  30%  { transform: translate(-6px, 6px); }
+  40%  { transform: translate(6px, -2px); }
+  50%  { transform: translate(-4px, 4px); }
+  60%  { transform: translate(4px, -4px); }
+  70%  { transform: translate(-2px, 2px); }
+  80%  { transform: translate(2px, -2px); }
+  90%  { transform: translate(-1px, 1px); }
+  100% { transform: translate(0, 0); }
 }
 
-.animate-corner-spark {
-  animation: cornerSpark 0.8s ease-in-out infinite;
+@keyframes screenShakeLight {
+  0%   { transform: translate(0, 0); }
+  15%  { transform: translate(-4px, 2px); }
+  30%  { transform: translate(4px, -2px); }
+  45%  { transform: translate(-3px, 1px); }
+  60%  { transform: translate(3px, -1px); }
+  75%  { transform: translate(-1px, 1px); }
+  100% { transform: translate(0, 0); }
 }
 
-.animate-float-spark {
-  animation: floatParticle 3s ease-in-out infinite;
+/* ── Charge Glow Pulse ────────────────────────────────────────────────── */
+
+@keyframes chargeGlowPulse {
+  0%   { filter: brightness(1) saturate(1); }
+  50%  { filter: brightness(2.0) saturate(2.0); }
+  100% { filter: brightness(1) saturate(1); }
 }
 
-.animate-pikachu-electric {
-  animation: pikachuElectric 1.2s ease-in-out infinite;
+/* ── CSS Classes ──────────────────────────────────────────────────────── */
+
+.hit-recoil-left {
+  animation: hitRecoilLeft 0.4s ease-out forwards;
 }
 
-.animate-ash-journey-pulse {
-  animation: ashJourneyPulse 2s ease-in-out infinite;
+.hit-recoil-right {
+  animation: hitRecoilRight 0.4s ease-out forwards;
 }
 
-.animate-ninja-float {
-  animation: ninjaFloat 2s ease-in-out infinite;
+.combo-appear {
+  animation: comboAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-/* ── Mobile performance optimizations ── */
-@media (max-width: 767px) {
-  /* Simplify heavy animations on mobile */
-  .animate-bolt-flicker {
-    animation-duration: 0.3s;
-  }
-
-  .animate-electric-aura {
-    animation-duration: 2.5s;
-  }
-
-  .animate-corner-spark {
-    animation-duration: 1.5s;
-  }
-
-  .animate-float-spark {
-    animation-duration: 4s;
-  }
-
-  .animate-pikachu-electric {
-    animation-duration: 2s;
-  }
-
-  .animate-ash-journey-pulse {
-    animation-duration: 3s;
-  }
-
-  /* Reduce particle animation complexity */
-  .animate-ninja-float {
-    animation-duration: 3s;
-  }
-
-  /* Promote GPU compositing for battle sprites */
-  .will-change-transform {
-    will-change: transform;
-  }
+.victory-bounce {
+  animation: victoryBounce 1.2s ease-in-out infinite;
 }
 
-/* ── Portrait mode battle layout ── */
-@media (orientation: portrait) and (max-width: 767px) {
-  .battle-arena {
-    min-height: 260px;
-    max-height: 40vh;
-  }
-
-  .battle-controls {
-    padding-bottom: env(safe-area-inset-bottom, 16px);
-  }
+.defeat-slump {
+  animation: defeatSlump 0.8s ease-in forwards;
 }
 
-/* ── Safe area insets for notched phones ── */
-@supports (padding: max(0px)) {
-  .pb-safe {
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
-  }
+.ninja-float {
+  animation: ninjaFloat 2.5s ease-in-out infinite;
+}
+
+.ninja-attack-lunge {
+  animation: ninjaAttackLunge 0.4s ease-out forwards;
+}
+
+.ninja-dodge {
+  animation: ninjaDodge 0.35s ease-out forwards;
+}
+
+.danger-health-bar {
+  animation: dangerHealthBar 0.8s ease-in-out infinite;
+}
+
+.screen-shake-heavy {
+  animation: screenShakeHeavy 0.35s ease-out forwards;
+}
+
+.screen-shake-light {
+  animation: screenShakeLight 0.25s ease-out forwards;
+}
+
+.charge-glow-pulse {
+  animation: chargeGlowPulse 0.2s ease-in-out forwards;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: oklch(0.35 0.04 260);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.45 0.06 260);
 }

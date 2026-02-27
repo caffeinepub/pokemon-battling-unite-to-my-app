@@ -1,16 +1,26 @@
 # Specification
 
 ## Summary
-**Goal:** Overhaul all game visuals with a blended mixed aesthetic combining dark/edgy anime (Naruto/Demon Slayer/Bleach), pixel-art retro sprite animation, and painted/ink-brush (sumi-e) styles across all existing game screens.
+**Goal:** Implement full cinematic, Pokémon-style animated move sequences for all 6 element types in the battle screen, along with enhanced move button UI with cooldown feedback.
 
 **Planned changes:**
-- Update `NinjaBattleSprite.tsx` and `AnimatedPokemon.tsx` to apply `image-rendering: pixelated` / `crisp-edges` to all 6 monster sprite containers, with step-based CSS `@keyframes` idle animations and anime-style motion-trail attack animations, plus element-specific aura glow colors (fire, water, earth, wind, lightning, shadow).
-- Update `Battle.tsx` to render 6 distinct multi-layer anime-style battle backgrounds (fire dojo, water temple, bamboo forest, storm peak, shadow realm, earth canyon) using CSS gradients, layered pseudo-elements, and SVG overlays, each with element-matched atmospheric particle effects (embers, mist, leaves, lightning flashes, shadow wisps, dust motes) and speed-line overlays triggered on attack animations.
-- Update `AttackAnimation.tsx` to include anime-style impact frames: radial burst lines, afterimage trails, and shockwave rings with bold ink outlines.
-- Add brushstroke/ink-style decorative SVG borders, dividers, and `clip-path` accents to UI panels in `GameLore.tsx`, `StoryCampaign.tsx`, `GymBattles.tsx`, and `GameHome.tsx`; replace plain `<hr>` separators with horizontal brushstroke SVG dividers; apply Bangers font with ink-texture text-shadow to chapter/arc title headers.
-- Update `LoginPage.tsx` animated background to use brushstroke-style particle streaks or ink-wash gradients instead of plain circular particles.
-- Update `GameHome.tsx` navigation cards with dark anime aesthetic: dark backgrounds, glowing elemental accent borders, brushstroke section separators, and Bangers font headers.
-- Use pixel-art sprite sheet images for all 6 monsters in idle animations; use new anime-style battle background images per element type.
-- Ensure all new animations respect existing `@media (max-width: 767px)` reduced-animation rules and render correctly from 320px to 1440px wide.
+- In `AttackAnimation.tsx`, implement complete projectile animations for all 6 element types using `requestAnimationFrame`:
+  - **Fire**: fireball with trailing ember particles and explosive radial burst on impact
+  - **Water**: blue wave beam with expanding ripple rings and splash burst on impact
+  - **Earth**: jagged rock-shard with dust cloud trail and ground-crack shockwave on impact
+  - **Wind**: spinning crescent-blade gust with swirling air/leaf particles and slashing impact
+  - **Lightning**: instant branching zigzag SVG bolt from attacker to target with afterglow fade and electric spark impact
+  - **Shadow**: dark purple void orb with shadow tendrils trailing and dark mist explosion on impact
+  - All animations travel along the existing arc/miss-offset trajectory and call `onComplete` when finished; durations range 400–800ms (lightning fastest)
+- In `Battle.tsx`, extend move execution to a 3-phase sequence before HP deduction:
+  1. **Charge phase**: attacking monster sprite glows in its element color (box-shadow pulse) for ~150ms
+  2. **Travel phase**: element-specific projectile animation plays in full
+  3. **Impact phase**: element-specific particle burst plays and screen shake triggers (heavier shake when player is hit, lighter when opponent is hit)
+  - HP bar and battle log update only after the full 3-phase sequence completes, for both player and opponent moves
+- Enhance move buttons in `Battle.tsx`:
+  - Display a small element-type color indicator on each button
+  - Show a cooldown overlay (darkened fill that depletes over the cooldown period) on recently used moves
+  - Add a CSS scale-down press animation (scale to 0.92) on click for tactile feedback
+  - Maintain a 2×2 grid layout with minimum 48×48px tap targets on screens narrower than 768px
 
-**User-visible outcome:** All game screens display a cohesive mixed aesthetic of dark anime, pixel-art sprite animation, and sumi-e ink-brush styling — with animated elemental battle arenas, pixel-art monster sprites, brushstroke UI borders, and atmospheric particle effects throughout.
+**User-visible outcome:** Every attack in battle plays a full cinematic animation — charge glow, traveling projectile with element-specific visuals, and an impact effect with screen shake — before damage is applied. Move buttons show element color indicators, cooldown overlays, and satisfying press feedback.
