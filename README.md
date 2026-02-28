@@ -1,2 +1,3 @@
-# pokemon-battling-unite-to-my-app
-Exported from Caffeine project: pokemon battling unite to my app
+## 
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

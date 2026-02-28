@@ -1,0 +1,26 @@
+{
+  "name": "Elemental Ninja",
+  "short_name": "Ninja",
+  "description": "Master your element. Conquer all. A real-time elemental ninja battle game.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0f",
+  "theme_color": "#ff4400",
+  "icons": [
+    {
+      "src": "/assets/generated/ninja-icon.dim_512x512.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/generated/ninja-icon.dim_512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "entertainment"],
+  "screenshots": []
+}
